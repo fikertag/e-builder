@@ -19,48 +19,45 @@ import {
 } from "@/components/ui/sheet";
 
 export function Header() {
-  const { data: session } = authClient.useSession();
+   const { data: session } = authClient.useSession();
   return (
     <header className="sticky top-0 z-50 border-b bg-background/60 px-4 py-3 backdrop-blur">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto grid md:grid-cols-3 grid-cols-2 items-center justify-between">
         <div className="flex items-center gap-2">
-          {session && (
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button
-                    size={"icon"}
-                    variant={"outline"}
-                    className="rounded-full size-8"
-                  >
                     <Menu size={17} />
-                  </Button>
                 </SheetTrigger>
 
                 <SheetContent side={"left"}>
                   <SheetHeader className="mt-3">
                     <SheetTitle>
-                      <span className="text-xl font-semibold flex items-center gap-2">
-                        Fikiryilkal
-                      </span>
+                     
+                        e-comzy
                     </SheetTitle>
                     <Separator className="mt-3" />
                   </SheetHeader>
 
-                  <ul className="flex gap-4 flex-col mx-10 font-medium text-sm">
+                  <ul className="flex gap-4 flex-col mx-5 font-medium text-sm">
                     <li>
                       <SheetClose asChild>
-                        <NavItem href="/home" label="Home" />
+                        <NavItem href="#about" label="About" />
                       </SheetClose>
                     </li>
                     <li>
                       <SheetClose asChild>
-                        <NavItem href="/chat" label="chat" />
+                        <NavItem href="#Pricing" label="Pricing" />
                       </SheetClose>
                     </li>
                     <li>
                       <SheetClose asChild>
-                        <NavItem href="/admin" label="Admin" />
+                        <NavItem href="#features" label="Features" />
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <NavItem href="#templates" label="Templates" />
                       </SheetClose>
                     </li>
                   </ul>
@@ -73,29 +70,33 @@ export function Header() {
                 </SheetContent>
               </Sheet>
             </div>
-          )}
 
           <Link
             href={"/"}
-            className="text-xl font-semibold flex items-center gap-2"
+            className="text-xl font-semibold text-center flex items-center justify-center mb-2"
           >
-            {" "}
-            Fikiryilkal
+            e-comzy
           </Link>
         </div>
-        {session && (
-          <ul className="hidden gap-10 md:flex font-semibold">
-            <NavItem href="/home" label="Home" />
-            <NavItem href="/chat" label="Chat" />
-            <NavItem href="/admin" label="Admin" />
-          </ul>
-        )}
+          <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">
+                        <NavItem href="#about" label="About" />
+                        <NavItem href="#Pricing" label="Pricing" />
+                        <NavItem href="#features" label="Features" />
+                                                <NavItem href="#templates" label="Templates" />
 
-        <div className="flex items-center gap-2">
+          </ul>
+
+        <div className="flex items-center justify-end gap-2">
           <div className="hidden min-[400px]:flex mx-2 ">
             <ModeToggle />
           </div>
-          <UserButton />
+          {session ? <UserButton /> : <Button> <Link
+            href={"/auth/sign-in"}
+            className="text-white"
+          >
+            Sign in
+          </Link></Button> }
+          
         </div>
       </div>
     </header>
