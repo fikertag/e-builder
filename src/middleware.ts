@@ -1,20 +1,74 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { type NextRequest, NextResponse } from 'next/server';
+import { getSessionCookie } from 'better-auth/cookies';
+
+function extractSubdomain(request: NextRequest): string | null {
+  const url = request.url;
+  const host = request.headers.get('host') || '';
+  const hostname = host.split(':')[0];
+
+  // Local dev support
+  if (url.includes('localhost') || url.includes('127.0.0.1')) {
+    const match = url.match(/http:\/\/([^.]+)\.localhost/);
+    if (match && match[1]) return match[1];
+    if (hostname.includes('.localhost')) return hostname.split('.')[0];
+    return null;
+  }
+
+  // Preview deployments
+  if (hostname.includes('---') && hostname.endsWith('.vercel.app')) {
+    return hostname.split('---')[0];
+  }
+
+  // Production subdomains
+const rootDomainFormatted = process.env.ROOT_DOMAIN || "localhost";
+  const isSubdomain =
+    hostname !== rootDomainFormatted &&
+    hostname !== `www.${rootDomainFormatted}` &&
+    hostname.endsWith(`.${rootDomainFormatted}`);
+
+  return isSubdomain ? hostname.replace(`.${rootDomainFormatted}`, '') : null;
+}
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const subdomain = extractSubdomain(request);
+
+  // If subdomain is present
+  if (subdomain) {
+    // Block admin access on subdomains
+    if (pathname.startsWith('/admin')) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    // Rewrite `/` to `/s/[subdomain]`
+    if (pathname === '/') {
+      return NextResponse.rewrite(new URL(`/s/${subdomain}`, request.url));
+    }
+
+    return NextResponse.next(); // allow other subdomain paths
+  }
+
+  // Root domain: session-based redirect logic
   const sessionCookie = getSessionCookie(request);
 
-  if (!sessionCookie && request.nextUrl.pathname !== "/") {
-    return NextResponse.redirect(new URL("auth/sign-up", request.url));
-  }
+ // Redirect unauthenticated users trying to access protected pages
+const protectedPaths = ['/home', '/admin']; // root-level protected paths
+const isProtectedPath = protectedPaths.includes(pathname);
 
-  if (request.nextUrl.pathname === "/" && sessionCookie) {
-    return NextResponse.redirect(new URL("/home", request.url));
-  }
+if (!sessionCookie && isProtectedPath) {
+  return NextResponse.redirect(new URL('/auth/sign-up', request.url));
+}
+
+// Redirect logged-in users away from landing page `/` (but NOT from other pages)
+if (pathname === '/' && sessionCookie) {
+  return NextResponse.redirect(new URL('/home', request.url));
+}
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/home", "/admin", "/"],
+  matcher: [
+    '/((?!api|_next|[\\w-]+\\.\\w+).*)' // exclude /api, /_next, and public assets
+  ]
 };
