@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 
-interface Props {
-  params: { subdomain: string };
+interface PageProps {
+  params: {
+    subdomain: string;
+  };
 }
 
 // Optional: update title
@@ -11,7 +13,7 @@ export async function generateMetadata({ params }: { params: { subdomain: string
   };
 }
 
-export default function SubdomainPage({ params }: Props) {
+export default function SubdomainPage({ params }: PageProps) {
   const { subdomain } = params;
 
   return (
