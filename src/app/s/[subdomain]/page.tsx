@@ -1,25 +1,26 @@
 import { Metadata } from 'next';
 
-interface PageProps {
+type PageProps = {
   params: {
     subdomain: string;
   };
-}
+};
 
-// Optional: update title
-export async function generateMetadata({ params }: { params: { subdomain: string } }): Promise<Metadata> {
+// ✅ This must return a plain object, not a Promise
+export function generateMetadata({ params }: PageProps): Metadata {
   return {
-    title: `${params.subdomain}'s Page`,
+    title: `Welcome, ${params.subdomain}`,
   };
 }
 
+// ✅ Also not async unless you're doing data fetching
 export default function SubdomainPage({ params }: PageProps) {
   const { subdomain } = params;
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-4xl font-bold">Hello, {subdomain}!</h1>
-      <p className="text-lg text-gray-600 mt-2">Welcome to your custom landing page.</p>
+      <p className="text-lg text-gray-600 mt-2">This is your custom subdomain page.</p>
     </main>
   );
 }
