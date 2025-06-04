@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
-import { Header } from "@/components/header";
+// import { Header } from "@/components/header";
 import type { ReactNode } from "react";
 import { Providers } from "./providers";
 
@@ -44,8 +44,7 @@ export default function RootLayout({
       >
         <Providers>
             <div className="flex min-h-svh flex-col ">
-              <Header />
-
+              {/* <Header /> */}
               {children}
               <Analytics />
             </div>
