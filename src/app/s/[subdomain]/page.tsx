@@ -3,6 +3,11 @@ import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
 import {Header} from '@/components/navbar';
 import { Product } from '@/types';
+import {
+  PackageCheck,
+  Star,
+  Truck
+} from "lucide-react";
 
 // Mock data - replace with real data source
 const featuredProducts: Product[] = [
@@ -75,25 +80,50 @@ export default async function Page({
     />
         <ProductsSection products={featuredProducts} />
 
-        {/* Additional Sections */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-bold mb-6">Why Choose Us</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Feature blocks */}
-            </div>
-          </div>
-        </section>
-        
-        <section className="py-16 bg-indigo-50">
-          <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-              Subscribe to our newsletter for exclusive deals and updates
+
+
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-6 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          Why MugLife?
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto mb-12">
+          At MugLife, we blend craftsmanship, creativity, and quality to bring you the perfect mug for every moment.
+        </p>
+
+        <div className="grid gap-10 grid-cols-1 md:grid-cols-3">
+          {/* Feature 1 */}
+          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+            <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+            <h3 className="font-semibold text-xl mb-2">Premium Quality</h3>
+            <p className="text-sm text-gray-600">
+              Durable, dishwasher-safe mugs made with love and the best ceramic.
             </p>
-            {/* Newsletter form */}
           </div>
-        </section>
+
+          {/* Feature 2 */}
+          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+            <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+            <h3 className="font-semibold text-xl mb-2">Unique Designs</h3>
+            <p className="text-sm text-gray-600">
+              Custom artwork and fun prints that express your vibe — no boring mugs here.
+            </p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+            <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+            <h3 className="font-semibold text-xl mb-2">Fast Shipping</h3>
+            <p className="text-sm text-gray-600">
+              Get your mugs delivered quickly with eco-friendly packaging and care.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
       </main>
       <Footer />
     </div>
