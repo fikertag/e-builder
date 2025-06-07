@@ -1,19 +1,15 @@
 import type { ReactNode } from 'react';
 import { CartProvider } from '@/context/CartContext';
-import { Header } from '@/components/navbar';
+import {Header} from '@/components/navbar';
 
-export default function SubdomainLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: { subdomain: string };
-}) {
-  const { subdomain } = params;
+
+export default function SubdomainLayout({ children }: { children: ReactNode }) {
   return (
-    <CartProvider>
-      <Header title={subdomain} />
-      {children}
-    </CartProvider>
+
+         <CartProvider>
+                <Header title = {"xyz"} />
+          {children}
+        </CartProvider>
+
   );
 }

@@ -60,9 +60,18 @@ const featuredProducts: Product[] = [
   },
   // Add more products as needed
 ];
+// export default async function Page({
+//   params,
+// }: {
+//   params: Promise<{ subdomain: string }>
+// }) {
+//    const { subdomain } = await params
+
+//   return (
+//     <div className="min-h-screen flex flex-col">
+//       <Header title = {subdomain} />
 
 export default async function Page() {
-
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
