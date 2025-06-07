@@ -1,7 +1,7 @@
-import Navbar from '@/components/navbar';
 import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
+import {Header} from '@/components/navbar';
 import { Product } from '@/types';
 
 // Mock data - replace with real data source
@@ -34,7 +34,7 @@ export default async function Page({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar BrandName={subdomain} />
+      <Header title = {subdomain} />
       <main className="flex-grow">
         <LandingHero />
         <ProductsSection products={featuredProducts} />

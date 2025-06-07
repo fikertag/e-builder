@@ -1,36 +1,101 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useCart } from '@/context/CartContext';
+import { UserButton } from "@daveyplate/better-auth-ui";
+import Link from "next/link";
+import { Menu } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { ModeToggle } from "./mode-toggle";
+import { Button } from "./ui/button";
+import { NavItem } from "./nav-item";
+import { authClient } from "@/lib/auth-client";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetClose,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-export default function Navbar({BrandName}: { BrandName: string }) {
-  const { totalItems } = useCart();
+type HeaderProps = {
+  title: string;
+};
 
+export function Header({title} : HeaderProps) {
+   const { data: session } = authClient.useSession();
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-      <div className="flex items-center">
-        <Link href="/" className="text-2xl font-bold text-indigo-600">{BrandName}</Link>
-      </div>
-      
-      <div className="flex items-center space-x-6">
-        <Link href="/" className="text-gray-700 hover:text-indigo-600 transition">Home</Link>
-        <Link href="/products" className="text-gray-700 hover:text-indigo-600 transition">Products</Link>
-        <Link href="/about" className="text-gray-700 hover:text-indigo-600 transition">About</Link>
-        <Link href="/contact" className="text-gray-700 hover:text-indigo-600 transition">Contact</Link>
-        
-        <div className="relative">
-          <Link href="/cart" className="text-gray-700 hover:text-indigo-600 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
+    <header className="sticky top-0 z-50 border-b bg-background/60 px-4 py-3 backdrop-blur">
+      <div className="container mx-auto grid md:grid-cols-3 grid-cols-2 items-center justify-between">
+        <div className="flex items-center gap-2">
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                    <Menu size={17} />
+                </SheetTrigger>
+
+                <SheetContent side={"left"}>
+                  <SheetHeader className="mt-3">
+                    <SheetTitle>
+                        {title}
+                    </SheetTitle>
+                    <Separator className="mt-3" />
+                  </SheetHeader>
+
+                  <ul className="flex gap-4 flex-col mx-5 font-medium text-sm">
+                    <li>
+                      <SheetClose asChild>
+                        <NavItem href="/products" label="Products" />
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <NavItem href="#About" label="About" />
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <NavItem href="#contact" label="Contact" />
+                      </SheetClose>
+                    </li>
+                  </ul>
+
+                  <SheetFooter>
+                    <div className="flex sm:hidden justify-end">
+                      <ModeToggle />
+                    </div>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+          <Link
+            href={"/"}
+            className="text-xl font-semibold text-center flex items-center justify-center mb-2"
+          >
+            {title}
           </Link>
         </div>
+          <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">
+                        
+                        <NavItem href="/Products" label="Products" /><NavItem href="#about" label="About" />
+                        <NavItem href="#contact" label="Contact" />
+
+          </ul>
+
+        <div className="flex items-center justify-end gap-2">
+          <div className="hidden min-[400px]:flex mx-2 ">
+            <ModeToggle />
+          </div>
+          {session ? <UserButton /> : <Button> <Link
+            href={"/auth/sign-in"}
+            className="text-white"
+          >
+            Sign in
+          </Link></Button> }
+          
+        </div>
       </div>
-    </nav>
+    </header>
   );
 }
