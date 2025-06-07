@@ -41,9 +41,11 @@ export async function middleware(request: NextRequest) {
     }
 
     // Rewrite `/` to `/s/[subdomain]`
-    if (pathname === '/') {
-      return NextResponse.rewrite(new URL(`/s/${subdomain}`, request.url));
-    }
+   if (subdomain && !pathname.startsWith('/s/')) {
+  const rewrittenUrl = new URL(`/s/${subdomain}${pathname}`, request.url);
+  return NextResponse.rewrite(rewrittenUrl);
+}
+
 
     return NextResponse.next(); // allow other subdomain paths
   }
