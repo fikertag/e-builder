@@ -25,7 +25,7 @@ type HeaderProps = {
 export function Header({title} : HeaderProps) {
    const { data: session } = authClient.useSession();
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/60 px-4 py-3 backdrop-blur">
+    <header className=" top-0 z-50 border-b bg-background/60 px-4 py-3 backdrop-blur">
       <div className="container mx-auto grid md:grid-cols-3 grid-cols-2 items-center justify-between">
         <div className="flex items-center gap-2">
             <div className="md:hidden">
