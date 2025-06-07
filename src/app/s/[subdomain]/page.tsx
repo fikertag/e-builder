@@ -36,9 +36,13 @@ export default async function Page({
     <div className="min-h-screen flex flex-col">
       <Header title = {subdomain} />
       <main className="flex-grow">
-        <LandingHero />
+         <LandingHero
+      title="buy our latest cups and mugs"
+      description="keep your drinks hot and your style cool with our exclusive collection of cups and mugs."
+      imageUrl="/mug.jpg" 
+    />
         <ProductsSection products={featuredProducts} />
-        
+
         {/* Additional Sections */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-6 text-center">
