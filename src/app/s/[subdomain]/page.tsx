@@ -73,6 +73,9 @@ const featuredProducts: Product[] = [
 
 export default async function Page() {
   return (
+   <>
+   
+
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
          <LandingHero
@@ -129,5 +132,6 @@ export default async function Page() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

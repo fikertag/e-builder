@@ -1,8 +1,9 @@
 "use client";
 
 import { UserButton } from "@daveyplate/better-auth-ui";
+import CartSheetContent from "./cartList";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu,ShoppingCart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
@@ -76,25 +77,56 @@ export function Header({title} : HeaderProps) {
             {title}
           </Link>
         </div>
-          <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">
-                        
+          <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">  
                         <NavItem href="/products" label="Products" />
                         <NavItem href="#about" label="About" />
                         <NavItem href="#contact" label="Contact" />
-
           </ul>
 
         <div className="flex items-center justify-end gap-2">
           <div className="hidden min-[400px]:flex mx-2 ">
             <ModeToggle />
           </div>
-          {session ? <UserButton /> : <Button> <Link
-            href={"/auth/sign-in"}
-            className="text-white"
-          >
-            Sign in
-          </Link></Button> }
-          
+          {session ? <UserButton /> : <Sheet>
+                          <SheetTrigger asChild>
+                              <Button> <ShoppingCart /></Button> 
+                          </SheetTrigger>
+                          <SheetContent side={"right"} className="px-2">
+                          <SheetHeader className="mt-3">
+                           <SheetTitle >
+                            Cart
+                           </SheetTitle>
+                           </SheetHeader>
+                            <CartSheetContent />
+                            <SheetFooter>
+                                <div className=" text-sm text-neutral-500 dark:text-neutral-400">
+            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-700">
+              <p>Taxes</p>
+              <div className="text-right text-base text-black dark:text-white">
+                $33
+              </div>
+            </div>
+            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
+              <p>Shipping</p>
+              <p className="text-right">Calculated at checkout</p>
+            </div>
+            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
+              <p>Total</p>
+              <div className="text-right text-base text-black dark:text-white">
+                $45
+              </div>
+            </div>
+          </div>
+        
+                              
+                                <SheetClose asChild>
+                                   <button className="w-full rounded-md bg-black px-6 py-3 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+            Checkout
+          </button>
+                                </SheetClose>
+                              </SheetFooter>
+                          </SheetContent>
+                        </Sheet>}
         </div>
       </div>
     </header>
