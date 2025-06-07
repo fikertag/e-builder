@@ -8,21 +8,53 @@ import { Product } from '@/types';
 const featuredProducts: Product[] = [
   {
     id: '1',
-    name: 'Premium Headphones',
+    name: 'Premium mug',
     description: 'Noise-cancelling headphones with premium sound quality',
-    price: 299.99,
-    imageUrl: '/headphones.jpg',
-    category: 'audio'
+    price: 29.99,
+    imageUrl: '/cup.webp',
+    category: 'mugs'
   },
   {
     id: '2',
-    name: 'Smart Watch',
-    description: 'Track your fitness and stay connected with this smart wearable',
-    price: 199.99,
-    imageUrl: '/smartwatch.jpg',
-    category: 'wearables'
+    name: 'Classic White Mug',
+    description: 'A timeless white mug perfect for your morning coffee or tea.',
+    price: 14.99,
+    imageUrl: '/mug.jpg',
+    category: 'mugs'
   },
-  // Add 2-4 more products
+  {
+    id: '3',
+    name: 'Jogging Mug',
+    description: 'Stay hydrated on the go with this stylish jogging mug.',
+    price: 16.99,
+    imageUrl: '/jog.avif',
+    category: 'mugs'
+  },
+  {
+    id: '4',
+    name: 'Purple Ceramic Mug',
+    description: 'Add a splash of color to your kitchen with this purple ceramic mug.',
+    price: 15.99,
+    imageUrl: '/purplemug.jpg',
+    category: 'mugs'
+  },
+  {
+    id: '5',
+    name: 'Blue Mug',
+    description: 'Enjoy your favorite drinks in this cool blue mug.',
+    price: 15.99,
+    imageUrl: '/bluemug.webp',
+    category: 'mugs'
+  },
+  {
+    id: '6',
+    name: 'Black Travel Mug',
+    description: 'A sleek black mug designed for travel and everyday use.',
+    price: 18.99,
+    imageUrl: '/blackmug.avif',
+    category: 'mugs'
+  },
+  // Add more products as needed
 ];
 
 export default async function Page({
