@@ -1,7 +1,6 @@
 import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
-import {Header} from '@/components/navbar';
 import { Product } from '@/types';
 import {
   PackageCheck,
@@ -67,11 +66,9 @@ export default async function Page({
 }: {
   params: Promise<{ subdomain: string }>
 }) {
-   const { subdomain } = await params
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header title = {subdomain} />
       <main className="flex-grow">
          <LandingHero
       title="buy our latest cups and mugs"

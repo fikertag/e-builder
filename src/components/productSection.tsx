@@ -14,7 +14,7 @@ export default function ProductsSection({
   subtitle = "Discover our most popular items"
 }: ProductsSectionProps) {
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-10 bg-gray-50">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">{title}</h2>

@@ -78,7 +78,7 @@ export function Header({title} : HeaderProps) {
         </div>
           <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">
                         
-                        <NavItem href="/Products" label="Products" />
+                        <NavItem href="/products" label="Products" />
                         <NavItem href="#about" label="About" />
                         <NavItem href="#contact" label="Contact" />
 
