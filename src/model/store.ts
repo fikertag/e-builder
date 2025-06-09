@@ -1,55 +1,58 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+// models/Store.ts
+import { Schema, model, Document, Types } from 'mongoose';
 
 interface IStoreSettings {
-  themeColor?: string;
-  logoUrl?: string;
+  subdomain: string;
+  primaryColor: string;
+  logo?: string;
+  favicon?: string;
+  seoDescription?: string;
 }
 
 interface IStore extends Document {
   name: string;
-  owner: Types.ObjectId;  // Reference to User model
-  settings?: IStoreSettings;
+  owner: Types.ObjectId;
+  settings: IStoreSettings;
+  isActive: boolean;
+  stripeAccountId?: string; 
   createdAt: Date;
   updatedAt: Date;
 }
 
-const storeSettingsSchema = new Schema<IStoreSettings>({
-  themeColor: { 
-    type: String,
-    default: '#2563eb',
-    validate: {
-      validator: (color: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color),
-      message: 'Invalid hex color format'
-    }
-  },
-  logoUrl: { 
-    type: String,
-    validate: {
-      validator: (url: string) => /^(https?:\/\/).*\.(jpeg|jpg|png|gif|webp|svg)$/i.test(url),
-      message: 'Invalid image URL format'
-    }
-  }
-}, { _id: false });
-
-const storeSchema = new Schema<IStore>({
+const StoreSchema = new Schema<IStore>({
   name: { 
     type: String, 
-    required: [true, 'Store name is required'],
+    required: true,
     trim: true,
-    minlength: [3, 'Store name must be at least 3 characters'],
-    maxlength: [50, 'Store name cannot exceed 50 characters'],
-    index: true
+    maxlength: 50
   },
   owner: { 
     type: Schema.Types.ObjectId, 
     ref: 'User',
-    required: [true, 'Owner ID is required'],
-    index: true
+    required: true 
   },
-  settings: storeSettingsSchema
-}, {
-  timestamps: true  // Auto-create createdAt/updatedAt fields
-});
+  settings: {
+    subdomain: { 
+      type: String, 
+      required: true,
+      unique: true,
+      match: /^[a-z0-9\-]+$/,
+      maxlength: 30
+    },
+    primaryColor: { 
+      type: String, 
+      default: '#2563eb',
+      validate: /^#([A-Fa-f0-9]{6})$/
+    },
+    logo: String, // Cloudinary/S3 URL
+    favicon: String,
+    seoDescription: String
+  },
+  isActive: { type: Boolean, default: true },
+  stripeAccountId: String // For Stripe Connect
+}, { timestamps: true });
 
-const Store = mongoose.model<IStore>('Store', storeSchema);
-export default Store;
+// Index for subdomain routing
+StoreSchema.index({ 'settings.subdomain': 1 }, { unique: true });
+
+export const Store = model<IStore>('Store', StoreSchema);
