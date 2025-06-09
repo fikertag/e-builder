@@ -1,4 +1,4 @@
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/mongoose";
 import Category from "@/model/catagory";
@@ -6,9 +6,8 @@ import Store from "@/model/store";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise < { storeid: string } > }
-) : Promise < NextResponse > {
- 
+  { params }: { params: Promise<{ storeid: string }> }
+): Promise<NextResponse> {
   await dbConnect();
 
   const { storeid } = await params;
@@ -24,9 +23,11 @@ export async function GET(
     return NextResponse.json({ message: "Store not found." }, { status: 404 });
   }
 
-  // Fetch categories for the store
+  // Fetch categories for the store, selecting only necessary fields
   try {
-    const categories = await Category.find({ store: storeid }).lean();
+    const categories = await Category.find({ store: storeid })
+      .select("_id name slug description featured parent")
+      .lean();
     return NextResponse.json(categories, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -44,7 +45,7 @@ export async function GET(
  * - Path Parameter:
  *   - storeid: The ObjectId of the store.
  * - Response:
- *   - 200: Returns an array of category documents.
+ *   - 200: Returns an array of category documents (only _id, name, slug, description, featured, parent).
  *   - 400: Returns an error if the store ID is invalid.
  *   - 404: Returns an error if the store does not exist.
  *   - 500: Returns an error if fetching fails.
