@@ -1,11 +1,12 @@
+// models/User.ts
 import { Schema, model, Document, Types } from 'mongoose';
 
 interface IUser extends Document {
   email: string;
   password: string;
   stores: Types.ObjectId[];
-  stripeCustomerId?: string;
-  lastLogin?: Date;
+  aiCredits: number;
+  lastGenerationAt?: Date;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -15,10 +16,21 @@ const UserSchema = new Schema<IUser>({
     unique: true,
     match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   },
-  password: { type: String, required: true, select: false },
-  stores: [{ type: Schema.Types.ObjectId, ref: 'Store' }],
-  stripeCustomerId: String,
-  lastLogin: Date
+  password: { 
+    type: String, 
+    required: true, 
+    select: false 
+  },
+  stores: [{ 
+    type: Schema.Types.ObjectId, 
+    ref: 'Store' 
+  }],
+  aiCredits: { 
+    type: Number, 
+    default: 3, 
+    min: 0 
+  },
+  lastGenerationAt: Date
 }, { timestamps: true });
 
-export const Store = model<IUser>('User', UserSchema);
+export const User = model<IUser>('User', UserSchema);
