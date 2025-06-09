@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ratelimit } from "@/lib/rateLimit";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/mongoose";
-import { Store } from "@/model/store";
+import  Store  from "@/model/store";
 
 // Allowed enums from your schema
 const allowedHeadings = [

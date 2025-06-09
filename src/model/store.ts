@@ -1,5 +1,5 @@
 // models/Store.ts
-import { Schema, model, Document, Types } from 'mongoose';
+import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 
 interface IAIBrandConfig {
   colorPalette: {
@@ -90,4 +90,6 @@ const StoreSchema = new Schema<IStore>({
   }
 }, { timestamps: true });
 
-export const Store = model<IStore>('Store', StoreSchema);
+const Store: Model<IStore> = mongoose.models.Store || mongoose.model<IStore>('Store', StoreSchema);
+
+export default Store;
