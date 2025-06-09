@@ -84,6 +84,39 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function GET(request: NextRequest) {
+  await dbConnect();
+
+  const url = new URL(request.url);
+  const store = url.searchParams.get("store");
+  const category = url.searchParams.get("category");
+
+  // Make store param mandatory
+  if (!store || !mongoose.Types.ObjectId.isValid(store)) {
+    return NextResponse.json(
+      { message: "Valid store parameter is required." },
+      { status: 400 }
+    );
+  }
+
+  const filter: Record<string, unknown> = { store };
+  if (category && mongoose.Types.ObjectId.isValid(category)) {
+    filter.categories = category;
+  }
+
+  try {
+    const products = await Product.find(filter)
+      .select("_id title description basePrice images isFeatured isActive store categories")
+      .lean();
+    return NextResponse.json(products, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to fetch products", error },
+      { status: 500 }
+    );
+  }
+}
+
 /**
  * API Documentation:
  *
@@ -130,4 +163,16 @@ export async function POST(request: NextRequest) {
  *   - 400: Returns an error message if required fields are missing or invalid.
  *   - 404: Returns an error if the store is not found.
  *   - 500: Returns an error message if creation fails.
+ * 
+ * 
+ * 
+ *  *
+ * GET /api/product
+ * - Description: Fetches all products, optionally filtered by store or category.
+ * - Query Parameters:
+ *   - store: StoreObjectId (optional)
+ *   - category: CategoryObjectId (optional)
+ * - Response:
+ *   - 200: Returns an array of product documents (only _id, title, description, basePrice, images, isFeatured, isActive, store, categories).
+ *   - 500: Returns an error if fetching fails.
  */
