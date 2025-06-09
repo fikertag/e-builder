@@ -17,7 +17,7 @@ interface IProduct extends Document {
   categories: string[];
   images: string[];
   isFeatured: boolean;
-  metadata?: Record<string, any>;
+  metadata?:string;
 }
 
 const ProductSchema = new Schema<IProduct>({
@@ -35,7 +35,7 @@ const ProductSchema = new Schema<IProduct>({
   categories: [{ type: String }],
   images: [{ type: String }], // Array of image URLs
   isFeatured: { type: Boolean, default: false },
-  metadata: Schema.Types.Mixed // For extensibility
+  metadata: { type: String } // For extensibility
 }, { timestamps: true });
 
 // Compound index for store + product queries

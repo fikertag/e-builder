@@ -79,7 +79,7 @@ const StoreSchema = new Schema<IStore>({
     },
     layoutTemplate: {
       type: String,
-      enum: ['minimalist', 'professional', 'vibrant'],
+      enum: ['minimalist', 'professional',                         'vibrant'],
       default: 'professional'
     }
   },
