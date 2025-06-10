@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, Document, Types } from 'mongoose';
 
-interface ICustomOption {
+export interface ICustomOption {
   name: string;             // "Engraving Text"
   type: 'text' | 'dropdown';
   required: boolean;
@@ -8,7 +8,7 @@ interface ICustomOption {
   priceImpact?: number;     // Additional cost
 }
 
-interface IVariant {
+export interface IVariant {
   name: string;               // "Small", "Red", "Cotton"
   type?: string;              // "size", "color", "material" (optional)
   sku: string;                // "TSHIRT-RED-SM"

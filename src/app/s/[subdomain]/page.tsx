@@ -2,9 +2,10 @@
 import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
-import { Product } from '@/types';
+// import { Product } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import {IAIBrandConfig} from '@/model/store';
+import {IVariant, ICustomOption} from '@/model/product';
 import {
   PackageCheck,
   Star,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 
 
-export interface StoreData {
+interface StoreData {
   _id: string; 
   owner: string; 
   subdomain: string;
@@ -23,74 +24,58 @@ export interface StoreData {
   isPublished: boolean;
 }
 
-
+export interface IProduct  {
+ _id: string; // Unique identifier
+  store: string; // Reference to Store
+  title: string;
+  description: string;
+  basePrice: number;          // Starting price before variants
+  variants: IVariant[];
+  categories: string[]; // Reference to Categories
+  images: string[];           // Main product images
+  isFeatured: boolean;
+  isActive: boolean;          // Soft delete
+  attributes: {               // Flexible metadata
+    [key: string]: string | number | boolean | undefined; // { "gender": "unisex", "weight": "200g" }
+  };
+  customOptions?: ICustomOption[];
+}
 
 // Mock data - replace with real data source
-const featuredProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Premium mug',
-    description: 'Noise-cancelling headphones with premium sound quality',
-    price: 29.99,
-    imageUrl: '/cup.webp',
-    category: 'mugs'
-  },
-  {
-    id: '2',
-    name: 'Classic White Mug',
-    description: 'A timeless white mug perfect for your morning coffee or tea.',
-    price: 14.99,
-    imageUrl: '/mug.jpg',
-    category: 'mugs'
-  },
-  {
-    id: '3',
-    name: 'Jogging Mug',
-    description: 'Stay hydrated on the go with this stylish jogging mug.',
-    price: 16.99,
-    imageUrl: '/jog.avif',
-    category: 'mugs'
-  },
-  {
-    id: '4',
-    name: 'Purple Ceramic Mug',
-    description: 'Add a splash of color to your kitchen with this purple ceramic mug.',
-    price: 15.99,
-    imageUrl: '/purplemug.jpg',
-    category: 'mugs'
-  },
-  {
-    id: '5',
-    name: 'Blue Mug',
-    description: 'Enjoy your favorite drinks in this cool blue mug.',
-    price: 15.99,
-    imageUrl: '/bluemug.webp',
-    category: 'mugs'
-  },
-  {
-    id: '6',
-    name: 'Black Travel Mug',
-    description: 'A sleek black mug designed for travel and everyday use.',
-    price: 18.99,
-    imageUrl: '/blackmug.avif',
-    category: 'mugs'
-  },
-  // Add more products as needed
-];
-
+// const featuredProducts: Product[] = [
+//   {
+//     id: '1',
+//     name: 'Premium mug',
+//     description: 'Noise-cancelling headphones with premium sound quality',
+//     price: 29.99,
+//     imageUrl: '/cup.webp',
+//     category: 'mugs'
+//   },
+//   // Add more products as needed
+// ];
 
  export default function Page() {
+
+  async function getProducts() {
+    const res = await fetch('/api/product?store=68474b0d1db8b6c73d5935bf');
+    return res.json();
+  }
+
   async function fetchStore(subdomain: string) {
   const res = await fetch(`/api/store/${subdomain}`);
   return res.json();
 }
+
 // const { subdomain } = await params
 
  const { data: store, error, isLoading } = useQuery<StoreData> ({ 
    queryKey:  ["store"],
    queryFn:() => fetchStore("myshop"),
  });
-
+const { data: products, error: perror, isLoading: pisLoading } = useQuery<IProduct[]> ({ 
+   queryKey:  ["products"],
+   queryFn:() => getProducts(),
+ });
  if (isLoading) {
    return <div>Loading...</div>;
  }
@@ -98,7 +83,6 @@ const featuredProducts: Product[] = [
  if (error) {
    return <div>Error loading store data</div>; 
  }
- 
 
   return (
    <>
@@ -109,8 +93,7 @@ const featuredProducts: Product[] = [
          description={store?.description || ""}
          imageUrl="/mug.jpg"
        />
-        <ProductsSection products={featuredProducts} />
-
+        <ProductsSection products={products || []} />
 
 
     <section className="py-16 bg-white">
