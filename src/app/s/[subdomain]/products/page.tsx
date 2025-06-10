@@ -1,6 +1,6 @@
-// app/products/page.tsx
-import ProductsSection from '@/components/productSection';
-import { Product } from '@/types';
+// // app/products/page.tsx
+// import ProductsSection from '@/components/productSection';
+// import { Product } from '@/types';
 
 
 
