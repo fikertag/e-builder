@@ -2,9 +2,7 @@
 import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
-// import { Product } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import {IAIBrandConfig} from '@/model/store';
 import {IVariant, ICustomOption} from '@/model/product';
 import {
   PackageCheck,
@@ -13,19 +11,6 @@ import {
 } from "lucide-react";
 
 import { useStoreData } from "@/store/useStoreData";
-
-
-
-interface StoreData {
-  _id: string; 
-  owner: string; 
-  subdomain: string;
-  storeName: string;
-  description: string;
-  aiConfig: IAIBrandConfig;
-  generatedAt?: string; 
-  isPublished: boolean;
-}
 
 export interface IProduct  {
  _id: string; // Unique identifier
@@ -44,52 +29,22 @@ export interface IProduct  {
   customOptions?: ICustomOption[];
 }
 
-// Mock data - replace with real data source
-// const featuredProducts: Product[] = [
-//   {
-//     id: '1',
-//     name: 'Premium mug',
-//     description: 'Noise-cancelling headphones with premium sound quality',
-//     price: 29.99,
-//     imageUrl: '/cup.webp',
-//     category: 'mugs'
-//   },
-//   // Add more products as needed
-// ];
-
  export default function Page() {
 
-  const storme = useStoreData((state) => state.store);
-
-  console.log("Store data from Zustand:", storme);
+  const store = useStoreData((state) => state.store);
 
   async function getProducts() {
     const res = await fetch('/api/product?store=68474b0d1db8b6c73d5935bf');
     return res.json();
   }
 
-  async function fetchStore(subdomain: string) {
-  const res = await fetch(`/api/store/${subdomain}`);
-  return res.json();
-}
-
-// const { subdomain } = await params
-
- const { data: store, error, isLoading } = useQuery<StoreData> ({ 
-   queryKey:  ["store"],
-   queryFn:() => fetchStore("myshop"),
- });
-const { data: products, error: perror, isLoading: pisLoading } = useQuery<IProduct[]> ({ 
+const { data: products, error, isLoading } = useQuery<IProduct[]> ({ 
    queryKey:  ["products"],
    queryFn:() => getProducts(),
  });
- if (isLoading) {
-   return <div>Loading...</div>;
- }
 
- if (error) {
-   return <div>Error loading store data</div>; 
- }
+ if (isLoading) return <div>Loading...</div>;
+ if (error) return <div>Error loading products</div>;
 
   return (
    <>
