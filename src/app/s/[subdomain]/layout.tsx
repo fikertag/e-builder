@@ -6,9 +6,12 @@ import StoreInitializer from './StoreInitializer';
 
 async function getStoreBySubdomain(subdomain: string): Promise<StoreData | null> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  console.log(`Fetching store for subdomain: ${subdomain} from ${baseUrl}/api/store/${subdomain}`);
   const res = await fetch(`${baseUrl}/api/store/${subdomain}`);
+  console.log(`Response status: ${res.status}`);
   if (!res.ok) return null;
   const data = await res.json();
+  console.log(`Fetched store data:`, data);
   return data as StoreData;
 }
 
