@@ -1,12 +1,29 @@
+"use client";
 import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
 import { Product } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import {IAIBrandConfig} from '@/model/store';
 import {
   PackageCheck,
   Star,
   Truck
 } from "lucide-react";
+
+
+export interface StoreData {
+  _id: string; 
+  owner: string; 
+  subdomain: string;
+  storeName: string;
+  description: string;
+  aiConfig: IAIBrandConfig;
+  generatedAt?: string; 
+  isPublished: boolean;
+}
+
+
 
 // Mock data - replace with real data source
 const featuredProducts: Product[] = [
@@ -60,29 +77,38 @@ const featuredProducts: Product[] = [
   },
   // Add more products as needed
 ];
-// export default async function Page({
-//   params,
-// }: {
-//   params: Promise<{ subdomain: string }>
-// }) {
-//    const { subdomain } = await params
 
-//   return (
-//     <div className="min-h-screen flex flex-col">
-//       <Header title = {subdomain} />
 
-export default async function Page() {
+ export default function Page() {
+  async function fetchStore(subdomain: string) {
+  const res = await fetch(`/api/store/${subdomain}`);
+  return res.json();
+}
+// const { subdomain } = await params
+
+ const { data: store, error, isLoading } = useQuery<StoreData> ({ 
+   queryKey:  ["store"],
+   queryFn:() => fetchStore("myshop"),
+ });
+
+ if (isLoading) {
+   return <div>Loading...</div>;
+ }
+
+ if (error) {
+   return <div>Error loading store data</div>; 
+ }
+ 
+
   return (
    <>
-   
-
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
-         <LandingHero
-      title="buy our latest cups and mugs"
-      description="keep your drinks hot and your style cool with our exclusive collection of cups and mugs."
-      imageUrl="/mug.jpg" 
-    />
+      <LandingHero
+         title={store?.storeName || ""}
+         description={store?.description || ""}
+         imageUrl="/mug.jpg"
+       />
         <ProductsSection products={featuredProducts} />
 
 

@@ -1,7 +1,7 @@
 // models/Store.ts
 import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 
-interface IAIBrandConfig {
+export interface IAIBrandConfig {
   colorPalette: {
     primary: string;
     secondary: string;
@@ -14,7 +14,7 @@ interface IAIBrandConfig {
   layoutTemplate: 'minimalist' | 'professional' | 'vibrant';
 }
 
-interface IStore extends Document {
+ interface IStore extends Document {
   owner: Types.ObjectId;
   subdomain: string;
   storeName: string;
