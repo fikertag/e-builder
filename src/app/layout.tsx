@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
-
-// import { Header } from "@/components/header";
+import ReactQueryProvider from "@/providers/QueryProvider";
 import type { ReactNode } from "react";
 import { Providers } from "./providers";
 
@@ -42,13 +41,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+       <ReactQueryProvider>
         <Providers>
             <div className="flex min-h-svh flex-col ">
-              {/* <Header /> */}
               {children}
               <Analytics />
             </div>
         </Providers>
+       </ReactQueryProvider>
       </body>
     </html>
   );
