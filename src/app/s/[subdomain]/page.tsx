@@ -3,7 +3,7 @@ import LandingHero from '@/components/landingHero';
 import ProductsSection from '@/components/productSection';
 import Footer from '@/components/footer';
 import { useQuery } from '@tanstack/react-query';
-import {IVariant, ICustomOption} from '@/model/product';
+import {IProduct} from '@/types/index';
 import {
   PackageCheck,
   Star,
@@ -11,23 +11,6 @@ import {
 } from "lucide-react";
 
 import { useStoreData } from "@/store/useStoreData";
-
-export interface IProduct  {
- _id: string; // Unique identifier
-  store: string; // Reference to Store
-  title: string;
-  description: string;
-  basePrice: number;          // Starting price before variants
-  variants: IVariant[];
-  categories: string[]; // Reference to Categories
-  images: string[];           // Main product images
-  isFeatured: boolean;
-  isActive: boolean;          // Soft delete
-  attributes: {               // Flexible metadata
-    [key: string]: string | number | boolean | undefined; // { "gender": "unisex", "weight": "200g" }
-  };
-  customOptions?: ICustomOption[];
-}
 
  export default function Page() {
 
