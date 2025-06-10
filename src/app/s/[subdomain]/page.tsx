@@ -12,6 +12,9 @@ import {
   Truck
 } from "lucide-react";
 
+import { useStoreData } from "@/store/useStoreData";
+
+
 
 interface StoreData {
   _id: string; 
@@ -55,6 +58,10 @@ export interface IProduct  {
 // ];
 
  export default function Page() {
+
+  const storme = useStoreData((state) => state.store);
+
+  console.log("Store data from Zustand:", storme);
 
   async function getProducts() {
     const res = await fetch('/api/product?store=68474b0d1db8b6c73d5935bf');
