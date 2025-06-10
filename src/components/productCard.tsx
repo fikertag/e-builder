@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import {IProduct} from "../app/s/[subdomain]/page"; // Adjust the import path as necessary
+import {IProduct} from "@/types/index"; // Adjust the import path as necessary
 import { ShoppingCart } from "lucide-react"; // Add this at the top if you have lucide-react or use any icon library
 // import { useCart } from "@/context/CartContext";
 
