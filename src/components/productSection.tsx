@@ -1,6 +1,6 @@
 import React from 'react';
 import ProductCard from './productCard';
-import {IProduct} from '../app/s/[subdomain]/page';
+import {IProduct} from '@/types/index'; // Adjust the import path as necessary
 
 interface ProductsSectionProps {
   products: IProduct[];
