@@ -50,7 +50,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <AuthQueryProvider>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

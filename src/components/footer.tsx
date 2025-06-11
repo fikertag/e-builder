@@ -21,23 +21,17 @@ export default function Footer() {
         <div>
           <h2 className="text-2xl font-bold mb-2">{store?.storeName || "MugLife"}</h2>
           <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} {store?.storeName || "MugLife"}. Sip in style.
+            © {new Date().getFullYear()} {store?.storeName || "MugLife"}
           </p>
         </div>
 
         {/* Useful Links */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/products" className="hover:text-indigo-400">Products</Link></li>
-            <li><Link href="/cart" className="hover:text-indigo-400">Cart</Link></li>
-            <li><Link href="/signup" className="hover:text-indigo-400">Sign Up</Link></li>
-            <li><Link href="/login" className="hover:text-indigo-400">Login</Link></li>
-          </ul>
+        <div className="md:flex md:justify-center md:items-center">
+          <h3 className="text-lg font-semibold mb-3"><Link href="/products" className="hover:text-indigo-400">See All product</Link></h3>
         </div>
 
         {/* Social Media */}
-        <div>
+        <div className="flex flex-col md:justify-center md:items-end">
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex justify-center md:justify-start space-x-4">
             <a

@@ -26,8 +26,16 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
    queryFn:() => getProducts(),
  });
 
- if (isLoading) return <div>Loading...</div>;
- if (error) return <div>Error loading products</div>;
+ if (isLoading) return (
+    <div className="flex items-center justify-center min-h-[90vh]">
+      <span className="inline-block animate-bounce text-4xl text-indigo-500">. . .</span>
+    </div>
+  );
+ if (error) return (
+    <div className="flex items-center justify-center min-h-[40vh]">
+      <span className="inline-block animate-pulse text-2xl text-red-500">Something went wrong. Please try again.</span>
+    </div>
+  );
 
  console.log(store, "store data");
 
@@ -43,7 +51,7 @@ return (
         <ProductsSection products={products || []} />
 
 
-    <section className="py-8 bg-white">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
           Why {store?.storeName || "Our Store"}?
@@ -54,42 +62,31 @@ return (
         <div className="grid gap-10 grid-cols-1 md:grid-cols-3">
           {Array.isArray(store?.whyChooseUs) && store.whyChooseUs.length > 0 ? (
             store.whyChooseUs.map((reason, idx) => (
-              <div key={idx} className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-                {/* Optionally use icons for first three reasons, fallback to star */}
-                {idx === 0 ? (
-                  <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-                ) : idx === 1 ? (
-                  <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-                ) : idx === 2 ? (
-                  <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-                ) : (
-                  <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-                )}
+              <div key={idx} className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition flex items-center justify-center ">
                 <h3 className="font-semibold text-xl mb-2">{reason}</h3>
               </div>
             ))
           ) : (
-            // Fallback: show three default features if none in store
             <>
               <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
                 <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
                 <h3 className="font-semibold text-xl mb-2">Premium Quality</h3>
                 <p className="text-sm text-gray-600">
-                  Durable, dishwasher-safe mugs made with love and the best ceramic.
+                  Durable, high-quality products made with care and the best materials.
                 </p>
               </div>
               <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
                 <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
                 <h3 className="font-semibold text-xl mb-2">Unique Designs</h3>
                 <p className="text-sm text-gray-600">
-                  Custom artwork and fun prints that express your vibe — no boring mugs here.
+                  Custom artwork and creative options that express your style—no generic products here.
                 </p>
               </div>
               <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
                 <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
                 <h3 className="font-semibold text-xl mb-2">Fast Shipping</h3>
                 <p className="text-sm text-gray-600">
-                  Get your mugs delivered quickly with eco-friendly packaging and care.
+                  Get your order delivered quickly with eco-friendly packaging and care.
                 </p>
               </div>
             </>
