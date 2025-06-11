@@ -84,9 +84,9 @@ export async function POST(request: NextRequest) {
      if (!Array.isArray(whyChooseUs) || whyChooseUs.length === 0) {
        return NextResponse.json({ message: "whyChooseUs must be a non-empty array." }, { status: 400 });
      }
-     if (whyChooseUs.some((item: any) => typeof item !== "string" || !item.trim())) {
+     if ((whyChooseUs as string[]).some(item => typeof item !== "string" || !item.trim())) {
        return NextResponse.json({ message: "Each whyChooseUs item must be a non-empty string." }, { status: 400 });
-     }
+   }
 
      // Contact is optional, but if provided, validate structure
      if (contact && typeof contact !== "object") {

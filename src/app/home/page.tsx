@@ -14,6 +14,21 @@ const allowedBodies = [
 ];
 const allowedTemplates = ["minimalist", "professional", "vibrant"];
 
+type SocialLinks = {
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  tiktok: string;
+  youtube: string;
+};
+
+type Contact = {
+  email?: string;
+  phone?: string;
+  address?: string;
+  social?: Partial<SocialLinks>;
+};
+
 export default function CreateStore() {
   const { data: session } = authClient.useSession();
   const [storeName, setStoreName] = useState("");
@@ -33,7 +48,7 @@ export default function CreateStore() {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactAddress, setContactAddress] = useState("");
-  const [social, setSocial] = useState({
+  const [social, setSocial] = useState<SocialLinks>({
     instagram: "",
     facebook: "",
     twitter: "",
@@ -69,12 +84,10 @@ export default function CreateStore() {
     setError(null);
     setSuccess(null);
 
-    // Build contact object only if any field is filled
-    const contact: any = {};
+    const contact: Contact = {};
     if (contactEmail) contact.email = contactEmail;
     if (contactPhone) contact.phone = contactPhone;
     if (contactAddress) contact.address = contactAddress;
-    // Only include social if any social field is filled
     const hasSocial = Object.values(social).some(Boolean);
     if (hasSocial) contact.social = { ...social };
     const contactToSend = Object.keys(contact).length > 0 ? contact : undefined;
@@ -124,10 +137,10 @@ export default function CreateStore() {
           tiktok: "",
           youtube: "",
         });
-        // Optionally reset AI config
       }
     } catch (err) {
       setError("Something went wrong.");
+      console.log("Error creating store:", err);
     } finally {
       setLoading(false);
     }
