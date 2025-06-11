@@ -63,6 +63,22 @@ export interface StoreData {
   aiConfig: IAIBrandConfig;
   generatedAt?: string; 
   isPublished: boolean;
+   heroHeading: string;
+  heroDescription: string;
+  aboutUs: string;
+  whyChooseUs: string[];
+  contact?: {
+    email?: string;
+    phone?: string;
+    address?: string;
+    social?: {
+      instagram?: string;
+      facebook?: string;
+      twitter?: string;
+      tiktok?: string;
+      youtube?: string;
+    };
+  };
 }
 
 export interface CartItem extends Product {

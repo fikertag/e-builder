@@ -16,6 +16,22 @@ export interface IAIBrandConfig {
 
  interface IStore extends Document {
   owner: Types.ObjectId;
+  heroHeading: string;
+  heroDescription: string;
+  aboutUs: string;
+  whyChooseUs: string[];
+  contact?: {
+    email?: string;
+    phone?: string;
+    address?: string;
+    social?: {
+      instagram?: string;
+      facebook?: string;
+      twitter?: string;
+      tiktok?: string;
+      youtube?: string;
+    };
+  };
   subdomain: string;
   storeName: string;
   description: string;
@@ -42,6 +58,34 @@ const StoreSchema = new Schema<IStore>({
     required: true,
     trim: true,
     maxlength: 40 
+  },
+  heroHeading: {
+    type: String,
+    maxlength: 100
+  },
+  heroDescription: {
+    type: String,
+    maxlength: 300
+  },
+  aboutUs: {
+    type: String,
+    maxlength: 1000
+  },
+  whyChooseUs: {
+    type: [String],
+    default: []
+  },
+  contact: {
+    email: { type: String },
+    phone: { type: String },
+    address: { type: String },
+    social: {
+      instagram: { type: String },
+      facebook: { type: String },
+      twitter: { type: String },
+      tiktok: { type: String },
+      youtube: { type: String }
+    }
   },
   description: {
     type: String,

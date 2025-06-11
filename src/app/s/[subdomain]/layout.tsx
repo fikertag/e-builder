@@ -27,7 +27,7 @@ export default async function SubdomainLayout({
 
   return (
     <CartProvider>
-      <Header title={store.storeName} />
+      <Header title={store.subdomain} />
       <StoreInitializer store={store} />
       {children}
     </CartProvider>

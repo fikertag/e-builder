@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
       owner,
       description,
       aiConfig,
+      heroHeading,
+      heroDescription,
+      aboutUs,
+      whyChooseUs,
+      contact,
     } = await request.json();
      const userId = owner;
 
@@ -40,20 +45,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Too many requests" }, { status: 429 });
   }
 
-    // Required fields validation
-    if (!storeName || typeof storeName !== "string") {
-      return NextResponse.json({ message: "Store name is required." }, { status: 400 });
-    }
-    if (storeName.length > 100) {
-      return NextResponse.json({ message: "Store name is too long." }, { status: 400 });
-    }
+     // Required fields validation
+     if (!storeName || typeof storeName !== "string") {
+       return NextResponse.json({ message: "Store name is required." }, { status: 400 });
+     }
+     if (storeName.length > 100) {
+       return NextResponse.json({ message: "Store name is too long." }, { status: 400 });
+     }
+     if (!description || typeof description !== "string") {
+       return NextResponse.json({ message: "Description is required." }, { status: 400 });
+     }
+     if (!owner || !mongoose.Types.ObjectId.isValid(owner)) {
+       return NextResponse.json({ message: "Invalid or missing owner." }, { status: 400 });
+     }
 
-    if (!description || typeof description !== "string") {
-      return NextResponse.json({ message: "Description is required." }, { status: 400 });
-    }
-    if (!owner || !mongoose.Types.ObjectId.isValid(owner)) {
-      return NextResponse.json({ message: "Invalid or missing owner." }, { status: 400 });
-    }
+     // New required fields
+     if (!heroHeading || typeof heroHeading !== "string" || !heroHeading.trim()) {
+       return NextResponse.json({ message: "heroHeading is required." }, { status: 400 });
+     }
+     if (heroHeading.length > 100) {
+       return NextResponse.json({ message: "heroHeading is too long." }, { status: 400 });
+     }
+
+     if (!heroDescription || typeof heroDescription !== "string" || !heroDescription.trim()) {
+       return NextResponse.json({ message: "heroDescription is required." }, { status: 400 });
+     }
+     if (heroDescription.length > 300) {
+       return NextResponse.json({ message: "heroDescription is too long." }, { status: 400 });
+     }
+
+     if (!aboutUs || typeof aboutUs !== "string" || !aboutUs.trim()) {
+       return NextResponse.json({ message: "aboutUs is required." }, { status: 400 });
+     }
+     if (aboutUs.length > 1000) {
+       return NextResponse.json({ message: "aboutUs is too long." }, { status: 400 });
+     }
+
+     if (!Array.isArray(whyChooseUs) || whyChooseUs.length === 0) {
+       return NextResponse.json({ message: "whyChooseUs must be a non-empty array." }, { status: 400 });
+     }
+     if (whyChooseUs.some((item: any) => typeof item !== "string" || !item.trim())) {
+       return NextResponse.json({ message: "Each whyChooseUs item must be a non-empty string." }, { status: 400 });
+     }
+
+     // Contact is optional, but if provided, validate structure
+     if (contact && typeof contact !== "object") {
+       return NextResponse.json({ message: "contact must be an object." }, { status: 400 });
+     }
 
    let cleanSubdomain = subdomain || storeName.toLowerCase().replace(/\s+/g, "-");
 
@@ -114,14 +152,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Create store
-    const newStore = new Store({
-      storeName,
-      subdomain: cleanSubdomain,
-      owner,
-      description,
-      aiConfig,
-      generatedAt: new Date(),
-    });
+   const newStore = new Store({
+    storeName,
+    subdomain: cleanSubdomain,
+    owner,
+    description,
+    aiConfig,
+    heroHeading,
+    heroDescription,
+    aboutUs,
+    whyChooseUs,
+    contact,
+    generatedAt: new Date(),
+     });
 
     const savedStore = await newStore.save();
 
@@ -157,6 +200,22 @@ export async function POST(request: NextRequest) {
  *         "body": "Roboto, sans-serif"
  *       },
  *       "layoutTemplate": "professional"
+ *     },
+ *     "heroHeading": "Welcome to My Shop",           // required, string, max 100 chars
+ *     "heroDescription": "Best products for you.",    // required, string, max 300 chars
+ *     "aboutUs": "We are passionate about mugs.",     // required, string, max 1000 chars
+ *     "whyChooseUs": ["Quality", "Fast Shipping"],    // required, non-empty array of strings
+ *     "contact": {                                    // optional, object
+ *       "email": "info@myshop.com",
+ *       "phone": "+123456789",
+ *       "address": "123 Main St, City, Country",
+ *       "social": {
+ *         "instagram": "myshop",
+ *         "facebook": "myshop",
+ *         "twitter": "myshop",
+ *         "tiktok": "myshop",
+ *         "youtube": "myshop"
+ *       }
  *     }
  *   }
  * - Response:

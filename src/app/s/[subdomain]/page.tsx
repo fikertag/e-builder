@@ -34,8 +34,8 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
       <LandingHero
-         title={store?.storeName || ""}
-         description={store?.description || ""}
+         title={store?.heroHeading || ""}
+         description={store?.heroDescription || ""}
          imageUrl="/mug.jpg"
        />
         <ProductsSection products={products || []} />
@@ -44,39 +44,54 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
     <section className="py-16 bg-white">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
-          Why MugLife?
+          Why {store?.storeName || "Our Store"}?
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-          At MugLife, we blend craftsmanship, creativity, and quality to bring you the perfect mug for every moment.
+          {store?.aboutUs || "Discover what makes us unique!"}
         </p>
-
         <div className="grid gap-10 grid-cols-1 md:grid-cols-3">
-          {/* Feature 1 */}
-          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="font-semibold text-xl mb-2">Premium Quality</h3>
-            <p className="text-sm text-gray-600">
-              Durable, dishwasher-safe mugs made with love and the best ceramic.
-            </p>
-          </div>
-
-          {/* Feature 2 */}
-          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="font-semibold text-xl mb-2">Unique Designs</h3>
-            <p className="text-sm text-gray-600">
-              Custom artwork and fun prints that express your vibe — no boring mugs here.
-            </p>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="font-semibold text-xl mb-2">Fast Shipping</h3>
-            <p className="text-sm text-gray-600">
-              Get your mugs delivered quickly with eco-friendly packaging and care.
-            </p>
-          </div>
+          {Array.isArray(store?.whyChooseUs) && store.whyChooseUs.length > 0 ? (
+            store.whyChooseUs.map((reason, idx) => (
+              <div key={idx} className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                {/* Optionally use icons for first three reasons, fallback to star */}
+                {idx === 0 ? (
+                  <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                ) : idx === 1 ? (
+                  <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                ) : idx === 2 ? (
+                  <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                ) : (
+                  <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                )}
+                <h3 className="font-semibold text-xl mb-2">{reason}</h3>
+              </div>
+            ))
+          ) : (
+            // Fallback: show three default features if none in store
+            <>
+              <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <Star className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-xl mb-2">Premium Quality</h3>
+                <p className="text-sm text-gray-600">
+                  Durable, dishwasher-safe mugs made with love and the best ceramic.
+                </p>
+              </div>
+              <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <PackageCheck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-xl mb-2">Unique Designs</h3>
+                <p className="text-sm text-gray-600">
+                  Custom artwork and fun prints that express your vibe — no boring mugs here.
+                </p>
+              </div>
+              <div className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <Truck className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-xl mb-2">Fast Shipping</h3>
+                <p className="text-sm text-gray-600">
+                  Get your mugs delivered quickly with eco-friendly packaging and care.
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
