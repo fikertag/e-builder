@@ -37,8 +37,6 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
     </div>
   );
 
- console.log(store, "store data");
-
 return (
    <>
     <div className="min-h-screen flex flex-col">

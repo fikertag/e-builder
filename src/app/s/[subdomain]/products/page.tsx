@@ -3,12 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import ProductsSection from '@/components/productSection';
 import { IProduct } from '@/types/index';
-import { useStoreData } from "@/store/useStoreData";
 
 export default function ProductsPage() {
-
-   const store = useStoreData((state) => state.store);
-   
  
   async function getAllProducts() {
     const res = await fetch('/api/product?store=68474b0d1db8b6c73d5935bf');
