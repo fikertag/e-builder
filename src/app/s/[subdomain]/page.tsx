@@ -29,7 +29,9 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
  if (isLoading) return <div>Loading...</div>;
  if (error) return <div>Error loading products</div>;
 
-  return (
+ console.log(store, "store data");
+
+return (
    <>
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
@@ -95,9 +97,6 @@ const { data: products, error, isLoading } = useQuery<IProduct[]> ({
         </div>
       </div>
     </section>
-
-
-
       </main>
       <Footer />
     </div>

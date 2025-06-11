@@ -36,12 +36,15 @@ export async function GET(
 
     // 4. Format response
     const response = {
-      
         storeName: store.storeName,
         subdomain: store.subdomain,
         description: store.description,
-        theme: store.aiConfig // Only return necessary theme config
-      
+        theme: store.aiConfig, 
+        heroHeading: store.heroHeading,
+        heroDescription: store.heroDescription,
+        aboutUs: store.aboutUs,
+        whyChooseUs: store.whyChooseUs || [],
+        contact: store.contact || {},
     };
 
     return NextResponse.json(response);
