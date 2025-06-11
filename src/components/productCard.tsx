@@ -55,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
         </div>
         <div className=" flex flex-col gap-1">
-           <div className="flex flex-wrap gap-1 mb-2">
+           <div className="flex flex-wrap gap-2 mb-2">
           {product.updatedAt && (Date.now() - new Date(product.updatedAt as string).getTime() < 1000 * 60 * 60 * 24 * 7) && (
   <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-md">New</span>
 )}

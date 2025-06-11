@@ -72,12 +72,12 @@ export function Header({title} : HeaderProps) {
 
           <Link
             href={"/"}
-            className="text-base md:text-xl font-semibold text-center flex items-center justify-center"
+            className="text-xl font-semibold text-center flex items-center justify-center"
           >
             {title}
           </Link>
         </div>
-          <ul className="gap-10 flex justify-center font-semibold text-sm md:text-base">  
+          <ul className="gap-10 flex justify-center font-semibold text-base">  
                         <NavItem href="/products" label="All Products" />
                         {/* <NavItem href="#about" label="About" />
                         <NavItem href="#contact" label="Contact" /> */}

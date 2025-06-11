@@ -36,6 +36,7 @@ export async function GET(
 
     // 4. Format response
     const response = {
+        id: store._id.toString(),
         storeName: store.storeName,
         subdomain: store.subdomain,
         description: store.description,
