@@ -43,7 +43,7 @@ return (
         <ProductsSection products={products || []} />
 
 
-    <section className="py-16 bg-white">
+    <section className="py-8 bg-white">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
           Why {store?.storeName || "Our Store"}?

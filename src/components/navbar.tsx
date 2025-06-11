@@ -26,10 +26,10 @@ type HeaderProps = {
 export function Header({title} : HeaderProps) {
    const { data: session } = authClient.useSession();
   return (
-    <header className=" top-0 z-50 border-b bg-background/60 px-4 py-3 backdrop-blur">
-      <div className="container mx-auto grid md:grid-cols-3 grid-cols-2 items-center justify-between">
+    <header className=" top-0 z-50 border-b border-gray-100 bg-background/20 px-4 py-3 backdrop-blur">
+      <div className="container mx-auto grid grid-cols-3 items-center justify-between">
         <div className="flex items-center gap-2">
-            <div className="md:hidden">
+            <div className="hidden">
               <Sheet>
                 <SheetTrigger asChild>
                     <Menu size={17} />
@@ -46,10 +46,10 @@ export function Header({title} : HeaderProps) {
                   <ul className="flex gap-4 flex-col mx-5 font-medium text-sm">
                     <li>
                       <SheetClose asChild>
-                        <NavItem href="/products" label="Products" />
+                        <NavItem href="/products" label="All Products" />
                       </SheetClose>
                     </li>
-                    <li>
+                    {/* <li>
                       <SheetClose asChild>
                         <NavItem href="#About" label="About" />
                       </SheetClose>
@@ -58,7 +58,7 @@ export function Header({title} : HeaderProps) {
                       <SheetClose asChild>
                         <NavItem href="#contact" label="Contact" />
                       </SheetClose>
-                    </li>
+                    </li> */}
                   </ul>
 
                   <SheetFooter>
@@ -72,20 +72,20 @@ export function Header({title} : HeaderProps) {
 
           <Link
             href={"/"}
-            className="text-xl font-semibold text-center flex items-center justify-center mb-2"
+            className="text-base md:text-xl font-semibold text-center flex items-center justify-center"
           >
             {title}
           </Link>
         </div>
-          <ul className="hidden gap-10 md:flex justify-center font-semibold text-sm">  
-                        <NavItem href="/products" label="Products" />
-                        <NavItem href="#about" label="About" />
-                        <NavItem href="#contact" label="Contact" />
+          <ul className="gap-10 flex justify-center font-semibold text-sm md:text-base">  
+                        <NavItem href="/products" label="All Products" />
+                        {/* <NavItem href="#about" label="About" />
+                        <NavItem href="#contact" label="Contact" /> */}
           </ul>
 
         <div className="flex items-center justify-end gap-2">
           <div className="hidden min-[400px]:flex mx-2 ">
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </div>
           {session ? <UserButton /> : <Sheet>
                           <SheetTrigger asChild>

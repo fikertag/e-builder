@@ -9,7 +9,7 @@ type LandingHeroProps = {
 export default function LandingHero({ title, description, imageUrl }: LandingHeroProps) {
   return (
     <div className="relative ">
-      <div className="container mx-auto px-6 py-15 flex flex-col md:flex-row items-center">
+      <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row items-center">
         {/* Text Section */}
         <div className="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
