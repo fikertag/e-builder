@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const products = await Product.find(filter)
-      .select("_id title description basePrice images isFeatured isActive store categories")
+      .select("_id title description basePrice images isFeatured isActive store categories, updatedAt")
       .lean();
     return NextResponse.json(products, { status: 200 });
   } catch (error) {

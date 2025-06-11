@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   width: "device-width",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "oklch(1 0 0)" },
-    // { media: "(prefers-color-scheme: dark)", color: "oklch(0.145 0 0)" },
+    { media: "(prefers-color-scheme: dark)", color: "oklch(0.145 0 0)" },
   ],
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className="light" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

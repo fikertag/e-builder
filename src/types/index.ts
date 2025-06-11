@@ -39,6 +39,7 @@ export interface IProduct  {
     [key: string]: string | number | boolean | undefined; // { "gender": "unisex", "weight": "200g" }
   };
   customOptions?: ICustomOption[];
+  updatedAt?: string; // Optional, for tracking updates
 }
 export interface IAIBrandConfig {
   colorPalette: {
