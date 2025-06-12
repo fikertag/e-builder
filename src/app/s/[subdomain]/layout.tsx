@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { CartProvider } from '@/context/CartContext';
 import { Header } from '@/components/navbar';
 import { StoreData } from '@/types';
 import StoreInitializer from './StoreInitializer';
@@ -26,10 +25,11 @@ export default async function SubdomainLayout({
   }
 
   return (
-    <CartProvider>
-      <Header title={store.subdomain} />
+   <>
+    <Header title={store.subdomain} />
       <StoreInitializer store={store} />
       {children}
-    </CartProvider>
+   </>
+     
   );
 }
