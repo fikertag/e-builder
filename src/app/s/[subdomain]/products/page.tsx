@@ -12,7 +12,7 @@ export default function ProductsPage() {
   }
 
   const { data: products, error, isLoading } = useQuery<IProduct[]>({
-    queryKey: ["all-products"],
+    queryKey: ["products"],
     queryFn: getAllProducts,
   });
 

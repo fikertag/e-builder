@@ -9,6 +9,7 @@ import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import { NavItem } from "./nav-item";
 import { authClient } from "@/lib/auth-client";
+import { useCartStore, selectTotalItems } from '@/store/cartStore';
 import {
   Sheet,
   SheetContent,
@@ -18,13 +19,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CartItem } from '@/types/index';
 
 type HeaderProps = {
   title: string;
 };
 
+function getCartSubtotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.product.basePrice * item.quantity, 0);
+}
+function getCartTax(subtotal: number) {
+  return subtotal * 0.02;
+}
+
 export function Header({title} : HeaderProps) {
    const { data: session } = authClient.useSession();
+   const totalItems: number = useCartStore(selectTotalItems);
+   const items = useCartStore((state) => state.items);
+   const subtotal: number = getCartSubtotal(items);
+   const tax: number = getCartTax(subtotal);
+   const total: number = subtotal + tax;
   return (
     <header className=" top-0 z-50 border-b border-gray-100 bg-background/20 px-4 py-3 backdrop-blur">
       <div className="container mx-auto grid grid-cols-3 items-center justify-between">
@@ -89,7 +103,7 @@ export function Header({title} : HeaderProps) {
           </div>
           {session ? <UserButton /> : <Sheet>
                           <SheetTrigger asChild>
-                              <Button> <ShoppingCart /></Button> 
+                              <Button> <ShoppingCart /> {totalItems}</Button> 
                           </SheetTrigger>
                           <SheetContent side={"right"} className="px-2">
                           <SheetHeader className="mt-3">
@@ -101,9 +115,15 @@ export function Header({title} : HeaderProps) {
                             <SheetFooter>
                                 <div className=" text-sm text-neutral-500 dark:text-neutral-400">
             <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-700">
-              <p>Taxes</p>
+              <p>Subtotal</p>
               <div className="text-right text-base text-black dark:text-white">
-                $33
+                ${subtotal.toFixed(2)}
+              </div>
+            </div>
+            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-700">
+              <p>Taxes (2%)</p>
+              <div className="text-right text-base text-black dark:text-white">
+                ${tax.toFixed(2)}
               </div>
             </div>
             <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
@@ -113,7 +133,7 @@ export function Header({title} : HeaderProps) {
             <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
               <p>Total</p>
               <div className="text-right text-base text-black dark:text-white">
-                $45
+                ${total.toFixed(2)}
               </div>
             </div>
           </div>

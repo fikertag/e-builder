@@ -1,12 +1,3 @@
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  category: string;
-}
-
 export interface ICustomOption {
   name: string;             // "Engraving Text"
   type: 'text' | 'dropdown';
@@ -82,15 +73,16 @@ export interface StoreData {
   };
 }
 
-export interface CartItem extends Product {
+export interface CartItem {
+  product: IProduct;
   quantity: number;
+  selectedVariants?: IVariant[]; // Chosen variants for this cart item
+  selectedCustomOptions?: { [optionName: string]: string }; // User's custom option selections
 }
 
-export type CartContextType = {
-  cart: CartItem[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
-  totalItems: number;
-};
+export interface CartItem {
+  product: IProduct;
+  quantity: number;
+  selectedVariants?: IVariant[];
+  selectedCustomOptions?: { [optionName: string]: string };
+}
