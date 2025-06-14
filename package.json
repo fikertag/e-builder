@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@daveyplate/better-auth-ui": "^1.5.2",
+    "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-avatar": "^1.1.7",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-dropdown-menu": "^2.1.12",
