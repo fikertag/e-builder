@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       // receipt_email: 'customer@example.com',
     });
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

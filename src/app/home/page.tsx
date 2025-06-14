@@ -31,6 +31,7 @@ type Contact = {
 
 export default function CreateStore() {
   const { data: session } = authClient.useSession();
+  const [shopDescription, setShopDescription] = useState('');
   const [storeName, setStoreName] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const owner = session?.user?.id;
@@ -76,6 +77,17 @@ export default function CreateStore() {
   }
   function handleSocialChange(key: keyof typeof social, value: string) {
     setSocial((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleAiSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const res = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: shopDescription }),
+    });
+     const data: string = await res.json();
+     setShopDescription(data);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -147,7 +159,22 @@ export default function CreateStore() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col">
+    <form>
+  <label htmlFor="shop-description" className="block font-semibold mb-2">
+    Describe Your Shop (AI Powered)
+  </label>
+  <textarea
+    id="shop-description"
+    value={shopDescription}
+    onChange={e => setShopDescription(e.target.value)}
+    placeholder="e.g. A cozy coffee shop selling artisan mugs and beans"
+    className="p-3 border rounded-md"
+  />
+  <button type="submit" onClick={handleAiSubmit}>
+   submit
+  </button>
+    </form>
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl space-y-6"

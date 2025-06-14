@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    return Response.json({ message: text });
+    return Response.json( text );
   } catch (error) {
     console.error("Error generating content:", error);
     return Response.json({ message: error });
