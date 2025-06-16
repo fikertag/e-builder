@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 interface IAiFormData {
+  owner: string;
   storeName: string;
   subdomain: string;
   heroHeading: string;
@@ -34,6 +35,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<IAiFormData | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -101,6 +103,34 @@ export default function HomePage() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    if (!formData) return;
+    try {
+      const res = await fetch("/api/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, owner: "6824dab1b90b388b8d6e58e2" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || "Failed to create store");
+      } else {
+        setSuccess("Store created successfully!");
+        // Optionally: redirect or reset form
+      }
+    } catch (err) {
+      setError("Something went wrong.");
+      // eslint-disable-next-line no-console
+      console.log("Error creating store:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!aiResult || !formData) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
@@ -110,7 +140,7 @@ export default function HomePage() {
           </h1>
           <p className="text-gray-500 mb-6 text-center">
             Type a few words about your business, products, or vibe. The AI will
-            generate your shop’s branding and content.
+            generate your shop’ s branding and content. 
           </p>
           <textarea
             className="w-full min-h-[80px] p-3 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none text-base mb-4 resize-none"
@@ -139,7 +169,7 @@ export default function HomePage() {
         <h2 className="text-3xl font-bold text-indigo-700 mb-8 text-center">
           Edit Your AI-Generated Shop
         </h2>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8" onSubmit={handleSubmit}>
           {/* Key fields on their own rows */}
           <div className="md:col-span-2">
             <label className="block font-semibold mb-1">Store Name</label>
@@ -350,9 +380,12 @@ export default function HomePage() {
             <button
               type="submit"
               className="w-full py-5 rounded-2xl bg-green-600 text-white font-bold text-2xl shadow hover:bg-green-700 transition mt-10"
+              disabled={loading}
             >
-              Create My Store
+              {loading ? 'Creating Store...' : 'Create My Store'}
             </button>
+            {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
+            {success && <div className="text-green-600 mt-4 text-center">{success}</div>}
           </div>
         </form>
       </div>

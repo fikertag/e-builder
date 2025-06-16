@@ -34,6 +34,16 @@ export async function POST(request: NextRequest) {
       whyChooseUs,
       contact,
     } = await request.json();
+    console.log( storeName,
+      subdomain,
+      owner,
+      description,
+      aiConfig,
+      heroHeading,
+      heroDescription,
+      aboutUs,
+      whyChooseUs,
+      contact)
      const userId = owner;
 
      const ip = request.headers.get("x-forwarded-for") || "unknown";
