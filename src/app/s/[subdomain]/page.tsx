@@ -44,7 +44,7 @@ return (
       <LandingHero
          title={store?.heroHeading || ""}
          description={store?.heroDescription || ""}
-         imageUrl="/mug.jpg"
+         imageUrl={store?.storeLandingImage || "/default-hero-image.jpg"}
        />
         <ProductsSection products={products || []} />
 

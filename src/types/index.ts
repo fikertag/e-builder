@@ -55,8 +55,9 @@ export interface StoreData {
   aiConfig: IAIBrandConfig;
   generatedAt?: string; 
   isPublished: boolean;
-   heroHeading: string;
+  heroHeading: string;
   heroDescription: string;
+  storeLandingImage: string; 
   aboutUs: string;
   whyChooseUs: string[];
   contact?: {

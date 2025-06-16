@@ -17,6 +17,7 @@ export interface IAIBrandConfig {
  interface IStore extends Document {
   owner: Types.ObjectId;
   heroHeading: string;
+  storeLandingImage: string;
   heroDescription: string;
   aboutUs: string;
   whyChooseUs: string[];
@@ -58,6 +59,10 @@ const StoreSchema = new Schema<IStore>({
     required: true,
     trim: true,
     maxlength: 40 
+  },
+  storeLandingImage: {
+   type: String,
+   required: true
   },
   heroHeading: {
     type: String,

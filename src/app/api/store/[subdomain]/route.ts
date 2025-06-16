@@ -42,6 +42,7 @@ export async function GET(
         description: store.description,
         theme: store.aiConfig, 
         heroHeading: store.heroHeading,
+        storeLandingImage: store.storeLandingImage,
         heroDescription: store.heroDescription,
         aboutUs: store.aboutUs,
         whyChooseUs: store.whyChooseUs || [],

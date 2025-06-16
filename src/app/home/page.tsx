@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface IAiFormData {
   owner: string;
@@ -27,6 +27,7 @@ interface IAiFormData {
       youtube?: string;
     };
   };
+  storeLandingImage: string;
 }
 
 export default function HomePage() {
@@ -36,6 +37,10 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<IAiFormData | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -124,13 +129,43 @@ export default function HomePage() {
         // Optionally: redirect or reset form
       }
     } catch (err) {
-      setError("Something went wrong.");
-      // eslint-disable-next-line no-console
       console.log("Error creating store:", err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Replace handleImageChange with handleImageUpload
+  async function handleImageUpload(file: File) {
+    setImageLoading(true);
+    setImageError(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const { url } = await res.json();
+
+      if (!res.ok) {
+        setImageError('Failed to upload image.');
+        setImageLoading(false);
+        return;
+      }
+
+      setImageUrl(url); 
+      setFormData((prev) => prev ? { ...prev, storeLandingImage: url } : prev);
+    } catch (err) {
+      setImageError('Failed to upload image.');
+      console.error('Error uploading image:', err);
+    } finally {
+      setImageLoading(false);
+    }
+  }
 
   if (!aiResult || !formData) {
     return (
@@ -170,7 +205,76 @@ export default function HomePage() {
         <h2 className="text-3xl font-bold text-indigo-700 mb-8 text-center">
           Edit Your AI-Generated Shop
         </h2>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8" onSubmit={handleSubmit}>
+        {/* Image upload section */}
+        <div className="mb-8 flex flex-col items-center">
+          <label className="block font-semibold mb-2">
+            Landing Page Image{" "}
+            <span className="text-red-500">*</span>
+          </label>
+          <div className="relative w-64 h-40 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+            {imageLoading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
+                <svg
+                  className="animate-spin h-8 w-8 text-indigo-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              </div>
+            ) : null}
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Landing Preview"
+                className={`w-full h-full object-cover transition-opacity duration-700 ${
+                  imageLoading ? "opacity-0" : "opacity-100"
+                }`}
+                style={{ filter: "blur(0.5px)" }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                No image selected
+              </div>
+            )}
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) handleImageUpload(file);
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="mt-4 px-6 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+            disabled={imageLoading}
+          >
+            {imageLoading ? "Uploading..." : "Choose Image"}
+          </button>
+          {imageError && <div className="text-red-500 mt-2">{imageError}</div>}
+        </div>
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8"
+          onSubmit={handleSubmit}
+        >
           {/* Key fields on their own rows */}
           <div className="md:col-span-2">
             <label className="block font-semibold mb-1">Store Name</label>
@@ -381,9 +485,9 @@ export default function HomePage() {
             <button
               type="submit"
               className="w-full py-5 rounded-2xl bg-green-600 text-white font-bold text-2xl shadow hover:bg-green-700 transition mt-10"
-              disabled={loading}
+              disabled={loading || !imageUrl}
             >
-              {loading ? 'Creating Store...' : 'Create My Store'}
+              {loading ? "Creating Store..." : "Create My Store"}
             </button>
             {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
             {success && <div className="text-green-600 mt-4 text-center">{success}</div>}

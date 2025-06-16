@@ -29,21 +29,12 @@ export async function POST(request: NextRequest) {
       description,
       aiConfig,
       heroHeading,
+      storeLandingImage,
       heroDescription,
       aboutUs,
       whyChooseUs,
       contact,
     } = await request.json();
-    console.log( storeName,
-      subdomain,
-      owner,
-      description,
-      aiConfig,
-      heroHeading,
-      heroDescription,
-      aboutUs,
-      whyChooseUs,
-      contact)
      const userId = owner;
 
      const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -61,6 +52,9 @@ export async function POST(request: NextRequest) {
      }
      if (storeName.length > 100) {
        return NextResponse.json({ message: "Store name is too long." }, { status: 400 });
+     }
+     if (!storeLandingImage) {
+      return NextResponse.json({message: "strore image is required. "}, {status: 400 });
      }
      if (!description || typeof description !== "string") {
        return NextResponse.json({ message: "Description is required." }, { status: 400 });
@@ -169,6 +163,7 @@ export async function POST(request: NextRequest) {
     description,
     aiConfig,
     heroHeading,
+    storeLandingImage,
     heroDescription,
     aboutUs,
     whyChooseUs,
