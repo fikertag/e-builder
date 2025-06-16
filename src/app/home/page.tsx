@@ -63,7 +63,7 @@ export default function HomePage() {
     if (name === "whyChooseUs") {
       setFormData({ ...formData, whyChooseUs: value.split("\n") });
     } else if (name.startsWith("aiConfig.")) {
-      const [_, section, key] = name.split(".");
+      const [, section, key] = name.split(".");
       setFormData({
         ...formData,
         aiConfig: {
@@ -75,7 +75,7 @@ export default function HomePage() {
         },
       });
     } else if (name.startsWith("contact.")) {
-      const [_, key] = name.split(".");
+      const [, key] = name.split(".");
       setFormData({
         ...formData,
         contact: {
@@ -84,7 +84,8 @@ export default function HomePage() {
         },
       });
     } else if (name.startsWith("contact.social.")) {
-      const [_, __, key] = name.split(".");
+      const parts = name.split(".");
+      const key = parts[2];
       setFormData({
         ...formData,
         contact: {
