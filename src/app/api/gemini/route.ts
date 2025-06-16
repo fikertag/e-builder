@@ -57,7 +57,8 @@ export async function POST(request: Request) {
     let json;
     try {
       json = JSON.parse(text);
-    } catch (e) {
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
       return Response.json({ error: 'AI did not return valid JSON', raw: text });
     }
     return Response.json(json);

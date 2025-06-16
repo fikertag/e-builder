@@ -52,6 +52,7 @@ export default function HomePage() {
       setFormData(data);
     } catch (e) {
       setError("Failed to generate shop. Please try again.");
+      console.log("Error generating shop:", e);
     } finally {
       setLoading(false);
     }
@@ -140,7 +141,7 @@ export default function HomePage() {
           </h1>
           <p className="text-gray-500 mb-6 text-center">
             Type a few words about your business, products, or vibe. The AI will
-            generate your shop’ s branding and content. 
+            generate your shop&apos;s branding and content. 
           </p>
           <textarea
             className="w-full min-h-[80px] p-3 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none text-base mb-4 resize-none"
