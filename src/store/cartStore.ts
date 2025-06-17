@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { IProduct, IVariant,CartItem } from '@/types/index';
+import { persist } from 'zustand/middleware';
+import { IProduct, IVariant, CartItem } from '@/types/index';
 
 interface CartState {
   items: CartItem[];
@@ -39,56 +40,62 @@ function areOptionsEqual(a?: { [optionName: string]: string }, b?: { [optionName
   return aKeys.every((key) => a[key] === b[key]);
 }
 
-export const useCartStore = create<CartState>((set) => ({
-  items: [],
-  addToCart: (product, quantity = 1, selectedVariants, selectedCustomOptions) =>
-    set((state) => {
-      const existing = state.items.find((item) =>
-        item.product._id === product._id &&
-        areVariantsEqual(item.selectedVariants, selectedVariants) &&
-        areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
-      );
-      if (existing) {
-        return {
-          items: state.items.map((item) =>
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
+      addToCart: (product, quantity = 1, selectedVariants, selectedCustomOptions) =>
+        set((state) => {
+          const existing = state.items.find((item) =>
             item.product._id === product._id &&
             areVariantsEqual(item.selectedVariants, selectedVariants) &&
             areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
+          );
+          if (existing) {
+            return {
+              items: state.items.map((item) =>
+                item.product._id === product._id &&
+                areVariantsEqual(item.selectedVariants, selectedVariants) &&
+                areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
+                  ? { ...item, quantity: item.quantity + quantity }
+                  : item
+              ),
+            };
+          }
+          return {
+            items: [
+              ...state.items,
+              { product, quantity, selectedVariants, selectedCustomOptions },
+            ],
+          };
+        }),
+      removeFromCart: (productId, selectedVariants, selectedCustomOptions) =>
+        set((state) => ({
+          items: state.items.filter(
+            (item) =>
+              !(
+                item.product._id === productId &&
+                areVariantsEqual(item.selectedVariants, selectedVariants) &&
+                areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
+              )
           ),
-        };
-      }
-      return {
-        items: [
-          ...state.items,
-          { product, quantity, selectedVariants, selectedCustomOptions },
-        ],
-      };
-    }),
-  removeFromCart: (productId, selectedVariants, selectedCustomOptions) =>
-    set((state) => ({
-      items: state.items.filter(
-        (item) =>
-          !(
+        })),
+      updateQuantity: (productId, quantity, selectedVariants, selectedCustomOptions) =>
+        set((state) => ({
+          items: state.items.map((item) =>
             item.product._id === productId &&
             areVariantsEqual(item.selectedVariants, selectedVariants) &&
             areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
-          )
-      ),
-    })),
-  updateQuantity: (productId, quantity, selectedVariants, selectedCustomOptions) =>
-    set((state) => ({
-      items: state.items.map((item) =>
-        item.product._id === productId &&
-        areVariantsEqual(item.selectedVariants, selectedVariants) &&
-        areOptionsEqual(item.selectedCustomOptions, selectedCustomOptions)
-          ? { ...item, quantity }
-          : item
-      ),
-    })),
-  clearCart: () => set({ items: [] }),
-}));
+              ? { ...item, quantity }
+              : item
+          ),
+        })),
+      clearCart: () => set({ items: [] }),
+    }),
+    {
+      name: 'cart-store', // Single key for all stores
+    }
+  )
+);
 
-// Selector for totalItems
 export const selectTotalItems = (state: CartState) => state.items.reduce((sum, item) => sum + item.quantity, 0);
