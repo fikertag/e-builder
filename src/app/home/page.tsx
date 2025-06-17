@@ -127,7 +127,12 @@ export default function HomePage() {
         setError(data.message || "Failed to create store");
       } else {
         setSuccess("Store created successfully!");
-        // Optionally: redirect or reset form
+        // Redirect to the new subdomain after a short delay
+        setTimeout(() => {
+          if (formData.subdomain) {
+            window.location.href = `https://${formData.subdomain}.fikiryilkal.me`;
+          }
+        }, 1200);
       }
     } catch (err) {
       console.log("Error creating store:", err);

@@ -40,7 +40,7 @@ export async function GET(
         storeName: store.storeName,
         subdomain: store.subdomain,
         description: store.description,
-        theme: store.aiConfig, 
+        aiConfig: store.aiConfig, 
         heroHeading: store.heroHeading,
         storeLandingImage: store.storeLandingImage,
         heroDescription: store.heroDescription,

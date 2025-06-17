@@ -77,6 +77,22 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.723 0.219 149.579);
+  --brand-primary: #fff;
+  --brand-secondary: #000;
+  --brand-accent: #f00;
+}
+
+body, .store-root {
+  background: var(--brand-primary);
+}
+
+.button-primary {
+  background: var(--brand-secondary);
+  color: var(--brand-accent);
+}
+
+.text-accent {
+  color: var(--brand-accent);
 }
 
 .dark {
