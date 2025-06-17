@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
+import Image from "next/image";
 
 interface IAiFormData {
   owner: string;
@@ -135,7 +136,6 @@ export default function HomePage() {
     }
   };
 
-  // Replace handleImageChange with handleImageUpload
   async function handleImageUpload(file: File) {
     setImageLoading(true);
     setImageError(null);
@@ -169,20 +169,26 @@ export default function HomePage() {
 
   if (!aiResult || !formData) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-lg p-8 mb-8 border border-indigo-100">
+      <div className="max-w-2xl mx-auto px-4 py-12 h-[100dvh] flex justify-center items-center">
+        <div className="bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-lg p-4 md:p-8 mb-8 border border-indigo-100">
           <h1 className="text-2xl md:text-3xl font-bold mb-2 text-indigo-700 text-center">
             Describe Your Shop and Let AI Build It!
           </h1>
           <p className="text-gray-500 mb-6 text-center">
-            Type a few words about your business, products, or vibe. The AI will
+            Describe your business & products in detail. The AI will
             generate your shop&apos;s branding and content. 
           </p>
           <textarea
-            className="w-full min-h-[80px] p-3 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none text-base mb-4 resize-none"
+            className="w-full min-h-[100px] p-3 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none text-base mb-4 resize-none"
             placeholder="e.g. A modern bakery selling gluten-free pastries with a cozy, rustic vibe"
             value={shopDescription}
             onChange={(e) => setShopDescription(e.target.value)}
+            onInput={e => {
+                const el = e.currentTarget;
+                el.style.height = "";
+                el.style.height = el.scrollHeight + "px";
+              }}
+              style={{ overflow: "hidden", resize: "none" }}
           />
           <button
             onClick={handleGenerate}
@@ -200,18 +206,17 @@ export default function HomePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-xl p-12 border border-indigo-100 animate-fade-in">
-        <h2 className="text-3xl font-bold text-indigo-700 mb-8 text-center">
-          Edit Your AI-Generated Shop
-        </h2>
+    <div className="w-full min-h-screen bg-gradient-to-br from-indigo-50 to-white py-12 px-2 md:px-8 flex flex-col">
+      <h2 className="text-3xl font-bold text-indigo-700 mb-8 text-center">
+        Edit Your AI-Generated Shop Description
+      </h2>
+      <div className="w-full flex flex-col md:flex-row gap-8">
         {/* Image upload section */}
-        <div className="mb-8 flex flex-col items-center">
+        <div className="md:w-[340px] w-full bg-white rounded-2xl shadow-xl p-6 border border-indigo-100 flex flex-col items-center mb-8 md:mb-0 self-start">
           <label className="block font-semibold mb-2">
-            Landing Page Image{" "}
-            <span className="text-red-500">*</span>
+            Landing Page Image <span className="text-red-500">*</span>
           </label>
-          <div className="relative w-64 h-40 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+          <div className="relative w-full max-w-xs h-40 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
             {imageLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
                 <svg
@@ -237,13 +242,14 @@ export default function HomePage() {
               </div>
             ) : null}
             {imageUrl ? (
-              <img
+              <Image
                 src={imageUrl}
                 alt="Landing Preview"
-                className={`w-full h-full object-cover transition-opacity duration-700 ${
-                  imageLoading ? "opacity-0" : "opacity-100"
-                }`}
-                style={{ filter: "blur(0.5px)" }}
+                fill
+                style={{ objectFit: "contain", filter: "blur(0.5px)" }}
+                className={`transition-opacity duration-700 ${imageLoading ? "opacity-0" : "opacity-100"}`}
+                sizes="(max-width: 600px) 100vw, 340px"
+                priority
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -271,8 +277,9 @@ export default function HomePage() {
           </button>
           {imageError && <div className="text-red-500 mt-2">{imageError}</div>}
         </div>
+        {/* Main form section */}
         <form
-          className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8"
+          className="md:w-2/3 w-full grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 bg-white rounded-2xl shadow-xl p-6 border border-indigo-100"
           onSubmit={handleSubmit}
         >
           {/* Key fields on their own rows */}
@@ -303,25 +310,39 @@ export default function HomePage() {
               className="w-full p-4 border rounded-xl text-lg"
             />
           </div>
-          {/* Two columns for the rest */}
-          <div>
+          <div className="md:col-span-2">
             <label className="block font-semibold mb-1">Hero Description</label>
             <textarea
               name="heroDescription"
               value={formData.heroDescription || ""}
               onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg min-h-[60px]"
+              className="w-full p-2 md:p-4 border rounded-xl text-lg min-h-[120px]"
+              onInput={e => {
+                const el = e.currentTarget;
+                el.style.height = "";
+                el.style.height = el.scrollHeight + "px";
+              }}
+              style={{ overflow: "hidden", resize: "none" }}
+              placeholder="Type here..."
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="block font-semibold mb-1">About Us</label>
             <textarea
               name="aboutUs"
               value={formData.aboutUs || ""}
               onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg min-h-[60px]"
+              onInput={e => {
+                const el = e.currentTarget;
+                el.style.height = "";
+                el.style.height = el.scrollHeight + "px";
+              }}
+              style={{ overflow: "hidden", resize: "none" }}
+              placeholder="Type here..."
+              className="w-full p-2 md:p-4 border rounded-xl text-lg min-h-[120px] "
             />
           </div>
+        
           <div className="md:col-span-2">
             <label className="block font-semibold mb-1">Why Choose Us</label>
             <textarea
@@ -332,7 +353,13 @@ export default function HomePage() {
                   : formData.whyChooseUs || ""
               }
               onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg min-h-[60px]"
+              className="w-full p-4 border rounded-xl text-lg min-h-[120px]"
+              onInput={e => {
+                const el = e.currentTarget;
+                el.style.height = "";
+                el.style.height = el.scrollHeight + "px";
+              }}
+              style={{ overflow: "hidden", resize: "none" }}
               placeholder="One reason per line"
             />
           </div>
@@ -342,39 +369,61 @@ export default function HomePage() {
               name="description"
               value={formData.description || ""}
               onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg min-h-[60px]"
+              className="w-full p-4 border rounded-xl text-lg min-h-[120px]"
+              onInput={e => {
+                const el = e.currentTarget;
+                el.style.height = "";
+                el.style.height = el.scrollHeight + "px";
+              }}
+              style={{ overflow: "hidden", resize: "none" }}
+              placeholder="Type here..."
             />
           </div>
           {/* Branding fields */}
-          <div>
-            <label className="block font-semibold mb-1">Primary Color</label>
-            <input
-              name="aiConfig.colorPalette.primary"
-              value={formData.aiConfig?.colorPalette?.primary || ""}
-              onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg"
-              type="color"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Secondary Color</label>
-            <input
-              name="aiConfig.colorPalette.secondary"
-              value={formData.aiConfig?.colorPalette?.secondary || ""}
-              onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg"
-              type="color"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Accent Color</label>
-            <input
-              name="aiConfig.colorPalette.accent"
-              value={formData.aiConfig?.colorPalette?.accent || ""}
-              onChange={handleFormChange}
-              className="w-full p-4 border rounded-xl text-lg"
-              type="color"
-            />
+          <div className="md:col-span-2">
+            <label className="block font-semibold mb-1">Brand Colors</label>
+            <div className="flex flex-row gap-6 bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm items-center justify-start">
+              {/* Primary */}
+              <div className="flex flex-col items-center mx-2">
+                <span className="text-xs mb-1 text-gray-500">Primary</span>
+               
+                <input
+                  name="aiConfig.colorPalette.primary"
+                  value={formData.aiConfig?.colorPalette?.primary || ""}
+                  onChange={handleFormChange}
+                  className="w-10 h-10 p-0  bg-transparent cursor-pointer rounded "
+                  type="color"
+                  aria-label="Primary color"
+                />
+                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.primary}</span>
+              </div>
+              {/* Secondary */}
+              <div className="flex flex-col items-center mx-2">
+                <span className="text-xs mb-1 text-gray-500">Secondary</span>
+                <input
+                  name="aiConfig.colorPalette.secondary"
+                  value={formData.aiConfig?.colorPalette?.secondary || ""}
+                  onChange={handleFormChange}
+                  className="w-10 h-10 p-0 border-none bg-transparent cursor-pointer rounded"
+                  type="color"
+                  aria-label="Secondary color"
+                />
+                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.secondary}</span>
+              </div>
+              {/* Accent */}
+              <div className="flex flex-col items-center mx-2">
+                <span className="text-xs mb-1 text-gray-500">Accent</span>
+                <input
+                  name="aiConfig.colorPalette.accent"
+                  value={formData.aiConfig?.colorPalette?.accent || ""}
+                  onChange={handleFormChange}
+                  className="w-10 h-10 p-0 border-none bg-transparent cursor-pointer rounded"
+                  type="color"
+                  aria-label="Accent color"
+                />
+                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.accent}</span>
+              </div>
+            </div>
           </div>
           <div>
             <label className="block font-semibold mb-1">Heading Font</label>
@@ -484,7 +533,7 @@ export default function HomePage() {
           <div className="md:col-span-2">
             <button
               type="submit"
-              className="w-full py-5 rounded-2xl bg-green-600 text-white font-bold text-2xl shadow hover:bg-green-700 transition mt-10"
+              className="w-full py-3 rounded-lg bg-green-600 text-white font-semibold text-sm shadow hover:bg-green-700 transition "
               disabled={loading || !imageUrl}
             >
               {loading ? "Creating Store..." : "Create My Store"}
