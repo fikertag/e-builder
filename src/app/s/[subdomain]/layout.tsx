@@ -21,7 +21,6 @@ export default async function SubdomainLayout({
 }) {
  const { subdomain } = await params
   const store = await getStoreBySubdomain(subdomain);
-  console.log('Store data:', store);
   if (!store) {
     return <div>Store not found</div>;
   }

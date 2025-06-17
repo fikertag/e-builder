@@ -20,6 +20,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CartItem } from '@/types/index';
+import { useRouter } from 'next/navigation';
 
 type HeaderProps = {
   title: string;
@@ -39,6 +40,7 @@ export function Header({title} : HeaderProps) {
    const subtotal: number = getCartSubtotal(items);
    const tax: number = getCartTax(subtotal);
    const total: number = subtotal + tax;
+   const router = useRouter();
   return (
     <header className=" top-0 z-50 border-b border-gray-100 bg-background/20 px-4 py-3 backdrop-blur">
       <div className="container mx-auto grid grid-cols-3 items-center justify-between">
@@ -140,9 +142,12 @@ export function Header({title} : HeaderProps) {
         
                               
                                 <SheetClose asChild>
-                                   <button className="w-full rounded-md bg-black px-6 py-3 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Checkout
-          </button>
+                                   <button
+                                     className="w-full rounded-md bg-black px-6 py-3 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                     onClick={() => router.push('/checkout')}
+                                   >
+                                     Checkout
+                                   </button>
                                 </SheetClose>
                               </SheetFooter>
                           </SheetContent>
