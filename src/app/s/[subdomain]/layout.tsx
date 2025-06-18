@@ -3,6 +3,7 @@ import { Header } from "@/components/navbar";
 import { StoreData } from "@/types";
 import StoreInitializer from "./StoreInitializer";
 import DynamicThemeProvider from "./DynamicThemeProvider";
+import "@/styles/subdomain.css";
 
 async function getStoreBySubdomain(
   subdomain: string

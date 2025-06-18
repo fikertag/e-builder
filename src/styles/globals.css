@@ -82,7 +82,8 @@
   --brand-accent: #f00;
 }
 
-body, .store-root {
+body,
+.store-root {
   background: var(--brand-primary);
 }
 
@@ -128,8 +129,6 @@ body, .store-root {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.527 0.154 150.069);
 }
-
-
 
 @layer base {
   * {

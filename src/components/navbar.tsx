@@ -63,15 +63,15 @@ export function Header({ title }: HeaderProps) {
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-6">
-          <div className="flex items-center  cursor-pointer group">
-            <div className="p-2 rounded-full group-hover:bg-gray-100 transition-colors">
+          <div className="flex items-center   group">
+            <div className="p-2 rounded-full group-hover:bg-gray-100 transition-colors cursor-pointer">
               <User2Icon className="h-5 w-5 text-gray-600 group-hover:text-gray-900" />
             </div>
             <span className="text-sm text-gray-600 group-hover:text-gray-900 hidden sm:block transition-colors">
               Account
             </span>
           </div>
-          <div className="flex items-center cursor-pointer group">
+          <div className="flex items-center  group">
             <Sheet>
               <SheetTrigger asChild>
                 <div className="relative group cursor-pointer flex">

@@ -1,0 +1,23 @@
+body,
+.store-root {
+  background: none;
+}
+
+.button-primary {
+  background: var(--brand-secondary);
+  color: var(--brand-accent);
+}
+
+.text-accent {
+  color: var(--brand-accent);
+}
+
+.bg-brand-primary {
+  background: var(--brand-primary) !important;
+}
+.bg-brand-secondary {
+  background: var(--brand-secondary) !important;
+}
+.bg-brand-accent {
+  background: var(--brand-accent) !important;
+}
