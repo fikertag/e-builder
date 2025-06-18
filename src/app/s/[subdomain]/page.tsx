@@ -5,14 +5,13 @@ import Footer from "@/components/footer";
 import { useQuery } from "@tanstack/react-query";
 import { IProduct } from "@/types/index";
 import { PackageCheck, Star, Truck } from "lucide-react";
-
 import { useStoreData } from "@/store/useStoreData";
 
 export default function Page() {
   const store = useStoreData((state) => state.store);
 
   async function getProducts() {
-    const res = await fetch("/api/product?store=68474b0d1db8b6c73d5935bf");
+    const res = await fetch(`/api/product?store=${store?.id}`);
     return res.json();
   }
 
@@ -21,8 +20,9 @@ export default function Page() {
     error,
     isLoading,
   } = useQuery<IProduct[]>({
-    queryKey: ["products"],
+    queryKey: ["products", store?.id],
     queryFn: () => getProducts(),
+    enabled: !!store?.id,
   });
 
   if (isLoading)
