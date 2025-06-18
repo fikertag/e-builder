@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,9 +24,9 @@ export default function LandingHero({
           <div className="flex justify-center md:justify-start">
             <Link
               href="/products"
-              className="px-8 py-4 font-bold rounded-md bg-brand-accent text-white hover:bg-brand-accent-dark transition-colors transform hover:scale-105"
+              className="px-10 py-3 text-lg font-bold rounded-md bg-brand-accent text-white hover:bg-brand-accent-dark transition-colors transform hover:scale-105 flex justify-center items-center gap-2s "
             >
-              Shop Now →
+              Shop Now <ArrowRightIcon />
             </Link>
           </div>
         </div>
