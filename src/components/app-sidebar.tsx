@@ -1,30 +1,33 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
+  BarChart2,
   BookOpen,
-  Bot,
   Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
+  LifeBuoy,
+  Palette,
   PieChart,
+  Send,
   Settings2,
-  SquareTerminal,
-} from "lucide-react"
+  ShoppingCart,
+  GalleryVerticalEnd,
+  Package,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
@@ -39,122 +42,93 @@ const data = {
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Overview",
+      url: "/dashboard#overview",
+      icon: PieChart,
       isActive: true,
+    },
+    {
+      title: "Products",
+      url: "/dashboard#products",
+      icon: Package,
       items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        { title: "All Products", url: "/dashboard#products" },
+        { title: "Add Product", url: "/dashboard#add-product" },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      title: "Orders",
+      url: "/dashboard#orders",
+      icon: ShoppingCart,
+      items: [{ title: "All Orders", url: "/dashboard#orders" }],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
+      title: "Store Settings",
+      url: "/dashboard#settings",
       icon: Settings2,
       items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "General", url: "/dashboard#settings" },
+        { title: "Branding", url: "/dashboard#branding" },
+        { title: "Contact Info", url: "/dashboard#contact" },
+        { title: "Subdomain", url: "/dashboard#subdomain" },
+        { title: "Visibility", url: "/dashboard#visibility" },
+      ],
+    },
+    {
+      title: "Theme & Appearance",
+      url: "/dashboard#theme",
+      icon: Palette,
+      items: [
+        { title: "Theme", url: "/dashboard#theme" },
+        { title: "Live Preview", url: "/dashboard#preview" },
+      ],
+    },
+    {
+      title: "Analytics",
+      url: "/dashboard#analytics",
+      icon: BarChart2,
+    },
+    {
+      title: "Account & Team",
+      url: "/dashboard#account",
+      icon: Command,
+      items: [
+        { title: "Profile", url: "/dashboard#account" },
+        { title: "Team Members", url: "/dashboard#team" },
+      ],
+    },
+    {
+      title: "Integrations",
+      url: "/dashboard#integrations",
+      icon: AudioWaveform,
+      items: [
+        { title: "Payments", url: "/dashboard#payments" },
+        { title: "Shipping", url: "/dashboard#shipping" },
+        { title: "Email", url: "/dashboard#email" },
       ],
     },
   ],
-  projects: [
+  navSecondary: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      title: "Support & Help",
+      url: "/dashboard#support",
+      icon: LifeBuoy,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      title: "Docs",
+      url: "/dashboard#docs",
+      icon: BookOpen,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      title: "Feedback",
+      url: "/dashboard#feedback",
+      icon: Send,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -164,12 +138,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

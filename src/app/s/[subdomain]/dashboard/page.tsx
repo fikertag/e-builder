@@ -1,159 +1,130 @@
 "use client";
-import { useStoreData } from "@/store/useStoreData";
-import {
-  ShoppingCart,
-  Package,
-  Palette,
-  Settings,
-  BarChart2,
-  Store,
-} from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 
-const sections = [
-  { key: "overview", label: "Overview", icon: BarChart2 },
-  { key: "products", label: "Products", icon: Package },
-  { key: "orders", label: "Orders", icon: ShoppingCart },
-  { key: "settings", label: "Store Settings", icon: Settings },
-  { key: "theme", label: "Theme & Appearance", icon: Palette },
-  { key: "analytics", label: "Analytics", icon: BarChart2 },
-];
+import { ShoppingCart, Package, BarChart2, Store } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  const store = useStoreData((state) => state.store);
-  const [active, setActive] = useState("overview");
+  const stats = [
+    {
+      label: "Products",
+      value: 12,
+      icon: <Package className="text-gray-500" />,
+    },
+    {
+      label: "Orders",
+      value: 0,
+      icon: <ShoppingCart className="text-gray-500" />,
+    },
+    {
+      label: "Revenue",
+      value: "$1,200",
+      icon: <BarChart2 className="text-gray-500" />,
+    },
+    {
+      label: "Visitors",
+      value: 340,
+      icon: <Store className="text-gray-500" />,
+    },
+  ];
+  const recentOrders = [
+    { id: 101, status: "Paid", total: "$120.00" },
+    { id: 102, status: "Pending", total: "$80.00" },
+    { id: 103, status: "Cancelled", total: "$45.00" },
+  ];
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="hidden md:flex flex-col w-56 h-full bg-white border-r border-gray-200 shadow-sm py-8 px-4 gap-2">
-        <div className="mb-8 text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-          <Store className="text-gray-700" size={24} />
-          Dashboard
-        </div>
-        <nav className="flex flex-col gap-1">
-          {sections.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              className={cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-colors",
-                active === key
-                  ? "bg-gray-100 text-gray-900 shadow"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              )}
-              onClick={() => setActive(key)}
+    <div className="w-full  px-6 pb-6">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
+            Four Store
+          </h1>
+          <div className="flex items-center gap-2 text-gray-600 text-sm mb-1">
+            <span className="font-medium">Subdomain:</span>
+            <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-gray-800">
+              yourstore
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+            <span>Status:</span>
+            <span className="inline-flex items-center gap-1 font-semibold text-green-600">
+              <span className="h-2 w-2 rounded-full bg-green-500 inline-block"></span>
+              Active
+            </span>
+          </div>
+          <Link
+            href="https://yourstore.fikiryilkal.me"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-blue-600 hover:underline text-sm font-medium"
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="inline-block"
             >
-              <Icon className="w-5 h-5" />
-              {label}
-            </button>
-          ))}
-        </nav>
-      </aside>
-      {/* Main Content */}
-      <main className="flex-1 p-4 md:p-10">
-        {/* Overview Section */}
-        {active === "overview" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <BarChart2 /> Overview
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xs text-gray-500 mb-1">Products</div>
-                <div className="text-2xl font-bold">{"--"}</div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xs text-gray-500 mb-1">Orders</div>
-                <div className="text-2xl font-bold">{"--"}</div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xs text-gray-500 mb-1">Revenue</div>
-                <div className="text-2xl font-bold">${"--"}</div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xs text-gray-500 mb-1">Status</div>
-                <div className="text-2xl font-bold">{"Active"}</div>
-              </div>
-            </div>
-          </section>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M14 3h7v7m0 0L10 21l-7-7 11-11z"
+              />
+            </svg>
+            Preview Store
+          </Link>
+        </div>
+        <div className="flex gap-2">
+          <Link
+            href="#products"
+            className="px-4 py-2 rounded bg-gray-900 text-white font-semibold hover:bg-gray-700 transition"
+          >
+            Add Product
+          </Link>
+          <Link
+            href="#orders"
+            className="px-4 py-2 rounded bg-gray-200 text-gray-900 font-semibold hover:bg-gray-300 transition"
+          >
+            View Orders
+          </Link>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-white rounded-xl shadow p-5 flex flex-col items-center"
+          >
+            <div className="mb-2">{stat.icon}</div>
+            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+            <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="bg-white rounded-xl shadow px-6 pt-6 pb-2 mb-8">
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <ShoppingCart /> Recent Orders
+        </h2>
+        {recentOrders.length === 0 ? (
+          <div className="text-gray-400 italic">No recent orders.</div>
+        ) : (
+          <ul className="divide-y divide-gray-100">
+            {recentOrders.map((order) => (
+              <li
+                key={order.id}
+                className="py-3 flex items-center justify-between"
+              >
+                <span className="text-gray-700 font-medium">
+                  Order #{order.id}
+                </span>
+                <span className="text-xs text-gray-500">{order.status}</span>
+                <span className="text-xs text-gray-500">{order.total}</span>
+              </li>
+            ))}
+          </ul>
         )}
-        {/* Products Section */}
-        {active === "products" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Package /> Products
-            </h2>
-            <p className="text-gray-700 mb-2">
-              Manage your products, add new items, and update inventory.
-            </p>
-            {/* Product management UI goes here */}
-            <div className="text-gray-400 italic">
-              (Product management coming soon...)
-            </div>
-          </section>
-        )}
-        {/* Orders Section */}
-        {active === "orders" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <ShoppingCart /> Orders
-            </h2>
-            <p className="text-gray-700 mb-2">
-              View and manage your store's orders and fulfillment status.
-            </p>
-            {/* Orders management UI goes here */}
-            <div className="text-gray-400 italic">
-              (Order management coming soon...)
-            </div>
-          </section>
-        )}
-        {/* Store Settings Section */}
-        {active === "settings" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Settings /> Store Settings
-            </h2>
-            <p className="text-gray-700 mb-2">
-              Edit your store info, contact, and branding.
-            </p>
-            {/* Store settings UI goes here */}
-            <div className="text-gray-400 italic">
-              (Store settings coming soon...)
-            </div>
-          </section>
-        )}
-        {/* Theme Section */}
-        {active === "theme" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Palette /> Theme & Appearance
-            </h2>
-            <p className="text-gray-700 mb-2">
-              Customize your store's look and feel.
-            </p>
-            {/* Theme customization UI goes here */}
-            <div className="text-gray-400 italic">
-              (Theme customization coming soon...)
-            </div>
-          </section>
-        )}
-        {/* Analytics Section */}
-        {active === "analytics" && (
-          <section className="bg-white rounded-2xl shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <BarChart2 /> Analytics
-            </h2>
-            <p className="text-gray-700 mb-2">
-              Track your sales, orders, and visitors.
-            </p>
-            {/* Analytics UI goes here */}
-            <div className="text-gray-400 italic">
-              (Analytics coming soon...)
-            </div>
-          </section>
-        )}
-      </main>
+      </div>
     </div>
   );
 }
