@@ -11,7 +11,9 @@ export default function AnalyticsPage() {
         <CardTitle>Analytics</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-gray-500 text-center py-8">Analytics and reports will be shown here.</div>
+        <div className="text-gray-500 text-center py-8">
+          Analytics and reports will be shown here.
+        </div>
       </CardContent>
     </Card>
   );
