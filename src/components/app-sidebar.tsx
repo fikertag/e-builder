@@ -5,7 +5,6 @@ import {
   AudioWaveform,
   BarChart2,
   BookOpen,
-  Command,
   LifeBuoy,
   Palette,
   PieChart,

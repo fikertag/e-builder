@@ -61,15 +61,22 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    if (
-      categories &&
-      (!Array.isArray(categories) ||
-        categories.some((id: string) => !mongoose.Types.ObjectId.isValid(id)))
-    ) {
-      return NextResponse.json(
-        { message: "Invalid category IDs." },
-        { status: 400 }
-      );
+
+    const categoryIds = [];
+    if (categories && categories.length > 0) {
+      for (const catName of categories) {
+        if (!catName || typeof catName !== "string") continue;
+        const slug = catName
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9\-]/g, "");
+        let catDoc = await Category.findOne({ store, slug });
+        if (!catDoc) {
+          catDoc = await Category.create({ store, name: catName.trim(), slug });
+        }
+        categoryIds.push(catDoc._id);
+      }
     }
 
     // Optionally: Check if store exists
@@ -81,19 +88,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Optionally: Check if all categories exist
-    if (categories && categories.length > 0) {
-      const foundCategories = await Category.find({
-        _id: { $in: categories },
-      }).countDocuments();
-      if (foundCategories !== categories.length) {
-        return NextResponse.json(
-          { message: "One or more categories not found." },
-          { status: 400 }
-        );
-      }
-    }
-
     // Create product
     const newProduct = new Product({
       store,
@@ -101,10 +95,10 @@ export async function POST(request: NextRequest) {
       description,
       basePrice,
       variants,
-      categories,
+      categories: categoryIds,
       images,
       isFeatured: !!isFeatured,
-      isActive: isActive !== false, // default true
+      isActive: isActive !== false,
       attributes,
       customOptions,
     });

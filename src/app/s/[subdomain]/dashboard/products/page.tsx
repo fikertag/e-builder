@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IProduct } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import { useStoreData } from "@/store/useStoreData";
+import Image from "next/image";
 
 export default function ProductsPage() {
   const store = useStoreData((state) => state.store);
@@ -65,7 +66,7 @@ export default function ProductsPage() {
                   <tr key={product._id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-3">
                       {product.images && product.images.length > 0 ? (
-                        <img
+                        <Image
                           src={product.images[0]}
                           alt={product.title}
                           className="w-12 h-12 object-cover rounded"
