@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
-import { Header } from "@/components/navbar";
 import { StoreData } from "@/types";
-import StoreInitializer from "../StoreInitializer";
-import DynamicThemeProvider from "./DynamicThemeProvider";
-import "@/styles/subdomain.css";
+import StoreInitializer from "./StoreInitializer";
 
 async function getStoreBySubdomain(
   subdomain: string
@@ -30,11 +27,8 @@ export default async function SubdomainLayout({
 
   return (
     <>
-      <Header title={store.subdomain} />
-      <DynamicThemeProvider colorPalette={store.aiConfig.colorPalette}>
-        <StoreInitializer store={store} />
-        {children}
-      </DynamicThemeProvider>
+      <StoreInitializer store={store} />
+      {children}
     </>
   );
 }

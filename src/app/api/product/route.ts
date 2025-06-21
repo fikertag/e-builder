@@ -25,35 +25,72 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!store || !mongoose.Types.ObjectId.isValid(store)) {
-      return NextResponse.json({ message: "Invalid or missing store ID." }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid or missing store ID." },
+        { status: 400 }
+      );
     }
     if (!title || typeof title !== "string") {
-      return NextResponse.json({ message: "Product title is required." }, { status: 400 });
+      return NextResponse.json(
+        { message: "Product title is required." },
+        { status: 400 }
+      );
     }
-    if (!description || typeof description !== "string" || description.length < 30) {
-      return NextResponse.json({ message: "Description is required and must be at least 30 characters." }, { status: 400 });
+    if (
+      !description ||
+      typeof description !== "string" ||
+      description.length < 30
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            "Description is required and must be at least 30 characters.",
+        },
+        { status: 400 }
+      );
     }
     if (typeof basePrice !== "number" || basePrice < 0) {
-      return NextResponse.json({ message: "basePrice must be a non-negative number." }, { status: 400 });
+      return NextResponse.json(
+        { message: "basePrice must be a non-negative number." },
+        { status: 400 }
+      );
     }
     if (!Array.isArray(images) || images.length === 0) {
-      return NextResponse.json({ message: "At least one product image is required." }, { status: 400 });
+      return NextResponse.json(
+        { message: "At least one product image is required." },
+        { status: 400 }
+      );
     }
-    if (categories && (!Array.isArray(categories) || categories.some((id: string) => !mongoose.Types.ObjectId.isValid(id)))) {
-      return NextResponse.json({ message: "Invalid category IDs." }, { status: 400 });
+    if (
+      categories &&
+      (!Array.isArray(categories) ||
+        categories.some((id: string) => !mongoose.Types.ObjectId.isValid(id)))
+    ) {
+      return NextResponse.json(
+        { message: "Invalid category IDs." },
+        { status: 400 }
+      );
     }
 
     // Optionally: Check if store exists
     const storeExists = await Store.findById(store);
     if (!storeExists) {
-      return NextResponse.json({ message: "Store not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Store not found." },
+        { status: 404 }
+      );
     }
 
     // Optionally: Check if all categories exist
     if (categories && categories.length > 0) {
-      const foundCategories = await Category.find({ _id: { $in: categories } }).countDocuments();
+      const foundCategories = await Category.find({
+        _id: { $in: categories },
+      }).countDocuments();
       if (foundCategories !== categories.length) {
-        return NextResponse.json({ message: "One or more categories not found." }, { status: 400 });
+        return NextResponse.json(
+          { message: "One or more categories not found." },
+          { status: 400 }
+        );
       }
     }
 
@@ -106,7 +143,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const products = await Product.find(filter)
-      .select("_id title description basePrice images isFeatured isActive store categories, updatedAt")
+      .select(
+        "_id title description basePrice images isFeatured isActive store categories, updatedAt"
+      )
       .lean();
     return NextResponse.json(products, { status: 200 });
   } catch (error) {

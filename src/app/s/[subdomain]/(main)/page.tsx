@@ -10,6 +10,8 @@ import { useStoreData } from "@/store/useStoreData";
 export default function Page() {
   const store = useStoreData((state) => state.store);
 
+  console.log(store);
+
   async function getProducts() {
     const res = await fetch(`/api/product?store=${store?.id}`);
     return res.json();
