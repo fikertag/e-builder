@@ -7,6 +7,7 @@ import { PackagePlus, UploadCloud } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useStoreData } from "@/store/useStoreData";
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+import Image from "next/image";
 
 export default function AddProductPage() {
   const store = useStoreData((state) => state.store);
@@ -229,10 +230,12 @@ export default function AddProductPage() {
             <div className="flex gap-2 flex-wrap items-center">
               {images.map((img, i) => (
                 <div key={i} className="relative group w-16 h-16">
-                  <img
+                  <Image
                     src={img}
                     alt="preview"
-                    className="w-16 h-16 object-cover rounded border"
+                    width={64}
+                    height={64}
+                    className="object-cover rounded border"
                   />
                   <button
                     type="button"
@@ -555,10 +558,12 @@ export default function AddProductPage() {
                       </div>
                     ) : variant.image ? (
                       <div className="relative group w-12 h-12">
-                        <img
+                        <Image
                           src={variant.image}
                           alt="variant preview"
-                          className="w-12 h-12 object-cover rounded border"
+                          height={48}
+                          width={48}
+                          className="object-cover rounded border"
                         />
                         <button
                           type="button"
@@ -628,8 +633,9 @@ export default function AddProductPage() {
                   </div>
                 ))}
                 <div className="text-xs text-gray-500 mb-2">
-                  name: "Red" , type: "Color" , sku: "TSHIRT-RED" ,
-                  priceAdjustment: "0" , inventory: "10"
+                  name: &quot;Red&quot; , type: &quot;Color&quot; , sku:
+                  &quot;TSHIRT-RED&quot; , priceAdjustment: &quot;0&quot; ,
+                  inventory: &quot;10&quot;
                 </div>
                 <button
                   type="button"
