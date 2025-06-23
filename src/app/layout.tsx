@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -41,14 +42,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-       <ReactQueryProvider>
-        <Providers>
+        <Toaster />
+        <ReactQueryProvider>
+          <Providers>
             <div className="flex min-h-svh flex-col ">
               {children}
               <Analytics />
             </div>
-        </Providers>
-       </ReactQueryProvider>
+          </Providers>
+        </ReactQueryProvider>
       </body>
     </html>
   );

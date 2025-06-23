@@ -28,7 +28,6 @@ interface IProduct extends Document {
   isFeatured: boolean;
   isActive: boolean; // Soft delete
   attributes: {
-    // Flexible metadata
     [key: string]: string | number | boolean | undefined; // { "gender": "unisex", "weight": "200g" }
   };
   customOptions?: ICustomOption[];
@@ -61,7 +60,7 @@ const ProductSchema = new Schema<IProduct>(
     variants: [
       {
         name: { type: String, required: true },
-        type: { type: String, enum: ["size", "color", "style", "material"] },
+        type: { type: String },
         sku: {
           type: String,
           required: true,

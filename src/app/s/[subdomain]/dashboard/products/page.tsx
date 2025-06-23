@@ -34,7 +34,7 @@ export default function ProductsPage() {
           <CardTitle>Products</CardTitle>
         </div>
         <Link
-          href="#"
+          href="/add"
           className="flex items-center gap-1 px-3 py-1.5 rounded bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition"
         >
           <Plus className="w-4 h-4" /> Add Product
@@ -64,15 +64,20 @@ export default function ProductsPage() {
               <tbody>
                 {products.map((product) => (
                   <tr key={product._id} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-3">
-                      {product.images && product.images.length > 0 ? (
+                    <td className="py-2 px-3 h-12">
+                      {product.images &&
+                      product.images.length > 0 &&
+                      product.images[0] &&
+                      product.images[0].startsWith("http") ? (
                         <Image
                           src={product.images[0]}
                           alt={product.title}
+                          width={48}
+                          height={48}
                           className="w-12 h-12 object-cover rounded"
                         />
                       ) : (
-                        <span className="text-gray-400">No image</span>
+                        <span className="text-gray-400 ">No image</span>
                       )}
                     </td>
                     <td className="py-2 px-3 font-medium">{product.title}</td>
