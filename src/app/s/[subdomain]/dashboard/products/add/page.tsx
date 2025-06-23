@@ -62,9 +62,9 @@ export default function AddProductPage() {
       try {
         const res = await fetch(`/api/catagory/${store.id}`);
         if (res.ok) {
-          const cats = await res.json();
+          const cats: { name: string }[] = await res.json();
           setCategoryOptions(
-            Array.isArray(cats) ? cats.map((c: any) => c.name) : []
+            Array.isArray(cats) ? cats.map((c) => c.name) : []
           );
         }
       } catch {}
