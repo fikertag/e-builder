@@ -32,7 +32,9 @@ export async function GET(
     if (Array.isArray(product.categories)) {
       categories = product.categories
         .map((cat) =>
-          typeof cat === "object" && cat && "name" in cat ? cat.name : String(cat)
+          typeof cat === "object" && cat && "name" in cat
+            ? cat.name
+            : String(cat)
         )
         .filter((name): name is string => typeof name === "string");
     }
@@ -61,7 +63,7 @@ export async function PATCH(
   try {
     const body = await request.json();
     // Convert category names to ObjectIds (like in POST)
-    let categoryIds = [];
+    const categoryIds = [];
     if (body.categories && Array.isArray(body.categories)) {
       for (const catName of body.categories) {
         if (!catName || typeof catName !== "string") continue;
