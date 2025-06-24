@@ -100,9 +100,7 @@ export default function EditProductPage() {
     setIsActive(product.isActive || false);
     setCategories(
       Array.isArray(product.categories)
-        ? product.categories.map((cat: any) =>
-            typeof cat === "string" ? cat : cat?._id || String(cat)
-          )
+        ? product.categories
         : []
     );
     setAttributes(

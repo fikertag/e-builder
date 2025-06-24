@@ -27,13 +27,16 @@ export async function GET(
         { status: 404 }
       );
     }
-    // Replace categories array with array of names
+    // Prepare response with categories as string[]
+    let categories: string[] = [];
     if (Array.isArray(product.categories)) {
-      product.categories = product.categories.map(
-        (cat: any) => cat?.name || cat
-      );
+      categories = product.categories
+        .map((cat) =>
+          typeof cat === "object" && cat && "name" in cat ? cat.name : String(cat)
+        )
+        .filter((name): name is string => typeof name === "string");
     }
-    return NextResponse.json(product, { status: 200 });
+    return NextResponse.json({ ...product, categories }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(

@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useStoreData } from "@/store/useStoreData";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +11,6 @@ import type { IProduct } from "@/types/index";
 export default function ProductDetailPage() {
   const { product: productId } = useParams();
   const store = useStoreData((state) => state.store);
-  const router = useRouter();
 
   const {
     data: product,
@@ -98,13 +97,8 @@ export default function ProductDetailPage() {
             </div>
             <div className="text-sm text-gray-500">
               Categories:{" "}
-              {Array.isArray(product.categories) &&
-              product.categories.length > 0
-                ? product.categories
-                    .map((cat: any) =>
-                      typeof cat === "string" ? cat : cat?._id || String(cat)
-                    )
-                    .join(", ")
+              {Array.isArray(product.categories) && product.categories.length > 0
+                ? product.categories.join(", ")
                 : "None"}
             </div>
             <div className="text-sm text-gray-500">
