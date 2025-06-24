@@ -34,7 +34,7 @@ export default function ProductsPage() {
           <CardTitle>Products</CardTitle>
         </div>
         <Link
-          href="/add"
+          href="/dashboard/products/add"
           className="flex items-center gap-1 px-3 py-1.5 rounded bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition"
         >
           <Plus className="w-4 h-4" /> Add Product
