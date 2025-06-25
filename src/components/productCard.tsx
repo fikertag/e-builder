@@ -5,6 +5,7 @@ import Image from "next/image";
 import { IProduct } from "@/types/index";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import Link from "next/link";
 
 interface ProductCardProps {
   product: IProduct;
@@ -12,27 +13,59 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const addToCart = useCartStore((state) => state.addToCart);
+  const router = require("next/navigation").useRouter();
+  const hasVariantsOrOptions =
+    (product.variants && product.variants.length > 0) ||
+    (product.customOptions && product.customOptions.length > 0);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (hasVariantsOrOptions) {
+      router.push(`/products/${product._id}`);
+    } else {
+      addToCart(product, 1, [], {});
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 group flex flex-col mb-2">
-      <div className="relative w-full h-48 bg-gray-50 flex items-center justify-center">
-        <Image
-          src={product.images[0] || "/placeholder.png"}
-          alt={product.title}
-          fill
-          className="object-contain group-hover:scale-105 transition-transform duration-300"
-          priority
-        />
-        {product.isFeatured && (
-          <span className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full  ring-2 ring-white">
-            Featured
-          </span>
-        )}
-      </div>
+      <Link
+        href={`/products/${product._id}`}
+        className="block"
+        prefetch={false}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative w-full h-48 bg-gray-50 flex items-center justify-center cursor-pointer">
+          <Image
+            src={
+              product.images[0].startsWith("http")
+                ? product.images[0]
+                : "/placeholder.png"
+            }
+            alt={product.title}
+            fill
+            className="object-contain group-hover:scale-105 transition-transform duration-300"
+            priority
+          />
+          {product.isFeatured && (
+            <span className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full  ring-2 ring-white">
+              Featured
+            </span>
+          )}
+        </div>
+      </Link>
       <div className="p-4 flex flex-col justify-between gap-4 flex-1">
         <div className="flex flex-col gap-2 flex-1">
-          <h3 className="font-bold text-lg truncate" title={product.title}>
-            {product.title}
-          </h3>
+          <Link
+            href={`/products/${product._id}`}
+            className="hover:underline"
+            prefetch={false}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-bold text-lg truncate" title={product.title}>
+              {product.title}
+            </h3>
+          </Link>
           <div className="flex items-center gap-2 mb-1">
             <span className="font-bold text-indigo-600 text-xl">
               ${product.basePrice.toFixed(2)}
@@ -81,11 +114,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
           <button
-            onClick={() => addToCart(product, 1, [], {})}
+            onClick={handleAddToCart}
             className="flex items-center justify-center gap-2 bg-brand-primary text-white px-4 py-2.5 rounded-lg shadow-md cursor-pointer font-semibold hover:opacity-80 active:scale-95 transition-all duration-200"
           >
             <ShoppingCart size={18} />
-            Add to Cart
+            {hasVariantsOrOptions ? "Select Options" : "Add to Cart"}
           </button>
         </div>
       </div>

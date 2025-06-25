@@ -26,8 +26,6 @@ interface IOrder extends Document {
   total: number;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
   shippingAddress: IOrderAddress;
-  stripePaymentId: string;
-  stripeChargeId: string;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>(
@@ -102,14 +100,6 @@ const OrderSchema = new Schema<IOrder>(
       default: "pending",
     },
     shippingAddress: OrderAddressSchema,
-    stripePaymentId: {
-      type: String,
-      required: true,
-    },
-    stripeChargeId: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );

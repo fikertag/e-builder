@@ -24,3 +24,39 @@ export async function GET(request: Request) {
     );
   }
 }
+
+// POST /api/order
+export async function POST(request: Request) {
+  await dbConnect();
+  try {
+    const body = await request.json();
+    // Basic validation
+    if (!body.store) {
+      return NextResponse.json(
+        { message: "Missing store id" },
+        { status: 400 }
+      );
+    }
+    if (!body.customer) {
+      return NextResponse.json(
+        { message: "Missing customer id" },
+        { status: 400 }
+      );
+    }
+    if (!Array.isArray(body.items) || body.items.length === 0) {
+      return NextResponse.json(
+        { message: "Order must have at least one item" },
+        { status: 400 }
+      );
+    }
+    // Create order
+    const order = await Order.create(body);
+    return NextResponse.json(order, { status: 201 });
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return NextResponse.json(
+      { message: "Failed to create order", error },
+      { status: 500 }
+    );
+  }
+}

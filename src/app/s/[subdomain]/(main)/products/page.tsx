@@ -1,31 +1,46 @@
 "use client";
 
-import { useQuery } from '@tanstack/react-query';
-import ProductsSection from '@/components/productSection';
-import { IProduct } from '@/types/index';
+import { useQuery } from "@tanstack/react-query";
+import ProductsSection from "@/components/productSection";
+import { IProduct } from "@/types/index";
+import { useStoreData } from "@/store/useStoreData";
+
+//27-04 18-04
 
 export default function ProductsPage() {
- 
+  const store = useStoreData((state) => state.store);
+
   async function getAllProducts() {
-    const res = await fetch('/api/product?store=68474b0d1db8b6c73d5935bf');
+    const res = await fetch(`/api/product?store=${store?.id}`);
     return res.json();
   }
 
-  const { data: products, error, isLoading } = useQuery<IProduct[]>({
+  const {
+    data: products,
+    error,
+    isLoading,
+  } = useQuery<IProduct[]>({
     queryKey: ["products"],
     queryFn: getAllProducts,
+    enabled: !!store?.id,
   });
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center min-h-[90vh]">
-      <span className="inline-block animate-bounce text-4xl text-indigo-500">. . .</span>
-    </div>
-  );
-  if (error) return (
-    <div className="flex items-center justify-center min-h-[40vh]">
-      <span className="inline-block animate-pulse text-2xl text-red-500">Something went wrong. Please try again.</span>
-    </div>
-  );
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-[90vh]">
+        <span className="inline-block animate-bounce text-4xl text-indigo-500">
+          . . .
+        </span>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <span className="inline-block animate-pulse text-2xl text-red-500">
+          Something went wrong. Please try again.
+        </span>
+      </div>
+    );
 
   return (
     <div className="min-h-screen flex flex-col">

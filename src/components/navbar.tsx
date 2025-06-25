@@ -126,12 +126,12 @@ export function Header({ title }: HeaderProps) {
 
                       <div className="mt-4">
                         <SheetClose asChild>
-                          <button
+                          <Link
                             className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
-                            onClick={() => router.push("/checkout")}
+                            href="/checkout"
                           >
                             Proceed to Checkout
-                          </button>
+                          </Link>
                         </SheetClose>
                       </div>
                     </div>
