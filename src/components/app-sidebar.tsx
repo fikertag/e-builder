@@ -2,11 +2,8 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BarChart2,
   BookOpen,
   LifeBuoy,
-  Palette,
   PieChart,
   Send,
   Settings2,
@@ -26,109 +23,79 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-  ],
-  navMain: [
-    {
-      title: "Overview",
-      url: "/dashboard",
-      icon: PieChart,
-      isActive: true,
-    },
-    {
-      title: "Products",
-      url: "/dashboard/products",
-      icon: Package,
-      items: [
-        { title: "All Products", url: "/dashboard/products" },
-        { title: "Add Product", url: "/dashboard/products/add" },
-      ],
-    },
-    {
-      title: "Orders",
-      url: "/dashboard/orders",
-      icon: ShoppingCart,
-      items: [{ title: "All Orders", url: "/dashboard/orders" }],
-    },
-    {
-      title: "Store Settings",
-      url: "/dashboard/settings",
-      icon: Settings2,
-      items: [
-        { title: "General", url: "/dashboard/settings" },
-        { title: "Branding", url: "/dashboard/settings#branding" },
-        { title: "Contact Info", url: "/dashboard/settings#contact" },
-        { title: "Subdomain", url: "/dashboard/settings#subdomain" },
-        { title: "Visibility", url: "/dashboard/settings#visibility" },
-      ],
-    },
-    {
-      title: "Theme & Appearance",
-      url: "/dashboard/theme",
-      icon: Palette,
-      items: [
-        { title: "Theme", url: "/dashboard/theme" },
-        { title: "Live Preview", url: "/dashboard/theme#preview" },
-      ],
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: BarChart2,
-    },
-    // {
-    //   title: "Account & Team",
-    //   url: "/dashboard/account",
-    //   icon: Command,
-    //   items: [
-    //     { title: "Profile", url: "/dashboard/account" },
-    //     { title: "Team Members", url: "/dashboard/team" },
-    //   ],
-    // },
-    {
-      title: "Integrations",
-      url: "/dashboard/integrations",
-      icon: AudioWaveform,
-      items: [
-        { title: "Payments", url: "/dashboard/integrations#payments" },
-        { title: "Shipping", url: "/dashboard/integrations#shipping" },
-        { title: "Email", url: "/dashboard/integrations#email" },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support & Help",
-      url: "/dashboard/support",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Docs",
-      url: "/dashboard/docs",
-      icon: BookOpen,
-    },
-    {
-      title: "Feedback",
-      url: "/dashboard/feedback",
-      icon: Send,
-    },
-  ],
-};
+import { useStoreData } from "@/store/useStoreData";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const store = useStoreData((state) => state.store);
+
+  const data = {
+    user: {
+      name: store?.storeName || "Store Owner",
+      email: "m@example.com",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    teams: [
+      {
+        name: store?.storeName || "My Store",
+        logo: GalleryVerticalEnd,
+        plan: "Enterprise",
+      },
+    ],
+    navMain: [
+      {
+        title: "Overview",
+        url: "/dashboard",
+        icon: PieChart,
+        items: [{ title: "Analytics", url: "/dashboard" }],
+        isActive: true,
+      },
+      {
+        title: "Products",
+        url: "/dashboard/products",
+        icon: Package,
+        items: [
+          { title: "All Products", url: "/dashboard/products" },
+          { title: "Add Product", url: "/dashboard/products/add" },
+        ],
+      },
+      {
+        title: "Orders",
+        url: "/dashboard/orders",
+        icon: ShoppingCart,
+        items: [{ title: "All Orders", url: "/dashboard/orders" }],
+      },
+      {
+        title: "Store Settings",
+        url: "/dashboard/settings",
+        icon: Settings2,
+        items: [
+          { title: "General", url: "/dashboard/settings" },
+          { title: "Contact Info", url: "/dashboard/settings#contact" },
+          { title: "Subdomain", url: "/dashboard/settings#subdomain" },
+          { title: "Theme & Appearance", url: "/dashboard/settings#theme" },
+          { title: "Integrations", url: "/dashboard/settings#integrations" },
+        ],
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Support & Help",
+        url: "/dashboard/support",
+        icon: LifeBuoy,
+      },
+      {
+        title: "Docs",
+        url: "/dashboard/docs",
+        icon: BookOpen,
+      },
+      {
+        title: "Feedback",
+        url: "/dashboard/feedback",
+        icon: Send,
+      },
+    ],
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

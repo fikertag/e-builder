@@ -2,58 +2,89 @@
 
 import { ShoppingCart, Package, BarChart2, Store } from "lucide-react";
 import Link from "next/link";
+import { useStoreData } from "@/store/useStoreData";
+import { useQuery } from "@tanstack/react-query";
 
 export default function DashboardPage() {
+  const store = useStoreData((state) => state.store);
+
+  // Fetch product count
+  const { data: productsData } = useQuery({
+    queryKey: ["products", store?.id],
+    queryFn: async () => {
+      if (!store?.id) return [];
+      const res = await fetch(`/api/product?store=${store.id}`);
+      if (!res.ok) throw new Error("Failed to fetch products");
+      return res.json();
+    },
+    enabled: !!store?.id,
+  });
+
+  // Fetch order stats
+  const { data: orderStats } = useQuery({
+    queryKey: ["order-stats", store?.id],
+    queryFn: async () => {
+      if (!store?.id) return null;
+      const res = await fetch(`/api/order/stats?store=${store.id}`);
+      if (!res.ok) throw new Error("Failed to fetch order stats");
+      return res.json();
+    },
+    enabled: !!store?.id,
+  });
+
   const stats = [
     {
       label: "Products",
-      value: 12,
+      value: productsData ? productsData.length : "-",
       icon: <Package className="text-gray-500" />,
     },
     {
       label: "Orders",
-      value: 0,
+      value: orderStats ? orderStats.totalOrders : "-",
       icon: <ShoppingCart className="text-gray-500" />,
     },
     {
       label: "Revenue",
-      value: "$1,200",
+      value: orderStats ? `$${orderStats.totalRevenue}` : "-",
       icon: <BarChart2 className="text-gray-500" />,
     },
     {
       label: "Visitors",
-      value: 340,
+      value: 340, // TODO: Replace with real visitor data if available
       icon: <Store className="text-gray-500" />,
     },
   ];
-  const recentOrders = [
-    { id: 101, status: "Paid", total: "$120.00" },
-    { id: 102, status: "Pending", total: "$80.00" },
-    { id: 103, status: "Cancelled", total: "$45.00" },
-  ];
+
+  const recentOrders = orderStats?.recentOrders || [];
+
+  type RecentOrder = {
+    _id: string;
+    status: string;
+    total: number;
+  };
 
   return (
     <div className="w-full  px-6 pb-6">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-            Four Store
+            {store?.storeName}
           </h1>
           <div className="flex items-center gap-2 text-gray-600 text-sm mb-1">
             <span className="font-medium">Subdomain:</span>
             <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-gray-800">
-              yourstore
+              {store?.subdomain}
             </span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
             <span>Status:</span>
             <span className="inline-flex items-center gap-1 font-semibold text-green-600">
               <span className="h-2 w-2 rounded-full bg-green-500 inline-block"></span>
-              Active
+              {store?.isPublished ? "Published" : "Unpublished"}
             </span>
           </div>
           <Link
-            href="https://yourstore.fikiryilkal.me"
+            href={`https://${store?.subdomain}.fikiryilkal.me`}
             target="_blank"
             className="inline-flex items-center gap-1 text-blue-600 hover:underline text-sm font-medium"
           >
@@ -77,13 +108,13 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Link
-            href="#products"
+            href="/products/add"
             className="px-4 py-2 rounded bg-gray-900 text-white font-semibold hover:bg-gray-700 transition"
           >
             Add Product
           </Link>
           <Link
-            href="#orders"
+            href="/orders"
             className="px-4 py-2 rounded bg-gray-200 text-gray-900 font-semibold hover:bg-gray-300 transition"
           >
             View Orders
@@ -110,16 +141,16 @@ export default function DashboardPage() {
           <div className="text-gray-400 italic">No recent orders.</div>
         ) : (
           <ul className="divide-y divide-gray-100">
-            {recentOrders.map((order) => (
+            {recentOrders.map((order: RecentOrder) => (
               <li
-                key={order.id}
+                key={order._id}
                 className="py-3 flex items-center justify-between"
               >
                 <span className="text-gray-700 font-medium">
-                  Order #{order.id}
+                  Order #{order._id}
                 </span>
                 <span className="text-xs text-gray-500">{order.status}</span>
-                <span className="text-xs text-gray-500">{order.total}</span>
+                <span className="text-xs text-gray-500">${order.total}</span>
               </li>
             ))}
           </ul>
