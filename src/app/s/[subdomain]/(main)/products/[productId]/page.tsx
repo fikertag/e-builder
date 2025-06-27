@@ -87,10 +87,10 @@ export default function ProductDetailPage() {
     );
 
   return (
-    <div className="max-w-4xl mx-auto my-8 bg-white rounded-xl shadow p-6 md:p-10 flex flex-col md:flex-row gap-10">
+    <div className=" container mx-auto my-8 bg-white rounded-xl  p-6 md:p-10 flex flex-col lg:flex-row gap-10 justify-center items-center">
       {/* Images */}
-      <div className="flex-1 flex flex-col gap-4">
-        <div className="relative w-full h-80 bg-gray-50 rounded-lg overflow-hidden">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative w-80 h-80 bg-gray-50 rounded-lg overflow-hidden">
           <Image
             src={mainImage || product.images[0] || "/placeholder.png"}
             alt={product.title}
@@ -100,7 +100,7 @@ export default function ProductDetailPage() {
           />
         </div>
         {allImages.length > 1 && (
-          <div className="flex gap-2 mt-2">
+          <div className="flex  justify-center gap-2 mt-2">
             {allImages.map((img, idx) => (
               <div
                 key={idx}
@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
         )}
         <button
           onClick={handleAddToCart}
-          className="flex items-center justify-center gap-2 bg-brand-primary text-white px-6 py-3 rounded-lg shadow-md cursor-pointer font-semibold hover:opacity-80 active:scale-95 transition-all duration-200 mt-4"
+          className="flex items-center justify-center gap-2 bg-brand-primary  px-6 py-3 rounded-lg shadow-md cursor-pointer font-semibold hover:opacity-80 active:scale-95 transition-all duration-200 mt-4 max-w-80"
           disabled={
             (product.variants &&
               product.variants.length > 0 &&
