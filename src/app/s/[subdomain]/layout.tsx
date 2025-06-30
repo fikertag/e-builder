@@ -18,7 +18,7 @@ export default async function SubdomainLayout({
   params,
 }: {
   children: ReactNode;
-  params: { subdomain: string };
+  params: Promise<{ subdomain: string }>;
 }) {
   const { subdomain } = await params;
   const store = await getStoreBySubdomain(subdomain);
@@ -27,11 +27,9 @@ export default async function SubdomainLayout({
   }
 
   return (
-    <>
-      <Providers>
-        <StoreInitializer store={store} />
-        {children}
-      </Providers>
-    </>
+    <Providers>
+      <StoreInitializer store={store} />
+      {children}
+    </Providers>
   );
 }
