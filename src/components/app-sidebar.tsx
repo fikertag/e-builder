@@ -70,8 +70,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Settings2,
         items: [
           { title: "General", url: "/dashboard/settings" },
-          { title: "Contact Info", url: "/dashboard/settings#contact" },
-          { title: "Subdomain", url: "/dashboard/settings#subdomain" },
           { title: "Theme & Appearance", url: "/dashboard/settings#theme" },
           { title: "Integrations", url: "/dashboard/settings#integrations" },
         ],
