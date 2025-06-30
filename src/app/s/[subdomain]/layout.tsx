@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { StoreData } from "@/types";
 import StoreInitializer from "./StoreInitializer";
+import { Providers } from "./providers";
 
 async function getStoreBySubdomain(
   subdomain: string
@@ -27,8 +28,10 @@ export default async function SubdomainLayout({
 
   return (
     <>
-      <StoreInitializer store={store} />
-      {children}
+      <Providers>
+        <StoreInitializer store={store} />
+        {children}
+      </Providers>
     </>
   );
 }

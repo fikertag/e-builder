@@ -30,6 +30,7 @@ interface IAiFormData {
   };
   storeLandingImage: string;
 }
+import { authClient } from "@/lib/auth-client";
 
 export default function HomePage() {
   const [shopDescription, setShopDescription] = useState("");
@@ -42,6 +43,9 @@ export default function HomePage() {
   const [imageLoading, setImageLoading] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data } = authClient.useSession();
+
+  console.log("User session data:", data?.user);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -65,7 +69,9 @@ export default function HomePage() {
   };
 
   const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     if (!formData) return;
@@ -120,7 +126,10 @@ export default function HomePage() {
       const res = await fetch("/api/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, owner: "6824dab1b90b388b8d6e58e2" }),
+        body: JSON.stringify({
+          ...formData,
+          owner: "6824dab1b90b388b8d6e58e2",
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -146,27 +155,29 @@ export default function HomePage() {
     setImageError(null);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
+      const res = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
       });
 
       const { url } = await res.json();
 
       if (!res.ok) {
-        setImageError('Failed to upload image.');
+        setImageError("Failed to upload image.");
         setImageLoading(false);
         return;
       }
 
-      setImageUrl(url); 
-      setFormData((prev) => prev ? { ...prev, storeLandingImage: url } : prev);
+      setImageUrl(url);
+      setFormData((prev) =>
+        prev ? { ...prev, storeLandingImage: url } : prev
+      );
     } catch (err) {
-      setImageError('Failed to upload image.');
-      console.error('Error uploading image:', err);
+      setImageError("Failed to upload image.");
+      console.error("Error uploading image:", err);
     } finally {
       setImageLoading(false);
     }
@@ -180,20 +191,20 @@ export default function HomePage() {
             Describe Your Shop and Let AI Build It!
           </h1>
           <p className="text-gray-500 mb-6 text-center">
-            Describe your business & products in detail. The AI will
-            generate your shop&apos;s branding and content. 
+            Describe your business & products in detail. The AI will generate
+            your shop&apos;s branding and content.
           </p>
           <textarea
             className="w-full min-h-[100px] p-3 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none text-base mb-4 resize-none"
             placeholder="e.g. A modern bakery selling gluten-free pastries with a cozy, rustic vibe"
             value={shopDescription}
             onChange={(e) => setShopDescription(e.target.value)}
-            onInput={e => {
-                const el = e.currentTarget;
-                el.style.height = "";
-                el.style.height = el.scrollHeight + "px";
-              }}
-              style={{ overflow: "hidden", resize: "none" }}
+            onInput={(e) => {
+              const el = e.currentTarget;
+              el.style.height = "";
+              el.style.height = el.scrollHeight + "px";
+            }}
+            style={{ overflow: "hidden", resize: "none" }}
           />
           <button
             onClick={handleGenerate}
@@ -267,7 +278,7 @@ export default function HomePage() {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={e => {
+            onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) handleImageUpload(file);
             }}
@@ -322,7 +333,7 @@ export default function HomePage() {
               value={formData.heroDescription || ""}
               onChange={handleFormChange}
               className="w-full p-2 md:p-4 border rounded-xl text-lg min-h-[120px]"
-              onInput={e => {
+              onInput={(e) => {
                 const el = e.currentTarget;
                 el.style.height = "";
                 el.style.height = el.scrollHeight + "px";
@@ -337,7 +348,7 @@ export default function HomePage() {
               name="aboutUs"
               value={formData.aboutUs || ""}
               onChange={handleFormChange}
-              onInput={e => {
+              onInput={(e) => {
                 const el = e.currentTarget;
                 el.style.height = "";
                 el.style.height = el.scrollHeight + "px";
@@ -347,7 +358,7 @@ export default function HomePage() {
               className="w-full p-2 md:p-4 border rounded-xl text-lg min-h-[120px] "
             />
           </div>
-        
+
           <div className="md:col-span-2">
             <label className="block font-semibold mb-1">Why Choose Us</label>
             <textarea
@@ -359,7 +370,7 @@ export default function HomePage() {
               }
               onChange={handleFormChange}
               className="w-full p-4 border rounded-xl text-lg min-h-[120px]"
-              onInput={e => {
+              onInput={(e) => {
                 const el = e.currentTarget;
                 el.style.height = "";
                 el.style.height = el.scrollHeight + "px";
@@ -375,7 +386,7 @@ export default function HomePage() {
               value={formData.description || ""}
               onChange={handleFormChange}
               className="w-full p-4 border rounded-xl text-lg min-h-[120px]"
-              onInput={e => {
+              onInput={(e) => {
                 const el = e.currentTarget;
                 el.style.height = "";
                 el.style.height = el.scrollHeight + "px";
@@ -391,7 +402,7 @@ export default function HomePage() {
               {/* Primary */}
               <div className="flex flex-col items-center mx-2">
                 <span className="text-xs mb-1 text-gray-500">Primary</span>
-               
+
                 <input
                   name="aiConfig.colorPalette.primary"
                   value={formData.aiConfig?.colorPalette?.primary || ""}
@@ -400,7 +411,9 @@ export default function HomePage() {
                   type="color"
                   aria-label="Primary color"
                 />
-                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.primary}</span>
+                <span className="text-[10px] text-gray-400 mt-1">
+                  {formData.aiConfig?.colorPalette?.primary}
+                </span>
               </div>
               {/* Secondary */}
               <div className="flex flex-col items-center mx-2">
@@ -413,7 +426,9 @@ export default function HomePage() {
                   type="color"
                   aria-label="Secondary color"
                 />
-                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.secondary}</span>
+                <span className="text-[10px] text-gray-400 mt-1">
+                  {formData.aiConfig?.colorPalette?.secondary}
+                </span>
               </div>
               {/* Accent */}
               <div className="flex flex-col items-center mx-2">
@@ -426,7 +441,9 @@ export default function HomePage() {
                   type="color"
                   aria-label="Accent color"
                 />
-                <span className="text-[10px] text-gray-400 mt-1">{formData.aiConfig?.colorPalette?.accent}</span>
+                <span className="text-[10px] text-gray-400 mt-1">
+                  {formData.aiConfig?.colorPalette?.accent}
+                </span>
               </div>
             </div>
           </div>
@@ -543,8 +560,12 @@ export default function HomePage() {
             >
               {loading ? "Creating Store..." : "Create My Store"}
             </button>
-            {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
-            {success && <div className="text-green-600 mt-4 text-center">{success}</div>}
+            {error && (
+              <div className="text-red-500 mt-4 text-center">{error}</div>
+            )}
+            {success && (
+              <div className="text-green-600 mt-4 text-center">{success}</div>
+            )}
           </div>
         </form>
       </div>
