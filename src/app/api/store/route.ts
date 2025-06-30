@@ -466,6 +466,35 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // Validate integrations if present
+    if (updateFields.integrations) {
+      const { telebirr, cbe } = updateFields.integrations;
+      if (telebirr) {
+        if (
+          typeof telebirr !== "object" ||
+          !/^\+2519\d{8}$/.test(telebirr.number || "") ||
+          !telebirr.name || typeof telebirr.name !== "string"
+        ) {
+          return NextResponse.json(
+            { message: "Invalid Telebirr integration info." },
+            { status: 400 }
+          );
+        }
+      }
+      if (cbe) {
+        if (
+          typeof cbe !== "object" ||
+          !/^1000\d{8,}$/.test(cbe.account || "") ||
+          !cbe.name || typeof cbe.name !== "string"
+        ) {
+          return NextResponse.json(
+            { message: "Invalid CBE integration info." },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // Find store by id or subdomain
     const query = id ? { _id: id } : { subdomain };
     const store = await Store.findOne(query);

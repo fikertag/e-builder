@@ -46,6 +46,17 @@ export interface IAIBrandConfig {
   layoutTemplate: "minimalist" | "professional" | "vibrant";
 }
 
+export interface StoreIntegrations {
+  telebirr?: {
+    number: string;
+    name: string;
+  };
+  cbe?: {
+    account: string;
+    name: string;
+  };
+}
+
 export interface StoreData {
   id: string;
   owner: string;
@@ -72,6 +83,7 @@ export interface StoreData {
       youtube?: string;
     };
   };
+  integrations?: StoreIntegrations;
 }
 
 export interface CartItem {

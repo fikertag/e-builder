@@ -48,6 +48,7 @@ export async function GET(
       whyChooseUs: store.whyChooseUs || [],
       contact: store.contact || {},
       isPublished: store.isPublished,
+      integrations: store.integrations || {},
     };
 
     return NextResponse.json(response);

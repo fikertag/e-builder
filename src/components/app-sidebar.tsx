@@ -71,7 +71,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           { title: "General", url: "/dashboard/settings" },
           { title: "Theme & Appearance", url: "/dashboard/settings/theme" },
-          { title: "Integrations", url: "/dashboard/settings#integrations" },
+          { title: "Integrations", url: "/dashboard/settings/integration" },
         ],
       },
     ],
