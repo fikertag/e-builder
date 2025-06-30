@@ -1,16 +1,16 @@
 // app/api/stores/[subdomain]/route.ts
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
-import Store  from "@/model/store";
+import Store from "@/model/store";
 
 export async function GET(
- request: Request,
-  { params }: { params:Promise< { subdomain: string }> }
+  request: Request,
+  { params }: { params: Promise<{ subdomain: string }> }
 ): Promise<NextResponse> {
   await dbConnect();
 
   try {
-   const { subdomain } = await params;
+    const { subdomain } = await params;
     // 1. Validate subdomain format
     if (!subdomain || typeof subdomain !== "string") {
       return NextResponse.json(
@@ -36,21 +36,21 @@ export async function GET(
 
     // 4. Format response
     const response = {
-        id: store._id.toString(),
-        storeName: store.storeName,
-        subdomain: store.subdomain,
-        description: store.description,
-        aiConfig: store.aiConfig, 
-        heroHeading: store.heroHeading,
-        storeLandingImage: store.storeLandingImage,
-        heroDescription: store.heroDescription,
-        aboutUs: store.aboutUs,
-        whyChooseUs: store.whyChooseUs || [],
-        contact: store.contact || {},
+      id: store._id.toString(),
+      storeName: store.storeName,
+      subdomain: store.subdomain,
+      description: store.description,
+      aiConfig: store.aiConfig,
+      heroHeading: store.heroHeading,
+      storeLandingImage: store.storeLandingImage,
+      heroDescription: store.heroDescription,
+      aboutUs: store.aboutUs,
+      whyChooseUs: store.whyChooseUs || [],
+      contact: store.contact || {},
+      isPublished: store.isPublished,
     };
 
     return NextResponse.json(response);
-
   } catch (error) {
     console.error("GET Store Error:", error);
     return NextResponse.json(
