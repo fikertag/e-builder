@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useStoreData } from "@/store/useStoreData";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const paymentOptions = [
   { label: "Telebirr", value: "telebirr", logo: "/telebirr.png" },
@@ -41,7 +41,25 @@ export default function CheckoutForm() {
   }, 0);
 
   const orderMutation = useMutation({
-    mutationFn: async (orderPayload: any) => {
+    mutationFn: async (orderPayload: {
+      store: string;
+      customer: string;
+      items: Array<{
+        product: string;
+        variant?: string;
+        quantity: number;
+        price: number;
+      }>;
+      subtotal: number;
+      shipping: number;
+      tax: number;
+      total: number;
+      status: string;
+      shippingAddress: typeof shipping;
+      stripePaymentId: string;
+      stripeChargeId: string;
+      paymentMethod: string;
+    }) => {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,8 +75,8 @@ export default function CheckoutForm() {
       }
       return res.json();
     },
-    onSuccess: (order, variables) => {
-      // clearCart();
+    onSuccess: (order) => {
+      clearCart();
       router.push(
         `/checkout/payment?orderId=${order._id}&method=${selectedPayment}`
       );
@@ -148,19 +166,18 @@ export default function CheckoutForm() {
                     <div className="text-xs text-gray-500">
                       Qty: {item.quantity}
                     </div>
-                    {item.selectedVariants &&
-                      item.selectedVariants.length > 0 && (
-                        <div className="text-xs text-gray-400">
-                          {item.selectedVariants.map((v) => v.name).join(", ")}
-                        </div>
-                      )}
+                    {item.selectedVariants && item.selectedVariants.length > 0 && (
+                      <div className="text-xs text-gray-400">
+                        {item.selectedVariants.map((v) => v.name).join(", ")}
+                      </div>
+                    )}
                   </div>
                   <div className="font-bold text-gray-900">
                     $
                     {item.product.basePrice +
                       (item.selectedVariants
                         ? item.selectedVariants.reduce(
-                            (sum, v) => sum + (v.priceAdjustment || 0),
+                            (sum: number, v) => sum + (v.priceAdjustment || 0),
                             0
                           )
                         : 0)}

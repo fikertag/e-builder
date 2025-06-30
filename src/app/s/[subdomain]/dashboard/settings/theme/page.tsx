@@ -76,7 +76,7 @@ export default function ThemePage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     if (name.startsWith("colorPalette.")) {
       const key = name.split(".")[1];
       setForm((prev) => ({
@@ -253,8 +253,8 @@ export default function ThemePage() {
             Live Theme Preview
           </h2>
           <p>
-            This is a preview of your store's theme colors, fonts, and layout
-            style.
+            This is a preview of your store&apos;s theme colors, fonts, and
+            layout style.
           </p>
           <div className="mt-2 text-xs">
             Layout: <b>{form.layoutTemplate}</b>

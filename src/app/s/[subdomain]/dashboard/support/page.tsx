@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Mail, HelpCircle } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 export default function SupportPage() {
   return (

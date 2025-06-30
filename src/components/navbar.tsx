@@ -15,7 +15,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CartItem } from "@/types/index";
-import { useRouter } from "next/navigation";
 
 type HeaderProps = {
   title: string;
@@ -38,7 +37,6 @@ export function Header({ title }: HeaderProps) {
   const subtotal: number = getCartSubtotal(items);
   const tax: number = getCartTax(subtotal);
   const total: number = subtotal + tax;
-  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm px-4 py-3 shadow-sm">

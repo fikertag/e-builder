@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Settings } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
-import { useQueries, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { UploadCloud } from "lucide-react";
 
@@ -34,8 +34,6 @@ export default function SettingsPage() {
     description: store?.description || "",
     isPublished: store?.isPublished ?? false,
   });
-  const [status, setStatus] = useState<null | "success" | "error">(null);
-  const [loading, setLoading] = useState(false);
   const [isImageUploading, setIsImageUploading] = useState(false);
 
   const mutation = useMutation({
@@ -84,7 +82,7 @@ export default function SettingsPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     if (name.startsWith("contact.social.")) {
       const socialKey = name.split(".")[2];
       setForm((prev) => ({

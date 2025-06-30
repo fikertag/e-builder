@@ -385,7 +385,7 @@ export async function PATCH(request: NextRequest) {
       updateFields.whyChooseUs &&
       (!Array.isArray(updateFields.whyChooseUs) ||
         updateFields.whyChooseUs.some(
-          (item: any) => typeof item !== "string" || !item.trim()
+          (item: string) => typeof item !== "string" || !item.trim()
         ))
     ) {
       return NextResponse.json(
@@ -508,7 +508,7 @@ export async function PATCH(request: NextRequest) {
     // Update only provided fields
     Object.entries(updateFields).forEach(([key, value]) => {
       if (value !== undefined) {
-        // @ts-ignore
+        // @ts-expect-error: Store type is not indexable by string, but dynamic field assignment is required for PATCH updates
         store[key] = value;
       }
     });

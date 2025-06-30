@@ -6,6 +6,7 @@ import { IProduct } from "@/types/index";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   product: IProduct;
@@ -13,7 +14,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const addToCart = useCartStore((state) => state.addToCart);
-  const router = require("next/navigation").useRouter();
+  const router = useRouter();
   const hasVariantsOrOptions =
     (product.variants && product.variants.length > 0) ||
     (product.customOptions && product.customOptions.length > 0);

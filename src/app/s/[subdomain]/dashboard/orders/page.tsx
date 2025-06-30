@@ -4,7 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useStoreData } from "@/store/useStoreData";
-import { useMemo } from "react";
+
+interface Order {
+  _id: string;
+  customer?: { name?: string } | string;
+  total?: number;
+  status: string;
+  createdAt?: string;
+}
 
 export default function OrdersPage() {
   const store = useStoreData((s) => s.store);
@@ -52,10 +59,10 @@ export default function OrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order: any) => (
+                {(orders as Order[]).map((order) => (
                   <tr key={order._id} className="border-t">
                     <td className="px-3 py-2 font-mono">{order._id.slice(-6).toUpperCase()}</td>
-                    <td className="px-3 py-2">{order.customer?.name || order.customer || "-"}</td>
+                    <td className="px-3 py-2">{typeof order.customer === "object" ? order.customer?.name || "-" : order.customer || "-"}</td>
                     <td className="px-3 py-2">{order.total?.toLocaleString() || "-"} ETB</td>
                     <td className="px-3 py-2 capitalize">{order.status}</td>
                     <td className="px-3 py-2">{order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}</td>
