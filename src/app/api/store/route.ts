@@ -277,53 +277,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * API Documentation:
- *
- * POST /api/store
- * - Description: Creates a new store in the database.
- * - Request Body:
- *   {
- *     "owner": "UserObjectId",
- *     "subdomain": "myshop", // optional, auto-generated from storeName if not provided
- *     "storeName": "My Shop",
- *     "description": "A cool store",
- *     "aiConfig": { // optional, but if provided, must match schema
- *       "colorPalette": {
- *         "primary": "#2563eb",
- *         "secondary": "#1e40af",
- *         "accent": "#f97316"
- *       },
- *       "typography": {
- *         "heading": "Inter, sans-serif",
- *         "body": "Roboto, sans-serif"
- *       },
- *       "layoutTemplate": "professional"
- *     },
- *     "heroHeading": "Welcome to My Shop",           // required, string, max 100 chars
- *     "heroDescription": "Best products for you.",    // required, string, max 300 chars
- *     "aboutUs": "We are passionate about mugs.",     // required, string, max 1000 chars
- *     "whyChooseUs": ["Quality", "Fast Shipping"],    // required, non-empty array of strings
- *     "contact": {                                    // optional, object
- *       "email": "info@myshop.com",
- *       "phone": "+123456789",
- *       "address": "123 Main St, City, Country",
- *       "social": {
- *         "instagram": "myshop",
- *         "facebook": "myshop",
- *         "twitter": "myshop",
- *         "tiktok": "myshop",
- *         "youtube": "myshop"
- *       }
- *     }
- *   }
- * - Response:
- *   - 201: Returns the created store document.
- *   - 400: Returns an error message if required fields are missing or invalid.
- *   - 409: Returns an error if the subdomain is already taken.
- *   - 500: Returns an error message if creation fails.
- */
-
 export async function PATCH(request: NextRequest) {
   await dbConnect();
   try {
@@ -525,52 +478,6 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-/**
- * API Documentation:
- *
- * PATCH /api/store
- * - Description: Updates an existing store's settings.
- * - Request Body:
- *   {
- *     "id": "StoreObjectId", // required if subdomain is not provided
- *     "subdomain": "myshop", // required if id is not provided
- *     "storeName": "My Updated Shop", // optional
- *     "description": "An even cooler store", // optional
- *     "aiConfig": { // optional, but if provided, must match schema
- *       "colorPalette": {
- *         "primary": "#2563eb",
- *         "secondary": "#1e40af",
- *         "accent": "#f97316"
- *       },
- *       "typography": {
- *         "heading": "Inter, sans-serif",
- *         "body": "Roboto, sans-serif"
- *       },
- *       "layoutTemplate": "professional"
- *     },
- *     "heroHeading": "Welcome to My Updated Shop",           // optional, string, max 100 chars
- *     "heroDescription": "Best products for you, updated.",    // optional, string, max 300 chars
- *     "aboutUs": "We are even more passionate about mugs.",     // optional, string, max 1000 chars
- *     "whyChooseUs": ["Quality", "Fast Shipping", "Best Service"],    // optional, array of strings
- *     "contact": {                                    // optional, object
- *       "email": "info@myshop.com",
- *       "phone": "+123456789",
- *       "address": "123 Main St, City, Country",
- *       "social": {
- *         "instagram": "myshop",
- *         "facebook": "myshop",
- *         "twitter": "myshop",
- *         "tiktok": "myshop",
- *         "youtube": "myshop"
- *       }
- *     }
- *   }
- * - Response:
- *   - 200: Returns the updated store document.
- *   - 400: Returns an error message if provided fields are invalid.
- *   - 404: Returns an error if the store is not found.
- *   - 500: Returns an error message if update fails.
- */
 export async function GET(request: NextRequest) {
   await dbConnect();
   try {
@@ -583,8 +490,8 @@ export async function GET(request: NextRequest) {
       );
     }
     const stores = await Store.find({ owner });
-    const response = stores.map((store: any) => ({
-      id: store._id.toString(),
+    const response = stores.map((store) => ({
+      id: store._id,
       storeName: store.storeName,
       subdomain: store.subdomain,
       description: store.description,
@@ -593,10 +500,10 @@ export async function GET(request: NextRequest) {
       storeLandingImage: store.storeLandingImage,
       heroDescription: store.heroDescription,
       aboutUs: store.aboutUs,
-      whyChooseUs: store.whyChooseUs || [],
-      contact: store.contact || {},
+      whyChooseUs: Array.isArray(store.whyChooseUs) ? store.whyChooseUs : [],
+      contact: store.contact ? store.contact : {},
       isPublished: store.isPublished,
-      integrations: store.integrations || {},
+      integrations: store.integrations ? store.integrations : {},
     }));
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
