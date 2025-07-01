@@ -1,6 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext";
 
 interface IAiFormData {
   owner: string;
@@ -30,7 +31,6 @@ interface IAiFormData {
   };
   storeLandingImage: string;
 }
-import { authClient } from "@/lib/auth-client";
 
 export default function HomePage() {
   const [shopDescription, setShopDescription] = useState("");
@@ -43,9 +43,11 @@ export default function HomePage() {
   const [imageLoading, setImageLoading] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data } = authClient.useSession();
+  const { user } = useUser();
 
-  console.log("User session data:", data?.user);
+  useEffect(() => {
+    console.log("User data:", user);
+  }, [user]);
 
   const handleGenerate = async () => {
     setLoading(true);

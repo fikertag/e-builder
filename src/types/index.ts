@@ -99,3 +99,19 @@ export interface CartItem {
   selectedVariants?: IVariant[];
   selectedCustomOptions?: { [optionName: string]: string };
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  image?: string | null | undefined;
+  role: string | null | undefined;
+  roles: string | null | undefined;
+  storeId?: string;
+  banned?: boolean;
+  banReason?: string | null;
+  banExpires?: Date | null;
+}

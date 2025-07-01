@@ -24,24 +24,6 @@ export default function Page() {
     queryFn: () => getProducts(),
     enabled: !!store?.id,
   });
-
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center min-h-[90vh]">
-        <span className="inline-block animate-bounce text-4xl text-indigo-500">
-          . . .
-        </span>
-      </div>
-    );
-  if (error)
-    return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <span className="inline-block animate-pulse text-2xl text-red-500">
-          Something went wrong. Please try again.
-        </span>
-      </div>
-    );
-
   return (
     <>
       <div className="min-h-screen flex flex-col">
@@ -51,11 +33,23 @@ export default function Page() {
             description={store?.heroDescription || ""}
             imageUrl={store?.storeLandingImage || "/default-hero-image.jpg"}
           />
-          <ProductsSection
-            products={products || []}
-            title="Featured Products"
-            subtitle="Discover our most popular items"
-          />
+          {isLoading ? (
+            <div className="text-center py-16">
+              <p className="text-gray-600">Loading products...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-16">
+              <p className="text-red-600">
+                Error loading products: {error.message}
+              </p>
+            </div>
+          ) : (
+            <ProductsSection
+              products={products || []}
+              title="Featured Products"
+              subtitle="Discover our most popular items"
+            />
+          )}
 
           <section className="py-16 bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">

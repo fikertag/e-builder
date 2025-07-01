@@ -473,7 +473,8 @@ export async function PATCH(request: NextRequest) {
         if (
           typeof telebirr !== "object" ||
           !/^\+2519\d{8}$/.test(telebirr.number || "") ||
-          !telebirr.name || typeof telebirr.name !== "string"
+          !telebirr.name ||
+          typeof telebirr.name !== "string"
         ) {
           return NextResponse.json(
             { message: "Invalid Telebirr integration info." },
@@ -485,7 +486,8 @@ export async function PATCH(request: NextRequest) {
         if (
           typeof cbe !== "object" ||
           !/^1000\d{8,}$/.test(cbe.account || "") ||
-          !cbe.name || typeof cbe.name !== "string"
+          !cbe.name ||
+          typeof cbe.name !== "string"
         ) {
           return NextResponse.json(
             { message: "Invalid CBE integration info." },
@@ -569,3 +571,39 @@ export async function PATCH(request: NextRequest) {
  *   - 404: Returns an error if the store is not found.
  *   - 500: Returns an error message if update fails.
  */
+export async function GET(request: NextRequest) {
+  await dbConnect();
+  try {
+    const url = new URL(request.url);
+    const owner = url.searchParams.get("owner");
+    if (!owner || !mongoose.Types.ObjectId.isValid(owner)) {
+      return NextResponse.json(
+        { message: "Owner (user id) is required." },
+        { status: 400 }
+      );
+    }
+    const stores = await Store.find({ owner });
+    const response = stores.map((store: any) => ({
+      id: store._id.toString(),
+      storeName: store.storeName,
+      subdomain: store.subdomain,
+      description: store.description,
+      aiConfig: store.aiConfig,
+      heroHeading: store.heroHeading,
+      storeLandingImage: store.storeLandingImage,
+      heroDescription: store.heroDescription,
+      aboutUs: store.aboutUs,
+      whyChooseUs: store.whyChooseUs || [],
+      contact: store.contact || {},
+      isPublished: store.isPublished,
+      integrations: store.integrations || {},
+    }));
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching stores:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch stores", error },
+      { status: 500 }
+    );
+  }
+}
