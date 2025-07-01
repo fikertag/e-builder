@@ -19,8 +19,11 @@ const bodyFonts = [
 const layoutTemplates = ["minimalist", "professional", "vibrant"];
 
 export default function ThemePage() {
-  const store = useStoreData((state) => state.store);
-  const setStore = useStoreData((state) => state.setStore);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
+  const updateStore = useStoreData((state) => state.updateStore);
+
   const [form, setForm] = useState({
     colorPalette: {
       primary: store?.aiConfig?.colorPalette?.primary || "#2563eb",
@@ -37,21 +40,19 @@ export default function ThemePage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (store?.aiConfig) {
-      setForm({
-        colorPalette: {
-          primary: store.aiConfig.colorPalette.primary || "#2563eb",
-          secondary: store.aiConfig.colorPalette.secondary || "#1e40af",
-          accent: store.aiConfig.colorPalette.accent || "#f97316",
-        },
-        typography: {
-          heading: store.aiConfig.typography.heading || headingFonts[0],
-          body: store.aiConfig.typography.body || bodyFonts[0],
-        },
-        layoutTemplate: store.aiConfig.layoutTemplate || "professional",
-      });
-    }
-  }, [store?.aiConfig]);
+    setForm({
+      colorPalette: {
+        primary: store?.aiConfig?.colorPalette?.primary || "#2563eb",
+        secondary: store?.aiConfig?.colorPalette?.secondary || "#1e40af",
+        accent: store?.aiConfig?.colorPalette?.accent || "#f97316",
+      },
+      typography: {
+        heading: store?.aiConfig?.typography?.heading || headingFonts[0],
+        body: store?.aiConfig?.typography?.body || bodyFonts[0],
+      },
+      layoutTemplate: store?.aiConfig?.layoutTemplate || "professional",
+    });
+  }, [store]);
 
   const mutation = useMutation({
     mutationFn: async (data: typeof form) => {
@@ -67,7 +68,7 @@ export default function ThemePage() {
       return res.json();
     },
     onSuccess: (updatedStore) => {
-      setStore(updatedStore);
+      updateStore(updatedStore);
       setStatus("success");
     },
     onError: () => setStatus("error"),

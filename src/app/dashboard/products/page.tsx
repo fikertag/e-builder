@@ -9,7 +9,9 @@ import { useStoreData } from "@/store/useStoreData";
 import Image from "next/image";
 
 export default function ProductsPage() {
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
 
   async function getProducts() {
     const res = await fetch(`/api/product?store=${store?.id}`);

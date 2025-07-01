@@ -6,9 +6,9 @@ import { useStoreData } from "@/store/useStoreData";
 import { useQuery } from "@tanstack/react-query";
 
 export default function DashboardPage() {
-  const store = useStoreData((state) => state.stores[11]);
-
-  console.log("Selected store:", store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
 
   // Fetch product count
   const { data: productsData } = useQuery({

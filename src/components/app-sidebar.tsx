@@ -26,21 +26,29 @@ import {
 import { useStoreData } from "@/store/useStoreData";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
 
   const data = {
     user: {
-      name: store?.storeName || "Store Owner",
+      name: "Store Owner",
       email: "m@example.com",
       avatar: "/avatars/shadcn.jpg",
     },
-    teams: [
-      {
-        name: store?.storeName || "My Store",
-        logo: GalleryVerticalEnd,
-        plan: "Enterprise",
-      },
-    ],
+    teams:
+      stores && stores.length > 0
+        ? stores.map((s) => ({
+            name: s.storeName,
+            logo: GalleryVerticalEnd,
+            plan: "Enterprise",
+            id: s.id, // Assuming each store has a unique ID
+          }))
+        : [
+            {
+              name: "My Store",
+              logo: GalleryVerticalEnd,
+              plan: "Enterprise",
+            },
+          ],
     navMain: [
       {
         title: "Overview",

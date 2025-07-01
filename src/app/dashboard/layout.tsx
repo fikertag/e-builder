@@ -30,8 +30,6 @@ export default async function RootLayout({
   });
   const stores = await getUserStores(session?.user?.id || "");
 
-  console.log("User stores:", stores);
-
   return (
     <SidebarProvider>
       <StoresInitializer stores={stores} />

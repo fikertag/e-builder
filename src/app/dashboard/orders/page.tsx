@@ -14,7 +14,9 @@ interface Order {
 }
 
 export default function OrdersPage() {
-  const store = useStoreData((s) => s.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
   const storeId = store?.id;
 
   const {
@@ -41,11 +43,17 @@ export default function OrdersPage() {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="text-gray-500 text-center py-8">Loading orders...</div>
+          <div className="text-gray-500 text-center py-8">
+            Loading orders...
+          </div>
         ) : isError ? (
-          <div className="text-red-500 text-center py-8">{error?.message || "Failed to load orders."}</div>
+          <div className="text-red-500 text-center py-8">
+            {error?.message || "Failed to load orders."}
+          </div>
         ) : !orders || orders.length === 0 ? (
-          <div className="text-gray-500 text-center py-8">No orders yet. Orders will appear here as they are placed.</div>
+          <div className="text-gray-500 text-center py-8">
+            No orders yet. Orders will appear here as they are placed.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm border">
@@ -61,11 +69,23 @@ export default function OrdersPage() {
               <tbody>
                 {(orders as Order[]).map((order) => (
                   <tr key={order._id} className="border-t">
-                    <td className="px-3 py-2 font-mono">{order._id.slice(-6).toUpperCase()}</td>
-                    <td className="px-3 py-2">{typeof order.customer === "object" ? order.customer?.name || "-" : order.customer || "-"}</td>
-                    <td className="px-3 py-2">{order.total?.toLocaleString() || "-"} ETB</td>
+                    <td className="px-3 py-2 font-mono">
+                      {order._id.slice(-6).toUpperCase()}
+                    </td>
+                    <td className="px-3 py-2">
+                      {typeof order.customer === "object"
+                        ? order.customer?.name || "-"
+                        : order.customer || "-"}
+                    </td>
+                    <td className="px-3 py-2">
+                      {order.total?.toLocaleString() || "-"} ETB
+                    </td>
                     <td className="px-3 py-2 capitalize">{order.status}</td>
-                    <td className="px-3 py-2">{order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}</td>
+                    <td className="px-3 py-2">
+                      {order.createdAt
+                        ? new Date(order.createdAt).toLocaleString()
+                        : "-"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
