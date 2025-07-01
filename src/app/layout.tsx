@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import ReactQueryProvider from "@/providers/QueryProvider";
 import type { ReactNode } from "react";
+import { UserProvider } from "@/context/UserContext";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -44,12 +45,14 @@ export default function RootLayout({
       >
         <Toaster />
         <ReactQueryProvider>
-          <Providers>
-            <div className="flex min-h-svh flex-col ">
-              {children}
-              <Analytics />
-            </div>
-          </Providers>
+          <UserProvider>
+            <Providers>
+              <div className="flex min-h-svh flex-col ">
+                {children}
+                <Analytics />
+              </div>
+            </Providers>
+          </UserProvider>
         </ReactQueryProvider>
       </body>
     </html>

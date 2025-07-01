@@ -7,8 +7,6 @@ await dbConnect();
 
 const db = mongoose.connection.db;
 
-console.log("Database connection established:", db ? "Yes" : "No");
-
 if (!db) {
   throw new Error("Database connection is not established.");
 }
