@@ -17,10 +17,15 @@ export function StoreInitializer({ store }: { store: StoreData }) {
 // For multiple stores
 export function StoresInitializer({ stores }: { stores: StoreData[] }) {
   const setStores = useStoreData((state) => state.setStores);
+  const setSelectedStoreId = useStoreData((state) => state.setSelectedStoreId);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
 
   useEffect(() => {
     setStores(stores);
-  }, [stores, setStores]);
+    if (stores.length > 0 && !selectedStoreId) {
+      setSelectedStoreId(stores[0].id);
+    }
+  }, [stores, setStores, setSelectedStoreId, selectedStoreId]);
 
   return null;
 }

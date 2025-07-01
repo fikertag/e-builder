@@ -9,7 +9,9 @@ import Image from "next/image";
 import { UploadCloud } from "lucide-react";
 
 export default function SettingsPage() {
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
   const setStore = useStoreData((state) => state.setStore);
   const [form, setForm] = useState({
     storeName: store?.storeName || "",

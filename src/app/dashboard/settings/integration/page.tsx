@@ -7,8 +7,10 @@ import { useStoreData } from "@/store/useStoreData";
 import { useMutation } from "@tanstack/react-query";
 
 export default function IntegrationsPage() {
-  const store = useStoreData((state) => state.store);
-  const setStore = useStoreData((state) => state.setStore);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
+  const updateStore = useStoreData((state) => state.updateStore);
   const [form, setForm] = useState({
     telebirr: store?.integrations?.telebirr?.number || "",
     telebirrName: store?.integrations?.telebirr?.name || "",
@@ -20,15 +22,13 @@ export default function IntegrationsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (store?.integrations) {
-      setForm({
-        telebirr: store.integrations.telebirr?.number || "",
-        telebirrName: store.integrations.telebirr?.name || "",
-        cbeAccount: store.integrations.cbe?.account || "",
-        cbeName: store.integrations.cbe?.name || "",
-      });
-    }
-  }, [store?.integrations]);
+    setForm({
+      telebirr: store?.integrations?.telebirr?.number || "",
+      telebirrName: store?.integrations?.telebirr?.name || "",
+      cbeAccount: store?.integrations?.cbe?.account || "",
+      cbeName: store?.integrations?.cbe?.name || "",
+    });
+  }, [store]);
 
   const mutation = useMutation({
     mutationFn: async (data: typeof form) => {
@@ -50,7 +50,7 @@ export default function IntegrationsPage() {
       return res.json();
     },
     onSuccess: (updatedStore) => {
-      setStore(updatedStore);
+      updateStore(updatedStore);
       setStatus("success");
     },
     onError: () => setStatus("error"),

@@ -10,7 +10,9 @@ import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import Image from "next/image";
 
 export default function AddProductPage() {
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
 
   // Form state
   const [title, setTitle] = useState("");

@@ -468,7 +468,23 @@ export async function PATCH(request: NextRequest) {
       }
     });
     await store.save();
-    return NextResponse.json(store, { status: 200 });
+    const saved = store;
+    const response = {
+      id: saved._id,
+      storeName: saved.storeName,
+      subdomain: saved.subdomain,
+      description: saved.description,
+      aiConfig: saved.aiConfig,
+      heroHeading: saved.heroHeading,
+      storeLandingImage: saved.storeLandingImage,
+      heroDescription: saved.heroDescription,
+      aboutUs: saved.aboutUs,
+      whyChooseUs: Array.isArray(saved.whyChooseUs) ? saved.whyChooseUs : [],
+      contact: saved.contact ? saved.contact : {},
+      isPublished: saved.isPublished,
+      integrations: saved.integrations ? saved.integrations : {},
+    };
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error("Error updating store:", error);
     return NextResponse.json(

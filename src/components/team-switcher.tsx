@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useStoreData } from "@/store/useStoreData";
 
 export function TeamSwitcher({
   teams,
@@ -25,10 +26,12 @@ export function TeamSwitcher({
     name: string;
     logo: React.ElementType;
     plan: string;
+    id?: string; // Add id if available
   }[];
 }) {
   const { isMobile } = useSidebar();
   const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const setSelectedStoreId = useStoreData((state) => state.setSelectedStoreId);
 
   if (!activeTeam) {
     return null;
@@ -65,7 +68,10 @@ export function TeamSwitcher({
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
-                onClick={() => setActiveTeam(team)}
+                onClick={() => {
+                  setActiveTeam(team);
+                  if (team.id) setSelectedStoreId(team.id);
+                }}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
