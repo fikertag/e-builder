@@ -8,11 +8,6 @@ import { useStoreData } from "@/store/useStoreData";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
-const paymentOptions = [
-  { label: "Telebirr", value: "telebirr", logo: "/telebirr.png" },
-  { label: "CBE", value: "cbe", logo: "/cbe.png" },
-];
-
 export default function CheckoutForm() {
   const cartItems = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -22,9 +17,8 @@ export default function CheckoutForm() {
   const [shipping, setShipping] = useState({
     city: "",
     street: "",
-    phone: "",
+    phoneNumber: "",
   });
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -56,9 +50,6 @@ export default function CheckoutForm() {
       total: number;
       status: string;
       shippingAddress: typeof shipping;
-      stripePaymentId: string;
-      stripeChargeId: string;
-      paymentMethod: string;
     }) => {
       const res = await fetch("/api/order", {
         method: "POST",
@@ -77,9 +68,7 @@ export default function CheckoutForm() {
     },
     onSuccess: (order) => {
       clearCart();
-      router.push(
-        `/checkout/payment?orderId=${order._id}&method=${selectedPayment}`
-      );
+      router.push(`/checkout/payment?orderId=${order._id}`);
     },
     onError: () => {
       setError("Failed to place order. Please try again.");
@@ -93,16 +82,12 @@ export default function CheckoutForm() {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!selectedPayment) {
-      setError("Please select a payment method.");
-      return;
-    }
     if (!store?.id) {
       setError("Store not found.");
       return;
     }
     // Validate shipping address
-    for (const key of ["city", "street", "phone"]) {
+    for (const key of ["city", "street", "phoneNumber"]) {
       if (!shipping[key as keyof typeof shipping]) {
         setError("Please fill in all shipping address fields.");
         return;
@@ -132,9 +117,6 @@ export default function CheckoutForm() {
       total: total,
       status: "pending",
       shippingAddress: shipping,
-      stripePaymentId: "",
-      stripeChargeId: "",
-      paymentMethod: selectedPayment,
     };
     orderMutation.mutate(orderPayload);
   };
@@ -155,7 +137,16 @@ export default function CheckoutForm() {
               {cartItems.map((item, idx) => (
                 <li key={idx} className="flex items-center gap-3 py-3">
                   <Image
-                    src={item.product.images[0]}
+                    src={
+                      // Show variant image if available, else main product image
+                      item.selectedVariants &&
+                      item.selectedVariants.length > 0 &&
+                      item.selectedVariants[0].image
+                        ? item.selectedVariants[0].image
+                        : item.product.images[0]?.startsWith("http")
+                          ? item.product.images[0]
+                          : "/placeholder.png"
+                    }
                     alt={item.product.title}
                     width={48}
                     height={48}
@@ -166,11 +157,12 @@ export default function CheckoutForm() {
                     <div className="text-xs text-gray-500">
                       Qty: {item.quantity}
                     </div>
-                    {item.selectedVariants && item.selectedVariants.length > 0 && (
-                      <div className="text-xs text-gray-400">
-                        {item.selectedVariants.map((v) => v.name).join(", ")}
-                      </div>
-                    )}
+                    {item.selectedVariants &&
+                      item.selectedVariants.length > 0 && (
+                        <div className="text-xs text-gray-400">
+                          {item.selectedVariants.map((v) => v.name).join(", ")}
+                        </div>
+                      )}
                   </div>
                   <div className="font-bold text-gray-900">
                     $
@@ -216,9 +208,9 @@ export default function CheckoutForm() {
               type="text"
               className="w-full border rounded px-3 py-2"
               placeholder="Phone Number"
-              value={shipping.phone || ""}
+              value={shipping.phoneNumber || ""}
               onChange={(e) =>
-                setShipping((s) => ({ ...s, phone: e.target.value }))
+                setShipping((s) => ({ ...s, phoneNumber: e.target.value }))
               }
               required
             />
@@ -238,32 +230,6 @@ export default function CheckoutForm() {
               <span className="text-xl font-bold text-green-700">
                 ${total.toFixed(2)}
               </span>
-            </div>
-          </div>
-          {/* Payment Method */}
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold mb-2">Payment Method</h2>
-            <div className="flex gap-4">
-              {paymentOptions.map((opt) => (
-                <button
-                  type="button"
-                  key={opt.value}
-                  className={`border rounded-lg px-1 py-1 flex flex-col items-center gap-1 transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    selectedPayment === opt.value
-                      ? "border-blue-600 bg-blue-50"
-                      : "border-gray-200 bg-white"
-                  }`}
-                  onClick={() => setSelectedPayment(opt.value)}
-                >
-                  <Image
-                    src={opt.logo}
-                    alt={opt.label}
-                    objectFit="cover"
-                    height={64}
-                    width={64}
-                  />
-                </button>
-              ))}
             </div>
           </div>
           {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
