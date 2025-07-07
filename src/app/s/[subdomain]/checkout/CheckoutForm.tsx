@@ -7,11 +7,13 @@ import { useState } from "react";
 import { useStoreData } from "@/store/useStoreData";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import { useUser } from "@/context/UserContext";
 
 export default function CheckoutForm() {
   const cartItems = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const store = useStoreData((state) => state.store);
+  const { user } = useUser();
   const router = useRouter();
   // Shipping address state
   const [shipping, setShipping] = useState({
@@ -68,7 +70,7 @@ export default function CheckoutForm() {
     },
     onSuccess: (order) => {
       clearCart();
-      router.push(`/checkout/payment?orderId=${order._id}`);
+      router.push(`/orders/${order._id}/payment`);
     },
     onError: () => {
       setError("Failed to place order. Please try again.");
@@ -97,7 +99,7 @@ export default function CheckoutForm() {
     // Prepare order payload
     const orderPayload = {
       store: store.id,
-      customer: "6651d200b5b50e504b6eba5b", // TODO: Replace with real customer ObjectId
+      customer: user?.id || "",
       items: cartItems.map((item) => ({
         product: item.product._id,
         variant: item.selectedVariants?.map((v) => v.sku).join(", "),

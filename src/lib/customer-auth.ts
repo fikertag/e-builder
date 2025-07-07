@@ -12,7 +12,7 @@ if (!db) {
 }
 
 export const auth = betterAuth({
-  trustedOrigins: ["http://localhost:3000"],
+  trustedOrigins: ["http://localhost:3000", "http://ps4store.localhost:3000"],
   database: mongodbAdapter(db),
   emailAndPassword: {
     enabled: true,
@@ -22,7 +22,8 @@ export const auth = betterAuth({
     additionalFields: {
       storeId: {
         type: "string",
-        required: true,
+        defaultValue: "6851d200b5b50e504b6eba5b",
+        required: false,
       },
       phoneNumber: {
         type: "string",
