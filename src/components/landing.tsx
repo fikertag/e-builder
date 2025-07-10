@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Landing() {
   return (
-    <div className="flex flex-col items-center justify-center ">
+    <div className="flex flex-col items-center justify-center pb-16 ">
       {/* Hero Section */}
       <div className="max-w-2xl text-center mt-16 mb-7">
         <h1 className="text-4xl md:text-6xl font-semibold mb-4 ">
