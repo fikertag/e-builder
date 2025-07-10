@@ -1,13 +1,21 @@
 import { Header } from "@/components/header";
+import Landing from "@/components/landing";
+import HowItWorks from "@/components/howItWork";
+import WhyChoose from "@/components/whyChoose";
+import StoreShowcase from "@/components/StoreShowCase";
+import PricingCTA from "@/components/pricing";
+import Footer from "@/components/landing-footer";
 
 export default async function Home() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      <p className="text-lg mt-4 max-w-3xl mx-auto">
-        This is the public landing page. After authentication, users will access
-        protected routes.
-      </p>
-    </>
+      <Landing />
+      <HowItWorks />
+      <WhyChoose />
+      <StoreShowcase />
+      <PricingCTA />
+      <Footer />
+    </div>
   );
 }

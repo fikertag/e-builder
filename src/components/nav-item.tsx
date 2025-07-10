@@ -20,8 +20,8 @@ export const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
         href={href}
         ref={ref}
         className={cn(
-          "transition-colors text-muted-foreground hover:text-foreground",
-          "hover:underline underline-offset-8",
+          "transition-all hover:text-foreground",
+          "transition-all hover:underline underline-offset-8",
           isActive && "text-foreground underline font-semibold",
           className
         )}
