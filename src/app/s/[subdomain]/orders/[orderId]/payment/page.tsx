@@ -1,24 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CreditCard, Image as ImageIcon } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
+import { useMutation } from "@tanstack/react-query";
 
 export default function OrderPaymentPage() {
   const [method, setMethod] = useState<"telebirr" | "cbe" | "">("");
   const [transactionId, setTransactionId] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const { orderId } = useParams();
-  const store = useStoreData((state) => state.store)
+  const store = useStoreData((state) => state.store);
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const res = await fetch("/api/payment/verify", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(
+          data.error || "Failed to submit payment. Please try again."
+        );
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      router.push("/orders");
+    },
+    onError: (err: any) => {
+      router.push("/orders");
+      setError(err.message || "Failed to submit payment. Please try again.");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
     if (!method) {
       setError("Please select a payment method.");
       return;
@@ -29,29 +51,15 @@ export default function OrderPaymentPage() {
     }
     if (!orderId || typeof orderId !== "string") {
       setError("Order ID is missing.");
-      setIsSubmitting(false);
       return;
     }
-    setIsSubmitting(true);
-
     const formData = new FormData();
     formData.append("orderId", orderId);
     formData.append("method", method);
     if (transactionId) formData.append("transactionId", transactionId);
     if (screenshot) formData.append("screenshot", screenshot);
-    if (store?.id) formData.append("storeId", store.id)
-
-    const res = await fetch("/api/payment/verify", {
-      method: "POST",
-      body: formData,
-    });
-
-    setIsSubmitting(false);
-    if (res.ok) {
-      setSuccess("Payment submitted! You will be notified after verification.");
-    } else {
-      setError("Failed to submit payment. Please try again.");
-    }
+    if (store?.id) formData.append("storeId", store.id);
+    mutation.mutate(formData);
   };
 
   return (
@@ -134,13 +142,12 @@ export default function OrderPaymentPage() {
           </label>
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
-        {success && <div className="text-green-600 text-sm">{success}</div>}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold text-lg shadow hover:bg-blue-700 transition"
-          disabled={isSubmitting}
+          disabled={mutation.isPending}
         >
-          {isSubmitting ? "Submitting..." : "Submit Payment"}
+          {mutation.isPending ? "Submitting..." : "Submit Payment"}
         </button>
       </form>
     </div>
