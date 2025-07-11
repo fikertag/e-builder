@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { IProduct } from "@/types/index";
 import { PackageCheck, Star, Truck } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
   const store = useStoreData((state) => state.store);
@@ -50,6 +51,27 @@ export default function Page() {
               subtitle="Discover our most popular items"
             />
           )}
+
+          <div className="flex gap-4 justify-center py-8">
+            <div className="bg-primary text-primary-foreground p-6 rounded shadow">
+              Primary Theme
+            </div>
+            <div className="bg-secondary text-secondary-foreground p-6 rounded shadow">
+              Secondary Theme
+            </div>
+            <div className="bg-accent text-accent-foreground p-6 rounded shadow">
+              Accent Theme
+            </div>
+            <div className="bg-muted text-muted-foreground p-6 rounded shadow">
+              Muted Theme
+            </div>
+            <Badge
+              className="mb-4 rounded-full px-4 py-1.5 text-sm font-medium shadow-sm transition-none"
+              variant="secondary"
+            >
+              <span className="text-primary mr-1">✦</span> Visual Theme Editor
+            </Badge>
+          </div>
 
           <section className="py-16 bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
