@@ -22,8 +22,7 @@ export const auth = betterAuth({
     additionalFields: {
       storeId: {
         type: "string",
-        defaultValue: "6851d200b5b50e504b6eba5b",
-        required: false,
+        required: true,
       },
       phoneNumber: {
         type: "string",
