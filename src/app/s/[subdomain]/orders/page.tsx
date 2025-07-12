@@ -19,6 +19,14 @@ const fetchUserOrders = async (userId: string) => {
   return data.orders;
 };
 
+type UserOrder = {
+  _id: string;
+  status: string;
+  total: number;
+  createdAt: string;
+  // Add other fields as needed
+};
+
 export default function OrdersPage() {
   const { user } = useUser();
   const userId = user?.id || "";
@@ -52,7 +60,7 @@ export default function OrdersPage() {
     return <div className="text-muted-foreground">No orders found.</div>;
 
   // Merge paid and shipping as "shipping"
-  const normalizedOrders = orders.map((order: any) => ({
+  const normalizedOrders = (orders as UserOrder[]).map((order) => ({
     ...order,
     status:
       order.status === "paid" || order.status === "shipping"
@@ -61,7 +69,7 @@ export default function OrdersPage() {
   }));
 
   const filteredOrders = selectedStatus
-    ? normalizedOrders.filter((order: any) => order.status === selectedStatus)
+    ? normalizedOrders.filter((order) => order.status === selectedStatus)
     : normalizedOrders;
 
   const handlePay = (orderId: string) => {
@@ -108,7 +116,7 @@ export default function OrdersPage() {
         ))}
       </nav>
       <ul className="space-y-4">
-        {filteredOrders.map((order: any) => (
+        {filteredOrders.map((order) => (
           <li
             key={order._id}
             className="border border-border rounded-xl p-4 shadow bg-card flex flex-col md:flex-row md:items-center md:justify-between"

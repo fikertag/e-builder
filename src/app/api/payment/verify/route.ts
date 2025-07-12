@@ -44,9 +44,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Store not found" }, { status: 404 });
 
   // 3. Get integration info
-  let integration: any = undefined;
+  let integration: unknown = undefined;
   if (typeof method === "string") {
-    integration = (store.integrations as Record<string, any>)[method];
+    integration = (store.integrations as Record<string, unknown>)[method];
   }
   console.log("Integration info:", integration);
   if (!integration)
@@ -71,8 +71,15 @@ export async function POST(req: NextRequest) {
   // 4. Call payment verification API
   let verifyData;
   try {
-    let apiBody: Record<string, string> = { reference: String(transactionId) };
-    if (method === "cbe" && integration.account) {
+    const apiBody: Record<string, string> = {
+      reference: String(transactionId),
+    };
+    if (
+      method === "cbe" &&
+      integration &&
+      typeof integration === "object" &&
+      "account" in integration
+    ) {
       // For CBE, send accountSuffix (last 8 digits of account)
       apiBody.accountSuffix = "83058901"; // Example account number, replace with actual
     }
@@ -105,21 +112,23 @@ export async function POST(req: NextRequest) {
   let paidAmount = 0;
 
   if (method === "cbe") {
-    isAccountMatch = verifyData.receiverAccount === integration.account;
-    isNameMatch = verifyData.receiver === integration.name;
+    const integrationObj = integration as { account?: string; name?: string };
+    isAccountMatch = verifyData.receiverAccount === integrationObj.account;
+    isNameMatch = verifyData.receiver === integrationObj.name;
     paidAmount = parseFloat((verifyData.amount || "0").replace(/[^0-9.]/g, ""));
     isAmountMatch = paidAmount === order.total;
     isSuccess =
       verifyData.success &&
       (!verifyData.status || verifyData.status === "Completed");
   } else if (method === "telebirr") {
+    const integrationObj = integration as { number?: string; name?: string };
     const data = verifyData.data;
     // Only match the last 4 digits of the account number
-    const integrationLast4 = integration.number?.slice(-4);
+    const integrationLast4 = integrationObj.number?.slice(-4);
     const creditedLast4 = data.creditedPartyAccountNo?.slice(-4);
     isAccountMatch =
       integrationLast4 && creditedLast4 && integrationLast4 === creditedLast4;
-    isNameMatch = data.creditedPartyName === integration.name;
+    isNameMatch = data.creditedPartyName === integrationObj.name;
     paidAmount = parseFloat(
       (data.totalPaidAmount || "0").replace(/[^0-9.]/g, "")
     );

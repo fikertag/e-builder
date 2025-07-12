@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { IProduct } from "@/types/index";
 import { PackageCheck, Star, Truck } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
-import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
   const store = useStoreData((state) => state.store);

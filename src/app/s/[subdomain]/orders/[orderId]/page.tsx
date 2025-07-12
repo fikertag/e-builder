@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
-export default function OrderPaymentPage({
-  params,
-}: {
-  params: { orderId: string };
-}) {
+export default function OrderPaymentPage() {
+  const { orderId } = useParams();
   const [method, setMethod] = useState<"telebirr" | "cbe" | "">("");
   const [transactionId, setTransactionId] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
@@ -29,7 +27,12 @@ export default function OrderPaymentPage({
     setIsSubmitting(true);
 
     const formData = new FormData();
-    formData.append("orderId", params.orderId);
+    if (!orderId || typeof orderId !== "string") {
+      setError("Order ID is missing.");
+      setIsSubmitting(false);
+      return;
+    }
+    formData.append("orderId", orderId);
     formData.append("method", method);
     if (transactionId) formData.append("transactionId", transactionId);
     if (screenshot) formData.append("screenshot", screenshot);
@@ -50,7 +53,7 @@ export default function OrderPaymentPage({
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow">
       <h2 className="text-xl font-bold mb-4">
-        Submit Payment for Order #{params.orderId}
+        Submit Payment for Order #{orderId}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

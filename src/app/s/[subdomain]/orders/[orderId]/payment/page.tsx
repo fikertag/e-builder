@@ -32,7 +32,7 @@ export default function OrderPaymentPage() {
     onSuccess: () => {
       router.push("/orders");
     },
-    onError: (err: any) => {
+    onError: (err) => {
       router.push("/orders");
       setError(err.message || "Failed to submit payment. Please try again.");
     },
