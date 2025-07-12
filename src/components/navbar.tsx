@@ -75,7 +75,7 @@ export function Header({ title }: HeaderProps) {
                     </div>
                     {totalItems > 0 && (
                       <div
-                        className="absolute -top-1 -right-1 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center justify-center ring-2"
+                        className="absolute -top-1 -right-1 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center justify-center shadow-[0_0_0_2px] shadow-background"
                         style={{
                           width: "20px",
                           height: "20px",

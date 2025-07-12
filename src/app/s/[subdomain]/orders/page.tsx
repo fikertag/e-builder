@@ -36,10 +36,20 @@ export default function OrdersPage() {
     enabled: !!userId,
   });
 
-  if (!userId) return <div>Please log in to view your orders.</div>;
-  if (isLoading) return <div>Loading orders...</div>;
-  if (isError) return <div>Error: {(error as Error).message}</div>;
-  if (!orders || orders.length === 0) return <div>No orders found.</div>;
+  if (!userId)
+    return (
+      <div className="text-muted-foreground">
+        Please log in to view your orders.
+      </div>
+    );
+  if (isLoading)
+    return <div className="text-muted-foreground">Loading orders...</div>;
+  if (isError)
+    return (
+      <div className="text-destructive">Error: {(error as Error).message}</div>
+    );
+  if (!orders || orders.length === 0)
+    return <div className="text-muted-foreground">No orders found.</div>;
 
   // Merge paid and shipping as "shipping"
   const normalizedOrders = orders.map((order: any) => ({
@@ -70,14 +80,14 @@ export default function OrdersPage() {
 
   return (
     <div className="p-5">
-      <h2 className="text-2xl font-bold mb-6">Your Orders</h2>
+      <h2 className="text-2xl font-bold mb-6 text-foreground">Your Orders</h2>
       {/* Status navbar */}
-      <nav className="flex gap-8 border-b mb-6">
+      <nav className="flex gap-8 border-b border-border mb-6">
         <div
           className={`cursor-pointer pb-2 text-base font-medium transition-all ${
             selectedStatus === ""
-              ? "border-b-2 border-blue-600 text-blue-700 font-bold"
-              : "text-gray-600 hover:text-blue-600"
+              ? "border-b-2 border-primary text-primary font-bold"
+              : "text-muted-foreground hover:text-primary"
           }`}
           onClick={() => setSelectedStatus("")}
         >
@@ -88,8 +98,8 @@ export default function OrdersPage() {
             key={status.key}
             className={`cursor-pointer pb-2 text-base font-medium transition-all ${
               selectedStatus === status.key
-                ? "border-b-2 border-blue-600 text-blue-700 font-bold"
-                : "text-gray-600 hover:text-blue-600"
+                ? "border-b-2 border-primary text-primary font-bold"
+                : "text-muted-foreground hover:text-primary"
             }`}
             onClick={() => setSelectedStatus(status.key)}
           >
@@ -101,16 +111,19 @@ export default function OrdersPage() {
         {filteredOrders.map((order: any) => (
           <li
             key={order._id}
-            className="border rounded-xl p-4 shadow bg-white flex flex-col md:flex-row md:items-center md:justify-between"
+            className="border border-border rounded-xl p-4 shadow bg-card flex flex-col md:flex-row md:items-center md:justify-between"
           >
             <div>
-              <div className="font-semibold text-gray-800">
-                Order ID: <span className="text-blue-700">{order._id}</span>
+              <div className="font-semibold text-card-foreground">
+                Order ID: <span className="text-primary">{order._id}</span>
               </div>
-              <div className="text-gray-600">
-                Total: <span className="font-medium">{order.total}</span>
+              <div className="text-muted-foreground">
+                Total:{" "}
+                <span className="font-medium text-card-foreground">
+                  {order.total}
+                </span>
               </div>
-              <div className="text-gray-500 text-sm">
+              <div className="text-muted-foreground/70 text-sm">
                 Created: {new Date(order.createdAt).toLocaleString()}
               </div>
             </div>
@@ -133,13 +146,13 @@ export default function OrdersPage() {
               {order.status === "pending" && (
                 <div className="flex gap-2">
                   <button
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-semibold"
+                    className="px-3 py-1 bg-primary text-primary-foreground rounded hover:bg-primary/90 text-xs font-semibold"
                     onClick={() => handlePay(order._id)}
                   >
                     Pay
                   </button>
                   <button
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs font-semibold"
+                    className="px-3 py-1 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 text-xs font-semibold"
                     onClick={() => handleCancel(order._id)}
                   >
                     Cancel
@@ -148,7 +161,7 @@ export default function OrdersPage() {
               )}
               {order.status === "shipping" && (
                 <button
-                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-xs font-semibold"
+                  className="px-3 py-1 bg-accent text-accent-foreground rounded hover:bg-accent/90 text-xs font-semibold"
                   onClick={() => handleConfirmReceived(order._id)}
                 >
                   Confirm Received

@@ -18,11 +18,11 @@ export default function ProductsSection({
     title === "Featured Products" &&
     subtitle === "Discover our most popular items";
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-10 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold">{title}</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">{subtitle}</p>
+          <h2 className="text-4xl font-bold text-foreground">{title}</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">{subtitle}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.length > 0 ? (
@@ -30,7 +30,7 @@ export default function ProductsSection({
               <ProductCard key={product._id} product={product} />
             ))
           ) : isDefaultFeatured ? (
-            <div className="col-span-full text-center text-gray-400 text-lg py-12">
+            <div className="col-span-full text-center text-muted-foreground text-lg py-12">
               No featured products yet.
             </div>
           ) : null}
@@ -39,7 +39,7 @@ export default function ProductsSection({
           <div className="text-center mt-8">
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 text-indigo-700 font-semibold underline underline-offset-4 decoration-2 hover:text-indigo-900 transition text-base group"
+              className="inline-flex items-center gap-2 text-primary font-semibold underline underline-offset-4 decoration-2 hover:text-primary/80 transition text-base group"
             >
               View All Products
               <span className="inline-block group-hover:translate-x-1 transition-transform text-lg">
