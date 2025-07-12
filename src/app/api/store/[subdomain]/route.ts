@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
 import Store from "@/model/store";
+import Theme from "@/model/theme"; // Import Theme model
 
 export async function GET(
   request: Request,
@@ -24,6 +25,7 @@ export async function GET(
 
     // 3. Find store
     const store = await Store.findOne({ subdomain: cleanSubdomain })
+      .populate({ path: "theme", model: Theme })
       .select("-__v -owner -createdAt -updatedAt") // Exclude unnecessary fields
       .lean();
 
@@ -40,7 +42,7 @@ export async function GET(
       storeName: store.storeName,
       subdomain: store.subdomain,
       description: store.description,
-      aiConfig: store.aiConfig,
+      theme: store.theme,
       heroHeading: store.heroHeading,
       storeLandingImage: store.storeLandingImage,
       heroDescription: store.heroDescription,
@@ -60,48 +62,3 @@ export async function GET(
     );
   }
 }
-
-/**
- * API Documentation
-GET /api/stores/[subdomain]
-
-    Purpose: Fetch store details by subdomain
-
-    Authentication: None (public endpoint)
-
-    Parameters:
-
-        subdomain (URL path): Store's unique subdomain
-
-    Success Response:
-    json
-
-{
-  "success": true,
-  "data": {
-    "storeName": "Example Store",
-    "subdomain": "example",
-    "description": "An example store",
-    "theme": {
-      "colorPalette": {
-        "primary": "#2563eb",
-        "secondary": "#1e40af",
-        "accent": "#f97316"
-      },
-      "typography": {
-        "heading": "Inter, sans-serif",
-        "body": "Roboto, sans-serif"
-      },
-      "layoutTemplate": "professional"
-    }
-  }
-}
-
-Error Responses:
-
-    400 Bad Request: Invalid subdomain format
-
-    404 Not Found: Store not found
-
-    500 Internal Server Error: Server error
- */

@@ -39,7 +39,6 @@ export async function POST(request: Request) {
          subdomain: string;
          storeName: string;
          description: string;
-         aiConfig: IAIBrandConfig;
          isPublished: boolean;
        }
 
@@ -53,13 +52,16 @@ export async function POST(request: Request) {
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     let text = response.text();
-    text = text.replace(/```json|```/g, '').trim();
+    text = text.replace(/```json|```/g, "").trim();
     let json;
     try {
       json = JSON.parse(text);
     } catch (error) {
       console.error("Error parsing JSON:", error);
-      return Response.json({ error: 'AI did not return valid JSON', raw: text });
+      return Response.json({
+        error: "AI did not return valid JSON",
+        raw: text,
+      });
     }
     return Response.json(json);
   } catch (error) {
