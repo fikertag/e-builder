@@ -31,19 +31,19 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-800 text-white py-12">
+    <footer className="bg-secondary text-secondary-foreground py-12">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand Info */}
-        <div className="space-y-4">
+        <div className="flex flex-col items-center md:items-start space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">
-            {store?.storeName || "MugLife"}
+            {store?.storeName}
           </h2>
-          <p className="text-gray-400 max-w-xs">
+          <p className="text-muted-foreground text-center">
             {store?.description || "Quality products for your everyday life"}
           </p>
-          <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} {store?.storeName || "MugLife"}. All
-            rights reserved.
+          <p className="text-sm text-muted-foreground/70 text-center">
+            © {new Date().getFullYear()} {store?.storeName}. All rights
+            reserved.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="flex flex-col space-y-2">
             <Link
               href="/products"
-              className="text-gray-400 hover:text-indigo-400 transition-colors"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
               All Products
             </Link>
@@ -71,7 +71,7 @@ export default function Footer() {
                 aria-label={social.label}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-800 p-2 rounded-full hover:bg-indigo-600 transition-colors"
+                className="bg-muted p-2 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 <social.icon className="w-5 h-5" />
               </a>
@@ -81,7 +81,7 @@ export default function Footer() {
           {store?.contact?.email && (
             <a
               href={`mailto:${store.contact.email}`}
-              className="text-gray-400 hover:text-indigo-400 transition-colors text-sm"
+              className="text-muted-foreground hover:text-primary transition-colors text-sm"
             >
               {store.contact.email}
             </a>

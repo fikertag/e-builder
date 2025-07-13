@@ -80,19 +80,28 @@ export default function ProductDetailPage() {
     if (v) setSelectedVariant(v.sku);
   };
 
-  if (isLoading) return <div className="p-8 text-center">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="p-8 text-center text-muted-foreground">Loading...</div>
+    );
   if (error || !product)
     return (
-      <div className="p-8 text-center text-red-500">Product not found.</div>
+      <div className="p-8 text-center text-destructive">Product not found.</div>
     );
 
   return (
-    <div className=" container mx-auto my-8 bg-white rounded-xl  p-6 md:p-10 flex flex-col lg:flex-row gap-10 justify-center items-center">
+    <div className="container mx-auto my-8 bg-card rounded-xl p-6 md:p-10 flex flex-col lg:flex-row gap-10 justify-center items-center">
       {/* Images */}
       <div className="flex flex-col items-center gap-4">
-        <div className="relative w-80 h-80 bg-gray-50 rounded-lg overflow-hidden">
+        <div className="relative w-80 h-80 bg-muted rounded-lg overflow-hidden">
           <Image
-            src={mainImage || product.images[0] || "/placeholder.png"}
+            src={
+              mainImage && mainImage.startsWith("http")
+                ? mainImage
+                : product.images[0]?.startsWith("http")
+                  ? product.images[0]
+                  : "/placeholder.png"
+            }
             alt={product.title}
             fill
             className="object-contain"
@@ -100,11 +109,11 @@ export default function ProductDetailPage() {
           />
         </div>
         {allImages.length > 1 && (
-          <div className="flex  justify-center gap-2 mt-2">
+          <div className="flex  justify-center flex-wrap gap-2 mt-2">
             {allImages.map((img, idx) => (
               <div
                 key={idx}
-                className={`relative w-16 h-16 rounded overflow-hidden border bg-gray-50 cursor-pointer ${mainImage === img ? "ring-2 ring-indigo-500" : ""}`}
+                className={`relative w-16 h-16 rounded overflow-hidden border bg-muted cursor-pointer ${mainImage === img ? "ring-2 ring-primary" : "border-border"}`}
                 onClick={() => handleThumbnailClick(img)}
               >
                 <Image
@@ -120,11 +129,18 @@ export default function ProductDetailPage() {
       </div>
       {/* Details */}
       <div className="flex-1 flex flex-col gap-4">
-        <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-        <div className="text-xl text-indigo-700 font-semibold mb-2">
+        <h1 className="text-3xl font-bold mb-2 text-card-foreground">
+          <span>{product.title}</span>
+        </h1>
+        <div className="text-xl text-primary font-semibold mb-2">
           ${product.basePrice.toFixed(2)}
         </div>
-        <div className="text-gray-600 mb-4">{product.description}</div>
+        <div
+          style={{ wordBreak: "break-word" }}
+          className="text-muted-foreground mb-4"
+        >
+          {product.description}
+        </div>
         {/* Grouped Variants */}
         {Object.keys(variantGroups).length > 0 && (
           <div className="mb-4 space-y-2">
@@ -138,7 +154,7 @@ export default function ProductDetailPage() {
                     <button
                       key={v.sku}
                       type="button"
-                      className={`px-3 py-1 rounded text-sm border transition-all flex items-center gap-2 ${selectedVariant === v.sku ? "bg-indigo-600 text-white border-indigo-600" : "bg-gray-100 border"}`}
+                      className={`px-3 py-1 rounded text-sm border transition-all flex items-center gap-2 ${selectedVariant === v.sku ? "bg-primary text-primary-foreground border-primary" : "bg-muted border-border hover:bg-muted/80"}`}
                       onClick={() => setSelectedVariant(v.sku)}
                     >
                       {v.image && (
@@ -167,13 +183,15 @@ export default function ProductDetailPage() {
             <form className="space-y-2">
               {product.customOptions.map((opt, idx) => (
                 <div key={idx}>
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block text-sm font-medium mb-1 text-card-foreground">
                     {opt.name}{" "}
-                    {opt.required && <span className="text-red-500">*</span>}
+                    {opt.required && (
+                      <span className="text-destructive">*</span>
+                    )}
                   </label>
                   {opt.type === "dropdown" ? (
                     <select
-                      className="w-full border rounded px-2 py-1"
+                      className="w-full border border-border rounded px-2 py-1 bg-background text-foreground"
                       required={opt.required}
                       value={customOptionValues[opt.name] || ""}
                       onChange={(e) =>
@@ -193,7 +211,7 @@ export default function ProductDetailPage() {
                   ) : (
                     <input
                       type="text"
-                      className="w-full border rounded px-2 py-1"
+                      className="w-full border border-border rounded px-2 py-1 bg-background text-foreground"
                       required={opt.required}
                       value={customOptionValues[opt.name] || ""}
                       onChange={(e) =>
@@ -211,7 +229,7 @@ export default function ProductDetailPage() {
         )}
         <button
           onClick={handleAddToCart}
-          className="flex items-center justify-center gap-2 bg-brand-primary  px-6 py-3 rounded-lg shadow-md cursor-pointer font-semibold hover:opacity-80 active:scale-95 transition-all duration-200 mt-4 max-w-80"
+          className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-md cursor-pointer font-semibold hover:bg-primary/90 active:scale-95 transition-all duration-200 mt-4 max-w-80 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={
             (product.variants &&
               product.variants.length > 0 &&

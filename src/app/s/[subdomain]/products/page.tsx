@@ -28,7 +28,7 @@ export default function ProductsPage() {
   if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-[90vh]">
-        <span className="inline-block animate-bounce text-4xl text-indigo-500">
+        <span className="inline-block animate-bounce text-4xl text-primary">
           . . .
         </span>
       </div>
@@ -36,7 +36,7 @@ export default function ProductsPage() {
   if (error)
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
-        <span className="inline-block animate-pulse text-2xl text-red-500">
+        <span className="inline-block animate-pulse text-2xl text-destructive">
           Something went wrong. Please try again.
         </span>
       </div>

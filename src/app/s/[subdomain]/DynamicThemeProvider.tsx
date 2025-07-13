@@ -1,21 +1,27 @@
 "use client";
 import { useEffect } from "react";
 
-export default function DynamicThemeProvider({ colorPalette, children }: {
-  colorPalette: { primary: string; secondary: string; accent: string };
+// Accepts a full theme style object (e.g., styles.light or styles.dark)
+export default function DynamicThemeProvider({
+  themeStyle,
+  children,
+}: {
+  themeStyle: Record<string, string>;
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    if (!colorPalette) return;
+    if (!themeStyle) return;
     const root = document.documentElement;
-    root.style.setProperty('--brand-primary', colorPalette.primary);
-    root.style.setProperty('--brand-secondary', colorPalette.secondary);
-    root.style.setProperty('--brand-accent', colorPalette.accent);
+    // Apply each theme variable as a CSS variable
+    Object.entries(themeStyle).forEach(([key, value]) => {
+      root.style.setProperty(`--${key}`, value);
+    });
+    // Cleanup: remove variables on unmount or theme change
     return () => {
-      root.style.removeProperty('--brand-primary');
-      root.style.removeProperty('--brand-secondary');
-      root.style.removeProperty('--brand-accent');
+      Object.keys(themeStyle).forEach((key) => {
+        root.style.removeProperty(`--${key}`);
+      });
     };
-  }, [colorPalette]);
+  }, [themeStyle]);
   return <>{children}</>;
 }

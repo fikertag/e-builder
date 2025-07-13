@@ -11,9 +11,7 @@ interface IOrderItem {
 interface IOrderAddress {
   street: string;
   city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  phoneNumber: string;
 }
 
 interface IOrder extends Document {
@@ -26,6 +24,7 @@ interface IOrder extends Document {
   total: number;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
   shippingAddress: IOrderAddress;
+  payment?: Types.ObjectId;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>(
@@ -53,9 +52,7 @@ const OrderAddressSchema = new Schema<IOrderAddress>(
   {
     street: { type: String, required: true },
     city: { type: String, required: true },
-    state: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
   },
   { _id: false }
 );
@@ -100,6 +97,11 @@ const OrderSchema = new Schema<IOrder>(
       default: "pending",
     },
     shippingAddress: OrderAddressSchema,
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
+      required: false,
+    },
   },
   { timestamps: true }
 );

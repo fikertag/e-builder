@@ -12,8 +12,8 @@ const CartSheetContent = () => {
     <div className="flex h-full flex-col">
       {items.length === 0 ? (
         <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
-          <ShoppingCartIcon className="h-16" />
-          <p className="mt-6 text-center text-2xl font-bold">
+          <ShoppingCartIcon className="h-16 text-muted-foreground" />
+          <p className="mt-6 text-center text-2xl font-bold text-foreground">
             Your cart is empty.
           </p>
         </div>
@@ -23,12 +23,12 @@ const CartSheetContent = () => {
             {items.map((item, i) => (
               <li
                 key={i}
-                className="flex w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
+                className="flex w-full flex-col border-b border-border"
               >
                 <div className="relative flex w-full flex-row justify-between px-1 py-4">
                   <div className="absolute z-40 -ml-1 -mt-2">
                     <button
-                      className="rounded-full bg-gray-100 p-1 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                      className="rounded-full bg-muted p-1 text-muted-foreground hover:bg-muted/80"
                       onClick={() =>
                         removeFromCart(
                           item.product._id,
@@ -55,7 +55,7 @@ const CartSheetContent = () => {
                     </button>
                   </div>
                   <div className="flex flex-row">
-                    <div className="relative h-16 w-16 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-md border border-border bg-muted">
                       <Image
                         className="h-full w-full "
                         width={64}
@@ -79,13 +79,13 @@ const CartSheetContent = () => {
                       className="z-30 ml-2 flex flex-row space-x-4"
                     >
                       <div className="flex flex-1 flex-col text-base">
-                        <span className="leading-tight">
+                        <span className="leading-tight text-card-foreground">
                           {item.product.title}
                         </span>
                         {/* Show selected variants/options if any */}
                         {item.selectedVariants &&
                           item.selectedVariants.length > 0 && (
-                            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                            <p className="text-sm text-muted-foreground">
                               {item.selectedVariants
                                 .map((v) => v.name)
                                 .join(", ")}
@@ -94,7 +94,7 @@ const CartSheetContent = () => {
                         {item.selectedCustomOptions &&
                           Object.keys(item.selectedCustomOptions).length >
                             0 && (
-                            <p className="text-xs text-neutral-400">
+                            <p className="text-xs text-muted-foreground/70">
                               {Object.entries(item.selectedCustomOptions)
                                 .map(([k, v]) => `${k}: ${v}`)
                                 .join(", ")}
@@ -104,12 +104,12 @@ const CartSheetContent = () => {
                     </Link>
                   </div>
                   <div className="flex h-16 flex-col justify-between">
-                    <div className="flex justify-end space-y-2 text-right text-sm">
+                    <div className="flex justify-end space-y-2 text-right text-sm text-foreground">
                       ${item.product.basePrice.toFixed(2)}
                     </div>
-                    <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
+                    <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-border">
                       <button
-                        className="px-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        className="px-3 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           updateQuantity(
                             item.product._id,
@@ -124,10 +124,10 @@ const CartSheetContent = () => {
                         -
                       </button>
                       <p className="w-6 text-center">
-                        <span className="w-full text-sm">{item.quantity}</span>
+                        <span className="w-full text-sm text-foreground">{item.quantity}</span>
                       </p>
                       <button
-                        className="px-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        className="px-3 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           updateQuantity(
                             item.product._id,

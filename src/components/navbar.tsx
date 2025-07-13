@@ -14,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/index";
 
 type HeaderProps = {
@@ -39,55 +40,55 @@ export function Header({ title }: HeaderProps) {
   const total: number = subtotal + tax;
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm px-4 py-3 shadow-sm">
+    <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-lg px-4 py-3 shadow-xs border-border/20">
       <div className="container mx-auto flex items-center justify-between">
-        {/* Logo & Navigation */}
         <div className="flex items-center space-x-10">
-          <Link
-            href="/"
-            className="text-xl font-bold tracking-tight text-gray-900 capitalize"
-          >
+          <Link href="/" className="text-xl font-bold capitalize">
             {title}
           </Link>
 
-          <div>
+          <div className="hidden sm:block">
             <NavItem
               href="/products"
               label="All Products"
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+              className="font-medium text-muted-foreground transition-colors hover:text-foreground"
             />
           </div>
         </div>
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-6">
-          <Link href={"/account"} className="flex items-center   group">
-            <div className="p-2 rounded-full group-hover:bg-gray-100 transition-colors cursor-pointer">
-              <User2Icon className="h-5 w-5 text-gray-600 group-hover:text-gray-900" />
-            </div>
-            <span className="text-sm text-gray-600 group-hover:text-gray-900 hidden sm:block transition-colors">
+          <Link href={"/account"} prefetch>
+            <Button className="rounded-full cursor-pointer transition-transform hover:scale-105 font-medium">
               Account
-            </span>
+              <User2Icon className="ml-2 size-4" />
+            </Button>
           </Link>
-          <div className="flex items-center  group">
+
+          <div className="flex items-center group">
             <Sheet>
               <SheetTrigger asChild>
-                <div className="relative group cursor-pointer flex">
-                  <div className="p-2 rounded-full group-hover:bg-gray-100 transition-colors">
-                    <ShoppingCart className="h-5 w-5 text-gray-600 group-hover:text-gray-900" />{" "}
-                  </div>
-                  {totalItems > 0 && (
-                    <div
-                      className="absolute -top-1 -right-1 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center"
-                      style={{
-                        minWidth: "20px",
-                        height: "20px",
-                        padding: "2px",
-                      }}
-                    >
-                      {totalItems}
+                <div className="flex cursor-pointer justify-center items-center">
+                  <div className="relative group cursor-pointer flex">
+                    <div className="p-2 rounded-full hover:bg-accent transition-colors">
+                      <ShoppingCart className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />{" "}
                     </div>
-                  )}
+                    {totalItems > 0 && (
+                      <div
+                        className="absolute -top-1 -right-1 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center justify-center shadow-[0_0_0_2px] shadow-background"
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          padding: "2px",
+                        }}
+                      >
+                        {totalItems}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-sm text-muted-foreground group-hover:text-foreground hidden sm:block transition-colors ml-0.5">
+                    Cart
+                  </span>
                 </div>
               </SheetTrigger>
 
@@ -104,14 +105,16 @@ export function Header({ title }: HeaderProps) {
                   <SheetFooter className="border-t px-6 py-4">
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Subtotal</span>
+                        <span className="text-muted-foreground">Subtotal</span>
                         <span className="font-medium">
                           ${subtotal.toFixed(2)}
                         </span>
                       </div>
 
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Taxes (2%)</span>
+                        <span className="text-muted-foreground">
+                          Taxes (2%)
+                        </span>
                         <span className="font-medium">${tax.toFixed(2)}</span>
                       </div>
 
@@ -125,7 +128,7 @@ export function Header({ title }: HeaderProps) {
                       <div className="mt-4">
                         <SheetClose asChild>
                           <Link
-                            className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
+                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-lg transition-all font-medium flex items-center justify-center gap-2"
                             href="/checkout"
                           >
                             Proceed to Checkout
@@ -137,9 +140,6 @@ export function Header({ title }: HeaderProps) {
                 </div>
               </SheetContent>
             </Sheet>
-            <span className="text-sm text-gray-600 group-hover:text-gray-900 hidden sm:block transition-colors ">
-              Cart
-            </span>
           </div>
         </div>
       </div>
