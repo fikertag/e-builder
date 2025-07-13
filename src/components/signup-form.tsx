@@ -34,7 +34,7 @@ export function SignupForm({
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     try {
-      const { data, error: signupError } = await authClient.signUp.email(
+      const { error: signupError } = await authClient.signUp.email(
         {
           email,
           password,
@@ -59,8 +59,12 @@ export function SignupForm({
       if (signupError) {
         setError(signupError.message || "Signup failed");
       }
-    } catch (err: any) {
-      setError(err.message || "Signup failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Signup failed");
+      } else {
+        setError("Signup failed");
+      }
     } finally {
       setIsLoading(false);
     }

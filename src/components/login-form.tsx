@@ -32,7 +32,7 @@ export function LoginForm({
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
-      const { data, error: loginError } = await authClient.signIn.email(
+      const { error: loginError } = await authClient.signIn.email(
         {
           email,
           password,
@@ -55,8 +55,12 @@ export function LoginForm({
       if (loginError) {
         setError(loginError.message || "Login failed");
       }
-    } catch (err: any) {
-      setError(err.message || "Login failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Signup failed");
+      } else {
+        setError("Signup failed");
+      }
     } finally {
       setIsLoading(false);
     }
