@@ -95,7 +95,13 @@ export default function ProductDetailPage() {
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-80 h-80 bg-muted rounded-lg overflow-hidden">
           <Image
-            src={mainImage || product.images[0] || "/placeholder.png"}
+            src={
+              mainImage && mainImage.startsWith("http")
+                ? mainImage
+                : product.images[0]?.startsWith("http")
+                  ? product.images[0]
+                  : "/placeholder.png"
+            }
             alt={product.title}
             fill
             className="object-contain"
@@ -103,7 +109,7 @@ export default function ProductDetailPage() {
           />
         </div>
         {allImages.length > 1 && (
-          <div className="flex  justify-center gap-2 mt-2">
+          <div className="flex  justify-center flex-wrap gap-2 mt-2">
             {allImages.map((img, idx) => (
               <div
                 key={idx}
@@ -124,12 +130,17 @@ export default function ProductDetailPage() {
       {/* Details */}
       <div className="flex-1 flex flex-col gap-4">
         <h1 className="text-3xl font-bold mb-2 text-card-foreground">
-          {product.title}
+          <span>{product.title}</span>
         </h1>
         <div className="text-xl text-primary font-semibold mb-2">
           ${product.basePrice.toFixed(2)}
         </div>
-        <div className="text-muted-foreground mb-4">{product.description}</div>
+        <div
+          style={{ wordBreak: "break-word" }}
+          className="text-muted-foreground mb-4"
+        >
+          {product.description}
+        </div>
         {/* Grouped Variants */}
         {Object.keys(variantGroups).length > 0 && (
           <div className="mb-4 space-y-2">

@@ -47,7 +47,7 @@ export function Header({ title }: HeaderProps) {
             {title}
           </Link>
 
-          <div>
+          <div className="hidden sm:block">
             <NavItem
               href="/products"
               label="All Products"

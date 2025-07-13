@@ -14,7 +14,10 @@ const STATUSES = [
 
 const fetchUserOrders = async (userId: string) => {
   const res = await fetch(`/api/order/user/${userId}`);
-  if (!res.ok) throw new Error("Failed to fetch orders");
+  if (res.status === 404) {
+    // No orders found for this user
+    return [];
+  }
   const data = await res.json();
   return data.orders;
 };
@@ -51,7 +54,11 @@ export default function OrdersPage() {
       </div>
     );
   if (isLoading)
-    return <div className="text-muted-foreground">Loading orders...</div>;
+    return (
+      <div className="w-full flex justify-center mt-10 text-muted-foreground">
+        Loading orders...
+      </div>
+    );
   if (isError)
     return (
       <div className="text-destructive">Error: {(error as Error).message}</div>
@@ -87,12 +94,12 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-2 sm:p-5">
       <h2 className="text-2xl font-bold mb-6 text-foreground">Your Orders</h2>
       {/* Status navbar */}
-      <nav className="flex gap-8 border-b border-border mb-6">
+      <nav className="flex gap-4 sm:gap-8 border-b border-border mb-6">
         <div
-          className={`cursor-pointer pb-2 text-base font-medium transition-all ${
+          className={`cursor-pointer pb-2 sm:text-base text-sm font-medium transition-all ${
             selectedStatus === ""
               ? "border-b-2 border-primary text-primary font-bold"
               : "text-muted-foreground hover:text-primary"
@@ -104,7 +111,7 @@ export default function OrdersPage() {
         {STATUSES.map((status) => (
           <div
             key={status.key}
-            className={`cursor-pointer pb-2 text-base font-medium transition-all ${
+            className={`cursor-pointer pb-2 sm:text-base text-sm font-medium transition-all ${
               selectedStatus === status.key
                 ? "border-b-2 border-primary text-primary font-bold"
                 : "text-muted-foreground hover:text-primary"
@@ -122,7 +129,7 @@ export default function OrdersPage() {
             className="border border-border rounded-xl p-4 shadow bg-card flex flex-col md:flex-row md:items-center md:justify-between"
           >
             <div>
-              <div className="font-semibold text-card-foreground">
+              <div className="font-semibold text-card-foreground text-sm sm:text-base">
                 Order ID: <span className="text-primary">{order._id}</span>
               </div>
               <div className="text-muted-foreground">

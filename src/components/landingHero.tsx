@@ -15,7 +15,7 @@ export default function LandingHero({
 }: LandingHeroProps) {
   return (
     <div className="relative">
-      <div className="container mx-auto px-10 py-20  flex flex-col md:flex-row items-center">
+      <div className="container mx-auto px-10 py-10 sm:py-20  flex flex-col md:flex-row items-center">
         <div className="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             {title.charAt(0).toUpperCase() + title.slice(1)}

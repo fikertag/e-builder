@@ -11,7 +11,6 @@ export async function GET(
 
   const { userId } = await params;
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-    console.log(userId);
     return NextResponse.json({ message: "Invalid user ID." }, { status: 400 });
   }
 

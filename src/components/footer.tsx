@@ -34,16 +34,16 @@ export default function Footer() {
     <footer className="bg-secondary text-secondary-foreground py-12">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand Info */}
-        <div className="space-y-4">
+        <div className="flex flex-col items-center md:items-start space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">
-            {store?.storeName || "MugLife"}
+            {store?.storeName}
           </h2>
-          <p className="text-muted-foreground max-w-xs">
+          <p className="text-muted-foreground text-center">
             {store?.description || "Quality products for your everyday life"}
           </p>
-          <p className="text-sm text-muted-foreground/70">
-            © {new Date().getFullYear()} {store?.storeName || "MugLife"}. All
-            rights reserved.
+          <p className="text-sm text-muted-foreground/70 text-center">
+            © {new Date().getFullYear()} {store?.storeName}. All rights
+            reserved.
           </p>
         </div>
 

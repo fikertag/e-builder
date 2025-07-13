@@ -63,71 +63,75 @@ export default function OrderPaymentPage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-12 bg-white rounded-2xl shadow-lg p-8">
-      <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">
-        Pay for Order <span className="text-gray-700">#{orderId}</span>
+    <div className=" mx-auto mt-5 bg-card rounded-2xl shadow-lg p-8">
+      <h2 className=" text-xl sm:text-2xl font-bold mb-6 text-center text-primary">
+        Pay for Order <span className="text-foreground">#{orderId}</span>
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">
+          <label className="block font-semibold mb-2 text-foreground">
             Payment Method
           </label>
-          <div className="flex gap-4">
+          <div className="flex gap-4 ">
             <button
               type="button"
-              className={`flex-1 flex flex-col items-center border-2 rounded-xl p-4 transition ${
-                method === "telebirr"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 bg-gray-50"
-              } hover:border-blue-400`}
+              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm
+            ${
+              method === "telebirr"
+                ? "border-primary bg-primary/10"
+                : "border-border bg-muted"
+            }
+            hover:border-primary`}
               onClick={() => setMethod("telebirr")}
             >
               <img
                 src="/telebirr.png"
                 alt="Telebirr"
-                className="w-10 h-10 mb-1"
+                className="w-8 h-8 mb-1"
               />
-              <span className="font-medium">Telebirr</span>
+              <span className="font-medium text-foreground">Telebirr</span>
             </button>
             <button
               type="button"
-              className={`flex-1 flex flex-col items-center border-2 rounded-xl p-4 transition ${
-                method === "cbe"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 bg-gray-50"
-              } hover:border-blue-400`}
+              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm
+            ${
+              method === "cbe"
+                ? "border-primary bg-primary/10"
+                : "border-border bg-muted"
+            }
+            hover:border-primary`}
               onClick={() => setMethod("cbe")}
             >
-              <img src="/cbe.png" alt="CBE" className="w-10 h-10 mb-1" />
-              <span className="font-medium">CBE</span>
+              <img src="/cbe.png" alt="CBE" className="w-8 h-8 mb-1" />
+              <span className="font-medium text-foreground">CBE</span>
             </button>
           </div>
         </div>
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">
+          <label className="block font-semibold mb-2 text-foreground">
             Transaction Number
           </label>
           <div className="relative">
             <CreditCard
-              className="absolute left-3 top-3 text-gray-400"
+              className="absolute left-3 top-3 text-muted-foreground"
               size={18}
             />
             <input
               type="text"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
-              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition"
+              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary transition bg-background text-foreground"
               placeholder="Enter transaction/reference number"
             />
           </div>
         </div>
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">
+          <label className="block font-semibold mb-2 text-foreground">
             Or Upload Payment Screenshot
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <ImageIcon className="text-gray-400" size={20} />
-            <span className="text-gray-600">Choose file</span>
+            <ImageIcon className="text-muted-foreground" size={20} />
+            <span className="text-muted-foreground">Choose file</span>
             <input
               type="file"
               accept="image/*"
@@ -135,16 +139,16 @@ export default function OrderPaymentPage() {
               className="hidden"
             />
             {screenshot && (
-              <span className="ml-2 text-xs text-green-700 font-medium">
+              <span className="ml-2 text-xs text-success font-medium">
                 {screenshot.name}
               </span>
             )}
           </label>
         </div>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {error && <div className="text-destructive text-sm">{error}</div>}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold text-lg shadow hover:bg-blue-700 transition"
+          className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold text-lg shadow hover:bg-primary/90 transition"
           disabled={mutation.isPending}
         >
           {mutation.isPending ? "Submitting..." : "Submit Payment"}
