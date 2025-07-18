@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             priority
           />
           {product.isFeatured && (
-            <Badge className="absolute top-1 left-1 ">Featured</Badge>
+            <Badge className="absolute top-1 right-1 ">Featured</Badge>
           )}
         </div>
       </Link>

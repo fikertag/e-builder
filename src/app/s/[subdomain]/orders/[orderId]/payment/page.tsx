@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CreditCard, Image as ImageIcon } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
 import { useMutation } from "@tanstack/react-query";
+import Image from "next/image";
 
 export default function OrderPaymentPage() {
   const [method, setMethod] = useState<"telebirr" | "cbe" | "">("");
@@ -84,9 +85,10 @@ export default function OrderPaymentPage() {
             hover:border-primary`}
               onClick={() => setMethod("telebirr")}
             >
-              <img
+              <Image
                 src="/telebirr.png"
                 alt="Telebirr"
+                fill
                 className="w-8 h-8 mb-1"
               />
               <span className="font-medium text-foreground">Telebirr</span>
@@ -102,7 +104,7 @@ export default function OrderPaymentPage() {
             hover:border-primary`}
               onClick={() => setMethod("cbe")}
             >
-              <img src="/cbe.png" alt="CBE" className="w-8 h-8 mb-1" />
+              <Image src="/cbe.png" alt="CBE" className="w-8 h-8 mb-1" fill />
               <span className="font-medium text-foreground">CBE</span>
             </button>
           </div>
