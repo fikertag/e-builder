@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useStoreData } from "@/store/useStoreData";
 
 export function LoginForm({
   className,
@@ -22,6 +23,8 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const { store } = useStoreData();
+
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,9 +35,11 @@ export function LoginForm({
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
+      const falseEmail = store?.id + email;
+
       const { error: loginError } = await authClient.signIn.email(
         {
-          email,
+          email: falseEmail,
           password,
           callbackURL: "/dashboard",
         },

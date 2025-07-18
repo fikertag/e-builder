@@ -34,9 +34,12 @@ export function SignupForm({
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     try {
+      const falseEmail = store?.id + email;
+
       const { error: signupError } = await authClient.signUp.email(
         {
-          email,
+          email: falseEmail,
+          realEmail: email,
           password,
           name,
           storeId: store?.id || "",
@@ -51,6 +54,7 @@ export function SignupForm({
             setIsLoading(false);
           },
           onError: (ctx) => {
+          
             setError(ctx.error.message || "Signup failed");
             setIsLoading(false);
           },
