@@ -11,12 +11,6 @@ interface IAiFormData {
   aboutUs: string;
   whyChooseUs: string[];
   description: string;
-  aiConfig: {
-    colorPalette: { primary: string; secondary: string; accent: string };
-    typography: { heading: string; body: string };
-    layoutTemplate: string;
-    theme?: string;
-  };
   contact?: {
     email?: string;
     phone?: string;
@@ -30,6 +24,19 @@ interface IAiFormData {
     };
   };
   storeLandingImage: string;
+  theme: string; // ObjectId as string
+  template?: string;
+  isPublished?: boolean;
+  integrations?: {
+    telebirr?: {
+      number: string;
+      name: string;
+    };
+    cbe?: {
+      account: string;
+      name: string;
+    };
+  };
 }
 
 
@@ -78,20 +85,45 @@ export default function CreatePage() {
     if (!formData) return;
     if (name === "whyChooseUs") {
       setFormData({ ...formData, whyChooseUs: value.split("\n") });
-    } else if (name === "aiConfig.layoutTemplate") {
+    } else if (name.startsWith("whyChooseUs_")) {
+      // Handle individual whyChooseUs fields
+      const idx = parseInt(name.split("_")[1], 10);
+      const reasons = Array.isArray(formData.whyChooseUs) ? [...formData.whyChooseUs] : [""];
+      reasons[idx] = value;
+      while (reasons.length < 3) reasons.push("");
+      setFormData({ ...formData, whyChooseUs: reasons });
+    } else if (name === "theme") {
+      setFormData({ ...formData, theme: value });
+    } else if (name === "template") {
+      setFormData({ ...formData, template: value });
+    } else if (name.startsWith("integrations.telebirr.")) {
+      const key = name.split(".")[2];
+      const prev = (formData.integrations && formData.integrations.telebirr) as Partial<{number: string; name: string}> || {};
+      const telebirr = {
+        number: key === "number" ? value : (prev && typeof prev.number === 'string' ? prev.number : ""),
+        name: key === "name" ? value : (prev && typeof prev.name === 'string' ? prev.name : ""),
+      };
       setFormData({
         ...formData,
-        aiConfig: {
-          ...formData.aiConfig,
-          layoutTemplate: value,
+        integrations: {
+          ...formData.integrations,
+          telebirr,
+          ...(formData.integrations?.cbe ? { cbe: formData.integrations.cbe } : {}),
         },
       });
-    } else if (name === "aiConfig.theme") {
+    } else if (name.startsWith("integrations.cbe.")) {
+      const key = name.split(".")[2];
+      const prev = (formData.integrations && formData.integrations.cbe) as Partial<{account: string; name:string}> || {};
+      const cbe = {
+        account: key === "account" ? value :( prev && typeof prev.account === 'string' ? prev.account : ""),
+        name: key === "name" ? value : ( prev && typeof prev.name === 'string' ? prev.name : ""),
+      };
       setFormData({
         ...formData,
-        aiConfig: {
-          ...formData.aiConfig,
-          theme: value,
+        integrations: {
+          ...formData.integrations,
+          cbe,
+          ...(formData.integrations?.telebirr ? { telebirr: formData.integrations.telebirr } : {}),
         },
       });
     } else if (name.startsWith("contact.social.")) {
@@ -193,15 +225,13 @@ export default function CreatePage() {
         heroHeading: "",
         heroDescription: "",
         aboutUs: "",
-        whyChooseUs: [],
+        whyChooseUs: ["", "", ""],
         description: "",
-        aiConfig: {
-          colorPalette: { primary: "", secondary: "", accent: "" },
-          typography: { heading: "", body: "" },
-          layoutTemplate: "minimalist",
-        },
         contact: {},
         storeLandingImage: "",
+        theme: "",
+        isPublished: false,
+        integrations: {},
       });
     }
   }, [formData]);
@@ -349,14 +379,7 @@ export default function CreatePage() {
                     key={idx}
                     name={`whyChooseUs_${idx}`}
                     value={formData?.whyChooseUs?.[idx] || ""}
-                    onChange={e => {
-                      if (!formData) return;
-                      const reasons = Array.isArray(formData.whyChooseUs) ? [...formData.whyChooseUs] : [""];
-                      reasons[idx] = e.target.value;
-                      // Ensure always 3 items
-                      while (reasons.length < 3) reasons.push("");
-                      setFormData({ ...formData, whyChooseUs: reasons });
-                    }}
+                    onChange={handleFormChange}
                     className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                     placeholder={`Reason ${idx+1}`}
                   />
@@ -371,30 +394,86 @@ export default function CreatePage() {
           {/* Remaining fields in two columns */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2 w-full md:col-span-2">
             <div className="flex flex-col mb-1">
-              <label className="block text-xs font-normal mb-0 pt-2">Store Template</label>
-              <select name="aiConfig.layoutTemplate" value={formData?.aiConfig?.layoutTemplate || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition">
-                <option value="minimalist">Minimalist</option>
-                <option value="professional">Professional</option>
-                <option value="vibrant">Vibrant</option>
+              <label className="block text-xs font-normal mb-0 pt-2">Theme <span className="text-red-500">*</span></label>
+              <select
+                name="theme"
+                value={formData?.theme || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                required
+              >
+                <option value="">Select a theme</option>
+                <option value="themeid1">Light</option>
+                <option value="themeid2">Dark</option>
+                <option value="themeid3">Pastel</option>
+                <option value="themeid4">Neon</option>
+                <option value="themeid5">Classic</option>
               </select>
             </div>
             <div className="flex flex-col mb-1">
-              <label className="block text-xs font-normal mb-0 pt-2">Theme</label>
-              <select name="aiConfig.theme" value={formData?.aiConfig?.theme || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition">
-                <option value="">Select a theme</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="pastel">Pastel</option>
-                <option value="neon">Neon</option>
+              <label className="block text-xs font-normal mb-0 pt-2">Store Template</label>
+              <select
+                name="template"
+                value={formData?.template || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+              >
+                <option value="">Select a template</option>
+                <option value="minimalist">Minimalist</option>
+                <option value="professional">Professional</option>
+                <option value="vibrant">Vibrant</option>
+                <option value="modern">Modern</option>
                 <option value="classic">Classic</option>
               </select>
+            </div>
+            {/* Integrations: Telebirr */}
+            <div className="flex flex-col mb-1">
+              <label className="block text-xs font-normal mb-0 pt-2">Telebirr Number</label>
+              <input
+                name="integrations.telebirr.number"
+                value={formData?.integrations?.telebirr?.number || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                placeholder="Telebirr Number"
+              />
+            </div>
+            <div className="flex flex-col mb-1">
+              <label className="block text-xs font-normal mb-0 pt-2">Telebirr Name</label>
+              <input
+                name="integrations.telebirr.name"
+                value={formData?.integrations?.telebirr?.name || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                placeholder="Telebirr Name"
+              />
+            </div>
+            {/* Integrations: CBE */}
+            <div className="flex flex-col mb-1">
+              <label className="block text-xs font-normal mb-0 pt-2">CBE Account</label>
+              <input
+                name="integrations.cbe.account"
+                value={formData?.integrations?.cbe?.account || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                placeholder="CBE Account"
+              />
+            </div>
+            <div className="flex flex-col mb-1">
+              <label className="block text-xs font-normal mb-0 pt-2">CBE Name</label>
+              <input
+                name="integrations.cbe.name"
+                value={formData?.integrations?.cbe?.name || ""}
+                onChange={handleFormChange}
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                placeholder="CBE Name"
+              />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Contact Email</label>
               <input name="contact.email" value={formData?.contact?.email || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
-              <label className="block text-xs font-normal mb-0 pt-2">Contact Phone</label>
+              <label className="block text-xs font-normal mb-0 pt-2">Phone Number</label>
               <input name="contact.phone" value={formData?.contact?.phone || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
