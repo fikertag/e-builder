@@ -1,5 +1,5 @@
 "use client";
-import { authClient } from "@/lib/customer-auth-client";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,17 +12,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useStoreData } from "@/store/useStoreData";
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { store } = useStoreData();
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+
+  const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "google"
+    })
+}
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,15 +40,11 @@ export function SignupForm({
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     try {
-      const falseEmail = store?.id + email;
       const { error: signupError } = await authClient.signUp.email(
         {
-          email: falseEmail,
-          realEmail: email,
+          email,
           password,
           name,
-          storeId: store?.id || "",
-          callbackURL: "/dashboard",
         },
         {
           onRequest: () => {
@@ -50,10 +52,10 @@ export function SignupForm({
           },
           onSuccess: () => {
             setSuccess("Signup successful! Redirecting...");
+            router.push("/create");
             setIsLoading(false);
           },
           onError: (ctx) => {
-          
             setError(ctx.error.message || "Signup failed");
             setIsLoading(false);
           },
@@ -123,7 +125,7 @@ export function SignupForm({
                 </div>
               )}
               {success && (
-                <div className="text-center text-sm text-green-600">
+                <div className="text-center text-sm text-green-500">
                   {success}
                 </div>
               )}
@@ -131,22 +133,26 @@ export function SignupForm({
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing Up..." : "Sign Up"}
                 </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  disabled={isLoading}
-                >
-                  Sign Up with Google
-                </Button>
               </div>
             </div>
-            <div className="mt-4 text-center text-sm">
+          </form>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={isLoading}
+              type="button"
+              onClick={signIn}
+            >
+              Sign Up with Google
+            </Button>
+                        <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
                 Sign up
               </Link>
             </div>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>

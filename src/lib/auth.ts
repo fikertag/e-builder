@@ -50,7 +50,7 @@ export const auth = betterAuth({
   },
 
   emailVerification: {
-    enabled: true,
+    enabled: false, // Disable email verification for now
     sendVerificationEmail: async ({ user, url }) => {
       await sendEmail({
         to: user.email,

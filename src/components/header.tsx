@@ -73,9 +73,9 @@ export function Header() {
           <NavItem href="#Pricing" label="Pricing" />
         </ul>
         <div className="flex items-center justify-end gap-4">
-          <Link href={"/auth/sign-in"}>Log in</Link>
+          <Link href={"/auth/login"}>Log in</Link>
           <Button asChild className="bg-[#5fde10] " size={"lg"}>
-            <Link href={"/auth/sign-in"} className="text-white font-semibold">
+            <Link href={"/auth/signup"} className="text-white font-semibold">
               Start free trial
             </Link>
           </Button>

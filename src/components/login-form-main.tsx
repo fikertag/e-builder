@@ -1,5 +1,5 @@
 "use client";
-import { authClient } from "@/lib/customer-auth-client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,19 +12,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useStoreData } from "@/store/useStoreData";
+import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 
-export function SignupForm({
+export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { store } = useStoreData();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
-  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
+   const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "google"
+    })
+}
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     setSuccess("");
@@ -32,16 +37,12 @@ export function SignupForm({
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const name = formData.get("name") as string;
     try {
-      const falseEmail = store?.id + email;
-      const { error: signupError } = await authClient.signUp.email(
+
+      const { error: loginError } = await authClient.signIn.email(
         {
-          email: falseEmail,
-          realEmail: email,
+          email,
           password,
-          name,
-          storeId: store?.id || "",
           callbackURL: "/dashboard",
         },
         {
@@ -49,18 +50,17 @@ export function SignupForm({
             setIsLoading(true);
           },
           onSuccess: () => {
-            setSuccess("Signup successful! Redirecting...");
+            setSuccess("Login successful! Redirecting...");
             setIsLoading(false);
           },
           onError: (ctx) => {
-          
-            setError(ctx.error.message || "Signup failed");
+            setError(ctx.error.message || "Login failed");
             setIsLoading(false);
           },
         }
       );
-      if (signupError) {
-        setError(signupError.message || "Signup failed");
+      if (loginError) {
+        setError(loginError.message || "Login failed");
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -77,24 +77,14 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Create account</CardTitle>
+          <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to create a new account
+            Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSignup}>
+          <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
-                  name="name"
-                  required
-                />
-              </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -117,6 +107,7 @@ export function SignupForm({
                 </div>
                 <Input id="password" type="password" name="password" required />
               </div>
+              {/* Feedback messages */}
               {error && (
                 <div className="text-center text-sm text-destructive">
                   {error}
@@ -129,24 +120,32 @@ export function SignupForm({
               )}
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing Up..." : "Sign Up"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  disabled={isLoading}
-                >
-                  Sign Up with Google
+                  {isLoading ? "Logging In..." : "Login"}
                 </Button>
               </div>
             </div>
+            
+          </form>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={isLoading}
+              type="button"
+              onClick={signIn}
+            >
+              Login with Google
+            </Button>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/auth/login" className="underline underline-offset-4">
+              <Link
+                href="/auth/signup"
+                className="underline underline-offset-4"
+              >
                 Sign up
               </Link>
             </div>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>
