@@ -73,6 +73,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [{ title: "All Orders", url: "/dashboard/orders" }],
       },
       {
+        title: "Customers",
+        url: "/dashboard/customers",
+        icon: ShoppingCart,
+        items: [{ title: "All Customers", url: "/dashboard/customers" }],
+      },
+      {
         title: "Store Settings",
         url: "/dashboard/settings",
         icon: Settings2,
