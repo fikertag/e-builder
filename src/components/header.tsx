@@ -58,10 +58,10 @@ export function Header() {
           </div>
 
           <div className="flex items-start gap-2">
-            <ShoppingBag color="#5fde10" />
+            <ShoppingBag className="text-primary" />
             <Link
               href="/"
-              className="text-xl font-semibold leading-none text-[#5fde10]"
+              className="text-xl font-semibold leading-none text-primary"
             >
               e-comzy
             </Link>
@@ -74,7 +74,7 @@ export function Header() {
         </ul>
         <div className="flex items-center justify-end gap-4">
           <Link href={"/auth/login"}>Log in</Link>
-          <Button asChild className="bg-[#5fde10] " size={"lg"}>
+          <Button asChild className="bg-primary" size={"lg"}>
             <Link href={"/auth/signup"} className="text-white font-semibold">
               Start free trial
             </Link>

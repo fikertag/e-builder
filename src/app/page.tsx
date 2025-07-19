@@ -9,17 +9,17 @@ import Image from "next/image";
 
 export default async function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <Landing />
       <HowItWorks />
       <StoreShowcase />
       <section className="text-center py-10 px-4 font-semibold">
         <h2 className="text-6xl font-semibold mb-4">
-          For <span className="text-[#5fde10]"> Everyone</span> From
-          Intrepreneurs to <span className="text-[#5fde10]"> Enterprises</span>
+          For <span className="text-primary"> Everyone</span> From
+          Intrepreneurs to <span className="text-primary"> Enterprises</span>
         </h2>
-        <p className=" max-w-2xl mx-auto text-xl">
+        <p className="max-w-2xl mx-auto text-xl text-foreground">
           One platform to launch, manage, and grow your e-commerce store. No
           tech skills required. One platform to launch, manage, and grow your
           e-commerce store. No tech skills required.
@@ -32,14 +32,14 @@ export default async function Home() {
             src={"/model.jpg"}
             height={350}
             width={350}
-            objectFit="contain"
-          />{" "}
+            style={{ objectFit: "contain", background: "var(--card)", borderRadius: "var(--radius)" }}
+          />
         </div>
         <div>
           <h2 className="text-5xl font-semibold mb-4">
-            How <span className="text-[#5fde10]">E-Comzy</span> Works ?
+            How <span className="text-primary">E-Comzy</span> Works ?
           </h2>
-          <p className=" max-w-xl mx-auto text-xl">
+          <p className="max-w-xl mx-auto text-xl text-foreground">
             one platform to launch, manage, and grow your e-commerce store.
           </p>
         </div>
