@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   // Redirect unauthenticated users trying to access protected pages
-  const protectedPaths = ['/create', '/dashboard']; // root-level protected paths
+  const protectedPaths = ['/create', '/dashboard', '/home']; // root-level protected paths
   const isProtectedPath = protectedPaths.includes(pathname);
 
   if (!sessionCookie && isProtectedPath) {
@@ -63,12 +63,12 @@ export async function middleware(request: NextRequest) {
 
   // Redirect logged-in users away from landing page `/` (but NOT from other pages)
   if (pathname === '/' && sessionCookie) {
-    return NextResponse.redirect(new URL('/create', request.url));
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 
   // Redirect logged-in users away from signup and login forms
   if (sessionCookie && (pathname === '/auth/signup' || pathname === '/auth/login')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 
   return NextResponse.next();
