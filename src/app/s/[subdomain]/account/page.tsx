@@ -1,11 +1,12 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
-import { SignupForm } from "@/components/signup-form";
+import { authClient } from "@/lib/customer-auth-client";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Home = () => {
   const { data, isPending } = authClient.useSession();
+  const router = useRouter();
 
   if (isPending) {
     return (
@@ -16,16 +17,8 @@ const Home = () => {
   }
 
   if (!data) {
-    return (
-      <div
-        style={{ minHeight: "calc(100svh - 70px)" }}
-        className="flex w-full items-center justify-center "
-      >
-        <div className="w-full max-w-sm p-6 md:p-10 bg-card rounded-lg shadow">
-          <SignupForm />
-        </div>
-      </div>
-    );
+    router.push("/auth/signup");
+    return null; 
   }
 
   return (
@@ -47,7 +40,7 @@ const Home = () => {
           <div>
             <span className="font-semibold text-foreground">Email:</span>
             <span className="ml-2 text-muted-foreground">
-              {data.user?.email ?? "N/A"}
+              {data.user?.realEmail ?? "N/A"}
             </span>
           </div>
           <div>
@@ -65,7 +58,11 @@ const Home = () => {
             Go to Order Page
           </Link>
           <button
-            onClick={() => authClient.signOut()}
+            onClick={() => {
+                              if (window.confirm("Are you sure you want to log out?")) {
+                              authClient.signOut();
+                              }
+                            }}
             className="flex-1 px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition text-center font-medium"
           >
             Sign Out

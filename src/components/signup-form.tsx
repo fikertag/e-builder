@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useStoreData } from "@/store/useStoreData";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({
   className,
@@ -23,6 +24,7 @@ export function SignupForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const router = useRouter();
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,7 +44,6 @@ export function SignupForm({
           password,
           name,
           storeId: store?.id || "",
-          callbackURL: "/dashboard",
         },
         {
           onRequest: () => {
@@ -50,6 +51,7 @@ export function SignupForm({
           },
           onSuccess: () => {
             setSuccess("Signup successful! Redirecting...");
+            router.push("/account");
             setIsLoading(false);
           },
           onError: (ctx) => {
@@ -108,12 +110,6 @@ export function SignupForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
                 </div>
                 <Input id="password" type="password" name="password" required />
               </div>

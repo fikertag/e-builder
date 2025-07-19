@@ -25,7 +25,7 @@ export default function ForgetPasswordPage() {
     e.preventDefault();
     const { data, error } = await authClient.forgetPassword({
     email,
-    redirectTo: "auth/reset-password",
+    redirectTo: "/auth/reset-password",
 });
     setSubmitted(true);
     setTimer(30); 
