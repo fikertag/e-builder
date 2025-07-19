@@ -34,20 +34,21 @@ export async function POST(request: NextRequest) {
       aboutUs,
       whyChooseUs,
       contact,
+      theme
     } = await request.json();
     const userId = owner;
 
     const ip = request.headers.get("x-forwarded-for") || "unknown";
     const identifier = userId || ip;
 
-    const { success } = await ratelimit.limit(identifier);
+    // const { success } = await ratelimit.limit(identifier);
 
-    if (!success) {
-      return NextResponse.json(
-        { message: "Too many requests" },
-        { status: 429 }
-      );
-    }
+    // if (!success) {
+    //   return NextResponse.json(
+    //     { message: "Too many requests" },
+    //     { status: 429 }
+    //   );
+    // }
 
     // Required fields validation
     if (!storeName || typeof storeName !== "string") {
@@ -262,6 +263,7 @@ export async function POST(request: NextRequest) {
       aboutUs,
       whyChooseUs,
       contact,
+      theme,
       generatedAt: new Date(),
     });
 

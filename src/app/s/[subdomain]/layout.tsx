@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Header } from "@/components/navbar";
 import { StoreData } from "@/types";
 import DynamicThemeProvider from "./DynamicThemeProvider";
-import { Providers } from "./providers";
 import { StoreInitializer } from "@/app/StoreInitializer";
 import "@/styles/subdomain.css";
 
@@ -42,13 +41,11 @@ export default async function SubdomainLayout({
         rel="stylesheet"
       />
 
-      <Providers>
         <Header title={store.subdomain} />
         <DynamicThemeProvider themeStyle={store.theme.styles.light}>
           <StoreInitializer store={store} />
           {children}
         </DynamicThemeProvider>
-      </Providers>
     </>
   );
 }

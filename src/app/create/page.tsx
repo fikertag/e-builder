@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface IAiFormData {
   owner: string;
@@ -25,7 +26,7 @@ interface IAiFormData {
   };
   storeLandingImage: string;
   theme: string; // ObjectId as string
-  template?: string;
+  // template?: string;
   isPublished?: boolean;
   integrations?: {
     telebirr?: {
@@ -52,6 +53,30 @@ export default function CreatePage() {
   const [imageLoading, setImageLoading] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  // Theme list as provided
+  const themeList = [
+    { _id: '6871c55b34513073bdfadb67', name: 'amber-minimal' },
+    { _id: '6871c66634513073bdfadb6a', name: 'amethyst-haze' },
+    { _id: '6871c6cc34513073bdfadb6c', name: 'bold-tech' },
+    { _id: '6871c75634513073bdfadb70', name: 'bubblegum' },
+    { _id: '6871c79a34513073bdfadb72', name: 'caffeine' },
+    { _id: '6871c7e734513073bdfadb76', name: 'candyland' },
+    { _id: '6871c83e34513073bdfadb79', name: 'catppuccin' },
+    { _id: '6871c87334513073bdfadb7b', name: 'claude' },
+    { _id: '6871c8b934513073bdfadb7d', name: 'claymorphism' },
+    { _id: '6871c92734513073bdfadb81', name: 'clean-slate' },
+    { _id: '6871c99134513073bdfadb83', name: 'cyberpunk' },
+    { _id: '6871ca2334513073bdfadb85', name: 'elegant-luxury' },
+    { _id: '6871ca6f34513073bdfadb87', name: 'graphite' },
+    { _id: '6871cb1134513073bdfadb89', name: 'mocha-mousse' },
+    { _id: '6871cb7134513073bdfadb8b', name: 'nature' },
+    { _id: '6871cbbc34513073bdfadb8d', name: 'northern-lights' },
+    { _id: '6871cbfe34513073bdfadb8f', name: 'notebook' },
+    { _id: '6871cc3a34513073bdfadb91', name: 'ocean-breeze' },
+    { _id: '6871cca334513073bdfadb93', name: 'pastel-dreams' },
+    { _id: '6871cd5a34513073bdfadb95', name: 'starry-night' },
+  ];
 
   // AI Generator handler
   const handleGenerate = async () => {
@@ -94,8 +119,6 @@ export default function CreatePage() {
       setFormData({ ...formData, whyChooseUs: reasons });
     } else if (name === "theme") {
       setFormData({ ...formData, theme: value });
-    } else if (name === "template") {
-      setFormData({ ...formData, template: value });
     } else if (name.startsWith("integrations.telebirr.")) {
       const key = name.split(".")[2];
       const prev = (formData.integrations && formData.integrations.telebirr) as Partial<{number: string; name: string}> || {};
@@ -174,9 +197,7 @@ export default function CreatePage() {
       } else {
         setSuccess("Store created successfully!");
         setTimeout(() => {
-          if (formData.subdomain) {
-            window.location.href = `https://${formData.subdomain}.fikiryilkal.me`;
-          }
+          router.push("/dashboard");
         }, 1200);
       }
     } catch (err) {
@@ -403,27 +424,20 @@ export default function CreatePage() {
                 required
               >
                 <option value="">Select a theme</option>
-                <option value="themeid1">Light</option>
-                <option value="themeid2">Dark</option>
-                <option value="themeid3">Pastel</option>
-                <option value="themeid4">Neon</option>
-                <option value="themeid5">Classic</option>
+                {themeList.map((theme) => (
+                  <option key={theme._id} value={theme._id}>{theme.name}</option>
+                ))}
               </select>
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Store Template</label>
               <select
                 name="template"
-                value={formData?.template || ""}
-                onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                value="defult"
+                disabled
+                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition opacity-60 cursor-not-allowed"
               >
-                <option value="">Select a template</option>
-                <option value="minimalist">Minimalist</option>
-                <option value="professional">Professional</option>
-                <option value="vibrant">Vibrant</option>
-                <option value="modern">Modern</option>
-                <option value="classic">Classic</option>
+                <option value="minimalist">Default</option>
               </select>
             </div>
             {/* Integrations: Telebirr */}
