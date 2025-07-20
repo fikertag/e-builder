@@ -81,7 +81,7 @@ export function SignupForm({
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>
-            Enter your email below to create a new account
+            Enter your email below to create a new account main
           </CardDescription>
         </CardHeader>
         <CardContent>

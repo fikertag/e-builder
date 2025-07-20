@@ -14,7 +14,7 @@ if (!db) {
 }
 
 export const auth = betterAuth({
-  trustedOrigins: ["http://localhost:3000"],
+  trustedOrigins: ["http://localhost:3000", "https://ps4store.ethify.app", "https://ethify.app"],
   database: mongodbAdapter(db),
   socialProviders: {
     google: {
