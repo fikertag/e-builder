@@ -21,7 +21,8 @@ function isSubdomain(host: string) {
 }
 
 export async function GET(request: Request) {
-  const host = request.headers.get("host") || "";
+  // Prioritize 'x-forwarded-host' for production environments
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
   if (isSubdomain(host)) {
     return customerHandler.GET(request);
   } else {
@@ -30,7 +31,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const host = request.headers.get("host") || "";
+  // Prioritize 'x-forwarded-host' for production environments
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
   if (isSubdomain(host)) {
     return customerHandler.POST(request);
   } else {
