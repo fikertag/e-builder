@@ -10,6 +10,7 @@ async function getStoreBySubdomain(
 ): Promise<StoreData | null> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/store/${subdomain}`);
+  console.log("Fetching store data for subdomain:", subdomain, "baseUrl:", baseUrl);
   if (!res.ok) return null;
   const data = await res.json();
   return data as StoreData;
