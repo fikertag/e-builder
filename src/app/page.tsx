@@ -14,36 +14,34 @@ export default async function Home() {
       <Landing />
       <HowItWorks />
       <StoreShowcase />
-      <section className="text-center py-10 px-4 font-semibold">
-        <h2 className="text-6xl font-semibold mb-4">
+      <section className="max-w-4xl mx-auto text-center py-16 px-4">
+        <h2 className="text-3xl min-[450px]:text-4xl sm:text-5xl md:text-6xl font-semibold mb-4">
           For <span className="text-primary"> Everyone</span> From
           Intrepreneurs to <span className="text-primary"> Enterprises</span>
         </h2>
-        <p className="max-w-2xl mx-auto text-xl text-foreground">
+        <p className="max-w-2xl text-xl text-foreground">
           One platform to launch, manage, and grow your e-commerce store. No
           tech skills required. One platform to launch, manage, and grow your
           e-commerce store. No tech skills required.
         </p>
       </section>
-      <div className="flex py-16 justify-center gap-10 items-center">
-        <div>
+      <section className="flex flex-col-reverse md:flex-row md:justify-center py-16 justify-around gap-10 items-center container mx-auto">
+        <div className="h-70 w-70 bg-amber-200 relative">
           <Image
             alt="model"
             src={"/model.jpg"}
-            height={350}
-            width={350}
-            style={{ objectFit: "contain", background: "var(--card)", borderRadius: "var(--radius)" }}
+            fill
           />
         </div>
-        <div>
-          <h2 className="text-5xl font-semibold mb-4">
-            How <span className="text-primary">E-Comzy</span> Works ?
+        <div >
+          <h2 className="text-3xl min-[450px]:text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-semibold mb-4 text-center">
+            How <span className="text-primary">Ethify</span> Works?
           </h2>
-          <p className="max-w-xl mx-auto text-xl text-foreground">
+          <p className="max-w-xl mx-5 text-xl text-foreground text-center">
             one platform to launch, manage, and grow your e-commerce store.
           </p>
         </div>
-      </div>
+      </section>
       <WhyChoose />
       <PricingCTA />
       <Footer />

@@ -21,13 +21,13 @@ export function Header() {
         <div className="flex items-center gap-2">
           <div className="md:hidden">
             <Sheet>
-              <SheetTrigger asChild>
+              {/* <SheetTrigger asChild>
                 <Menu size={17} />
-              </SheetTrigger>
+              </SheetTrigger> */}
 
               <SheetContent side={"left"}>
                 <SheetHeader className="mt-3">
-                  <SheetTitle>e-comzy</SheetTitle>
+                  <SheetTitle className="mt-1">Ethify</SheetTitle>
                   <Separator className="mt-3" />
                 </SheetHeader>
 
@@ -39,7 +39,7 @@ export function Header() {
                   </li>
                   <li>
                     <SheetClose asChild>
-                      <NavItem href="#abut" label="About US" />
+                      <NavItem href="#about" label="About" />
                     </SheetClose>
                   </li>
                   <li>
@@ -61,19 +61,19 @@ export function Header() {
             <ShoppingBag className="text-primary" />
             <Link
               href="/"
-              className="text-xl font-semibold leading-none text-primary"
+              className="text-xl font-semibold leading-none text-primary mt-1"
             >
-              e-comzy
+              Ethify
             </Link>
           </div>
         </div>
         <ul className="hidden gap-10 md:flex justify-center font-medium ">
           <NavItem href="#home" label="Home" />
-          <NavItem href="#abut" label="About US" />
+          <NavItem href="#about" label="About" />
           <NavItem href="#Pricing" label="Pricing" />
         </ul>
         <div className="flex items-center justify-end gap-4">
-          <Link href={"/auth/login"}>Log in</Link>
+          <Link className="hidden min-[465px]:flex" href={"/auth/login"}>Log in</Link>
           <Button asChild className="bg-primary" size={"lg"}>
             <Link href={"/auth/signup"} className="text-white font-semibold">
               Start free trial

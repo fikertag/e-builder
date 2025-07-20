@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { Facebook, X, Instagram, SendHorizonal } from "lucide-react";
+import { SendHorizonal, Twitter, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-secondary text-foreground text-center py-10">
+    <footer className="bg-card-foreground text-foreground text-center py-10">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-4xl mx-auto px-4 gap-6">
         {/* Social Media */}
         <div className="flex gap-4 justify-center mb-4 md:mb-0">
@@ -13,23 +12,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             aria-label="Facebook"
           >
-            <X />{" "}
-          </a>
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Twitter"
-          >
-            <Facebook />
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-          >
-            <Instagram />{" "}
+            <Twitter color="white" size={20} />{" "}
           </a>
           <a
             href="https://t.me/"
@@ -37,30 +20,24 @@ export default function Footer() {
             rel="noopener noreferrer"
             aria-label="Telegram"
           >
-            <SendHorizonal />
+            <SendHorizonal color="white" size={20} />
           </a>
           <a href="mailto:support@e-comzy.com" aria-label="Email">
-            <SendHorizonal />{" "}
+            <Mail color="white" size={20} />
           </a>
         </div>
         {/* Support & Register */}
         <div className="flex gap-4 justify-center">
-          <Link
-            href="/support"
-            className="bg-card text-foreground px-4 py-2 rounded-md font-semibold hover:bg-primary hover:text-white transition"
+          <a
+            href="https://t.me/"
+            className="text-white flex gap-2 items-center"
           >
-            Support
-          </Link>
-          <Link
-            href="/auth/sign-in"
-            className="bg-primary text-white px-4 py-2 rounded-md font-semibold hover:bg-card hover:text-primary border border-primary transition"
-          >
-            Register
-          </Link>
+            Support <SendHorizonal size={15} />
+          </a>
         </div>
       </div>
-      <p className="mt-8 text-sm text-muted-foreground">
-        &copy; {new Date().getFullYear()} E-Comzy. All rights reserved.
+      <p className="mt-8 text-sm text-white">
+        &copy; 2025 Ethify. All rights reserved.
       </p>
     </footer>
   );
