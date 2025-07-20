@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
       return;
     }
     try {
-      const { data, error: resetError } = await authClient.resetPassword({
+      const { error: resetError } = await authClient.resetPassword({
         newPassword,
         token,
       });
@@ -46,6 +46,7 @@ export default function ResetPasswordPage() {
         setTimeout(() => router.push("/auth/login"), 2000);
       }
     } catch (err) {
+      console.error("Reset password error:", err);
       setError("Failed to reset password.");
     } finally {
       setLoading(false);

@@ -24,7 +24,7 @@ export function LoginForm({
   const [success, setSuccess] = useState<string>("");
 
    const signIn = async () => {
-    const data = await authClient.signIn.social({
+    await authClient.signIn.social({
         provider: "google"
     })
 }

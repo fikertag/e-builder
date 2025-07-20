@@ -44,7 +44,6 @@ interface IAiFormData {
 
 export default function CreatePage() {
   const [shopDescription, setShopDescription] = useState("");
-  const [aiResult, setAiResult] = useState<IAiFormData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<IAiFormData | null>(null);
@@ -82,7 +81,6 @@ export default function CreatePage() {
   const handleGenerate = async () => {
     setLoading(true);
     setError(null);
-    setAiResult(null);
     try {
       const res = await fetch("/api/gemini", {
         method: "POST",
@@ -90,7 +88,6 @@ export default function CreatePage() {
         body: JSON.stringify({ prompt: shopDescription }),
       });
       const data = await res.json();
-      setAiResult(data);
       setFormData(data);
     } catch (e) {
       setError("Failed to generate shop. Please try again.");
@@ -373,24 +370,24 @@ export default function CreatePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mb-1">
               <div className="flex flex-col">
                 <label className="block text-xs font-normal mb-0 pt-2">Store Name</label>
-                <input name="storeName" value={formData?.storeName || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+                <input name="storeName" value={formData?.storeName || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
               </div>
               <div className="flex flex-col">
                 <label className="block text-xs font-normal mb-0 pt-2">Subdomain</label>
-                <input name="subdomain" value={formData?.subdomain || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+                <input name="subdomain" value={formData?.subdomain || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
               </div>
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Hero Heading</label>
-              <input name="heroHeading" value={formData?.heroHeading || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="heroHeading" value={formData?.heroHeading || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Hero Description</label>
-              <input name="heroDescription" value={formData?.heroDescription || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="heroDescription" value={formData?.heroDescription || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">About Us</label>
-              <input name="aboutUs" value={formData?.aboutUs || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="aboutUs" value={formData?.aboutUs || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Why Choose Us</label>
@@ -401,7 +398,7 @@ export default function CreatePage() {
                     name={`whyChooseUs_${idx}`}
                     value={formData?.whyChooseUs?.[idx] || ""}
                     onChange={handleFormChange}
-                    className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                    className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                     placeholder={`Reason ${idx+1}`}
                   />
                 ))}
@@ -409,7 +406,7 @@ export default function CreatePage() {
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Description</label>
-              <input name="description" value={formData?.description || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="description" value={formData?.description || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
           </div>
           {/* Remaining fields in two columns */}
@@ -420,7 +417,7 @@ export default function CreatePage() {
                 name="theme"
                 value={formData?.theme || ""}
                 onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                 required
               >
                 <option value="">Select a theme</option>
@@ -435,7 +432,7 @@ export default function CreatePage() {
                 name="template"
                 value="defult"
                 disabled
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition opacity-60 cursor-not-allowed"
+                className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition opacity-60 cursor-not-allowed"
               >
                 <option value="minimalist">Default</option>
               </select>
@@ -447,7 +444,7 @@ export default function CreatePage() {
                 name="integrations.telebirr.number"
                 value={formData?.integrations?.telebirr?.number || ""}
                 onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                 placeholder="Telebirr Number"
               />
             </div>
@@ -457,7 +454,7 @@ export default function CreatePage() {
                 name="integrations.telebirr.name"
                 value={formData?.integrations?.telebirr?.name || ""}
                 onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                 placeholder="Telebirr Name"
               />
             </div>
@@ -468,7 +465,7 @@ export default function CreatePage() {
                 name="integrations.cbe.account"
                 value={formData?.integrations?.cbe?.account || ""}
                 onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                 placeholder="CBE Account"
               />
             </div>
@@ -478,41 +475,41 @@ export default function CreatePage() {
                 name="integrations.cbe.name"
                 value={formData?.integrations?.cbe?.name || ""}
                 onChange={handleFormChange}
-                className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
+                className="w-full pb-2 pt-1  border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition"
                 placeholder="CBE Name"
               />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Contact Email</label>
-              <input name="contact.email" value={formData?.contact?.email || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="contact.email" value={formData?.contact?.email || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Phone Number</label>
-              <input name="contact.phone" value={formData?.contact?.phone || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="contact.phone" value={formData?.contact?.phone || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Contact Address</label>
-              <input name="contact.address" value={formData?.contact?.address || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
+              <input name="contact.address" value={formData?.contact?.address || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Instagram <span className="text-muted-foreground">(username only, e.g. fikir)</span></label>
-              <input name="contact.social.instagram" value={formData?.contact?.social?.instagram || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
+              <input name="contact.social.instagram" value={formData?.contact?.social?.instagram || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Facebook <span className="text-muted-foreground">(username only, e.g. fikir)</span></label>
-              <input name="contact.social.facebook" value={formData?.contact?.social?.facebook || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
+              <input name="contact.social.facebook" value={formData?.contact?.social?.facebook || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">Twitter <span className="text-muted-foreground">(username only, e.g. fikir)</span></label>
-              <input name="contact.social.twitter" value={formData?.contact?.social?.twitter || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
+              <input name="contact.social.twitter" value={formData?.contact?.social?.twitter || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">TikTok <span className="text-muted-foreground">(username only, e.g. fikir)</span></label>
-              <input name="contact.social.tiktok" value={formData?.contact?.social?.tiktok || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
+              <input name="contact.social.tiktok" value={formData?.contact?.social?.tiktok || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
             </div>
             <div className="flex flex-col mb-1">
               <label className="block text-xs font-normal mb-0 pt-2">YouTube <span className="text-muted-foreground">(username only, e.g. fikir)</span></label>
-              <input name="contact.social.youtube" value={formData?.contact?.social?.youtube || ""} onChange={handleFormChange} className="w-full pb-2 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
+              <input name="contact.social.youtube" value={formData?.contact?.social?.youtube || ""} onChange={handleFormChange} className="w-full pb-2 pt-1 border-b border-border bg-transparent text-base focus:outline-none focus:border-primary transition" placeholder="username" />
             </div>
           </div>
           <div className="md:col-span-2 mt-4">

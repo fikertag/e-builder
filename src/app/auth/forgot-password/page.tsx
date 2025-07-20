@@ -23,7 +23,7 @@ export default function ForgetPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data, error } = await authClient.forgetPassword({
+    await authClient.forgetPassword({
     email,
     redirectTo: "/auth/reset-password",
 });
@@ -37,7 +37,7 @@ export default function ForgetPasswordPage() {
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
           <CardDescription>
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we&apos;ll send you a link to reset your password.
           </CardDescription>
         </CardHeader>
         <CardContent>

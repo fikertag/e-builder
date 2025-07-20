@@ -31,7 +31,7 @@ export default function CustomersPage() {
         const data = await res.json();
         setCustomers(data ? (Array.isArray(data) ? data : [data]) : []);
       } catch (e) {
-        setError("Failed to load customers.");
+        setError(e ? "Failed to load customers." : "Failed to load customers.");
       } finally {
         setLoading(false);
       }
