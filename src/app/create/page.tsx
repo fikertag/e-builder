@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 
 interface IAiFormData {
   owner: string;
@@ -53,6 +54,7 @@ export default function CreatePage() {
   const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const user = useUser();
   // Theme list as provided
   const themeList = [
     { _id: '6871c55b34513073bdfadb67', name: 'amber-minimal' },
@@ -185,7 +187,7 @@ export default function CreatePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          owner: "6824dab1b90b388b8d6e58e2",
+          owner: user?.user?.id,
         }),
       });
       const data = await res.json();
