@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Menu, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
@@ -11,7 +11,7 @@ import {
   SheetClose,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  // SheetTrigger,
 } from "@/components/ui/sheet";
 
 export function Header() {
