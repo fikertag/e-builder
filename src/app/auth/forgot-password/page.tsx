@@ -10,26 +10,45 @@ export default function ForgetPasswordPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (submitted && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
-      }, 1000);
+      }, 100);
     }
     return () => clearInterval(interval);
   }, [submitted, timer]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await authClient.forgetPassword({
-    email,
-    redirectTo: "/auth/reset-password",
-});
-    setSubmitted(true);
-    setTimer(30); 
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const { data, error } = await authClient.forgetPassword({
+        email,
+        redirectTo: "/auth/reset-password",
+      });
+      setSubmitted(true);
+      setTimer(30);
+      console.log(data, error);
+      if (error) {
+        setError(error.message || "Failed to send reset link.");
+      } else if (data) {
+        setSuccess("Email sent successfully! Please check your inbox.");
+      }
+    } catch (err: any) {
+      setError(err?.message || "Failed to send reset link.");
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -54,13 +73,18 @@ export default function ForgetPasswordPage() {
                 required
               />
             </div>
-            {submitted && (
-              <div className="text-green-600 text-center text-sm mb-2">
-                If this email exists, a reset link will be sent go check your inbox make sure to check the spam folder.
-              </div>
+            {error && (
+              <div className="text-red-600 text-center text-sm mb-2">{error}</div>
             )}
-            <Button type="submit" className="w-full" disabled={submitted && timer > 0}>
-              {submitted && timer > 0 ? `Resend in ${timer}s` : "Send Reset Link"}
+            {success && (
+              <div className="text-green-600 text-center text-sm mb-2">{success}</div>
+            )}
+            <Button type="submit" className="w-full" disabled={loading || (submitted && timer > 0)}>
+              {loading
+                ? "Sending Reset Link..."
+                : submitted && timer > 0
+                ? `Resend in ${timer}s`
+                : "Send Reset Link"}
             </Button>
           </form>
         </CardContent>

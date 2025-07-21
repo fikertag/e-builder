@@ -52,7 +52,7 @@ export function SignupForm({
           },
           onSuccess: () => {
             setSuccess("Signup successful! Redirecting...");
-            router.push("/create");
+            router.push("/dashboard");
             setIsLoading(false);
           },
           onError: (ctx) => {

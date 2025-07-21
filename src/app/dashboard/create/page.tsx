@@ -257,7 +257,7 @@ export default function CreatePage() {
   }, [formData]);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-indigo-50 to-white py-12 px-2 md:px-8 flex flex-col gap-10 mx-auto">
+    <div className="w-full min-h-screen pb-12 px-2 md:px-8 flex flex-col gap-10 mx-auto">
       {/* AI Chat/Description Generator Section */}
       <div className="w-full max-w-5xl mx-auto p-3 md:p-5 mb-4 flex flex-col items-center">
         <h2 className="text-xl md:text-2xl font-bold mb-2 text-primary text-center tracking-tight">
@@ -297,7 +297,12 @@ export default function CreatePage() {
       {/* Manual Form Section (always visible) */}
       <div className="w-full flex flex-col lg:flex-row gap-8">
         {/* Image upload section */}
-        <div className="lg:w-[340px] w-full bg-white rounded-2xl shadow-lg p-6 border border-border flex flex-col items-center mb-8 md:mb-0 self-start">
+       
+        {/* Main form section */}
+        <form
+          className="w-full grid grid-cols-1 bg-white rounded-2xl shadow-xl p-6 border border-border"
+          onSubmit={handleSubmit}
+        ><div className="lg:w-[340px] mx-auto w-full p-6 flex flex-col items-center mb-8 self-start">
           <label className="block font-semibold mb-2">
             Landing Page Image <span className="text-red-500">*</span>
           </label>
@@ -362,13 +367,9 @@ export default function CreatePage() {
           </button>
           {imageError && <div className="text-red-500 mt-2">{imageError}</div>}
         </div>
-        {/* Main form section */}
-        <form
-          className="lg:w-2/3 w-full grid grid-cols-1 bg-white rounded-2xl shadow-xl p-6 border border-border"
-          onSubmit={handleSubmit}
-        >
           {/* Store Name and Subdomain on one row, others full row */}
           <div className="flex flex-col gap-y-2 w-full md:col-span-2 mb-2">
+             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mb-1">
               <div className="flex flex-col">
                 <label className="block text-xs font-normal mb-0 pt-2">Store Name</label>

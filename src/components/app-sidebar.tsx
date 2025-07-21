@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   GalleryVerticalEnd,
   Package,
+  Plus
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -88,6 +89,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           { title: "Integrations", url: "/dashboard/settings/integration" },
         ],
       },
+      {
+        title: "Create Store",
+        url: "/dashboard/create",
+        icon: Plus
+      }
     ],
     navSecondary: [
       {
