@@ -8,7 +8,8 @@ import {
   ShoppingCart,
   GalleryVerticalEnd,
   Package,
-  Plus
+  Plus,
+  Users2Icon
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -23,15 +24,17 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useStoreData } from "@/store/useStoreData";
+import { useUser } from "@/context/UserContext";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const stores = useStoreData((state) => state.stores);
+  const user = useUser();
 
   const data = {
     user: {
-      name: "Store Owner",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
+      name: user?.user?.name || "Name",
+      email: user?.user?.email || "Email",
+      avatar: user?.user?.image || "/default-avatar.png",
     },
     teams:
       stores && stores.length > 0
@@ -74,7 +77,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "Customers",
         url: "/dashboard/customers",
-        icon: ShoppingCart,
+        icon: Users2Icon,
         items: [{ title: "All Customers", url: "/dashboard/customers" }],
       },
       {

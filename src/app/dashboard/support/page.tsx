@@ -16,14 +16,14 @@ export default function SupportPage() {
           <ul className="list-disc pl-6">
             <li>
               Email:{" "}
-              <a href="mailto:support@example.com" className="underline">
-                support@example.com
+              <a href="mailto:fikeryilkaltages@gmail.com" className="underline">
+                fikeryilkaltages@gmail.com
               </a>
             </li>
             <li>
               Phone:{" "}
-              <a href="tel:+251900000000" className="underline">
-                +251 900 000 000
+              <a href="tel:+251911717142" className="underline">
+                +251 911 717 142
               </a>
             </li>
           </ul>

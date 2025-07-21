@@ -50,11 +50,11 @@ export default function DashboardPage() {
       value: orderStats ? `$${orderStats.totalRevenue}` : "-",
       icon: <BarChart2 className="text-gray-500" />,
     },
-    {
-      label: "Visitors",
-      value: 340, // TODO: Replace with real visitor data if available
-      icon: <Store className="text-gray-500" />,
-    },
+    // {
+    //   label: "Visitors",
+    //   value: 340, // TODO: Replace with real visitor data if available
+    //   icon: <Store className="text-gray-500" />,
+    // },
   ];
 
   const recentOrders = orderStats?.recentOrders || [];
@@ -110,13 +110,13 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Link
-            href="/products/add"
+            href="dashboard/products/add"
             className="px-4 py-2 rounded bg-gray-900 text-white font-semibold hover:bg-gray-700 transition"
           >
             Add Product
           </Link>
           <Link
-            href="/orders"
+            href="dashboard/orders"
             className="px-4 py-2 rounded bg-gray-200 text-gray-900 font-semibold hover:bg-gray-300 transition"
           >
             View Orders
