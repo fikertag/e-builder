@@ -2,10 +2,8 @@
 
 import * as React from "react";
 import {
-  BookOpen,
   LifeBuoy,
   PieChart,
-  Send,
   Settings2,
   ShoppingCart,
   GalleryVerticalEnd,

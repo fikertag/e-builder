@@ -42,8 +42,8 @@ export default function ForgetPasswordPage() {
       } else if (data) {
         setSuccess("Email sent successfully! Please check your inbox.");
       }
-    } catch (err: any) {
-      setError(err?.message || "Failed to send reset link.");
+    } catch (err) {
+      setError(err ? "Failed to send reset link." : "Failed to send reset link." );
     } finally {
       setLoading(false);
     }
