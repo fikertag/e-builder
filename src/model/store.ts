@@ -35,6 +35,10 @@ interface IStore extends Document {
       name: string;
     };
   };
+  deliveryFees?: Array<{
+    location: string;
+    price: number;
+  }>;
 }
 
 const StoreSchema = new Schema<IStore>(
@@ -112,6 +116,12 @@ const StoreSchema = new Schema<IStore>(
         name: { type: String },
       },
     },
+    deliveryFees: [
+      {
+        location: { type: String, required: true },
+        price: { type: Number, required: true, min: 0 },
+      },
+    ],
   },
   { timestamps: true }
 );

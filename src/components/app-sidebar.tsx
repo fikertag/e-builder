@@ -101,16 +101,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/dashboard/support",
         icon: LifeBuoy,
       },
-      {
-        title: "Docs",
-        url: "/dashboard/docs",
-        icon: BookOpen,
-      },
-      {
-        title: "Feedback",
-        url: "/dashboard/feedback",
-        icon: Send,
-      },
     ],
   };
 

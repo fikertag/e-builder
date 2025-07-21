@@ -31,6 +31,10 @@ interface IProduct extends Document {
     [key: string]: string | number | boolean | undefined; // { "gender": "unisex", "weight": "200g" }
   };
   customOptions?: ICustomOption[];
+  deliveryFees?: Array<{
+    location: string;
+    price: number;
+  }>;
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -118,6 +122,12 @@ const ProductSchema = new Schema<IProduct>(
           type: Number,
           default: 0,
         },
+      },
+    ],
+    deliveryFees: [
+      {
+        location: { type: String, required: true },
+        price: { type: Number, required: true, min: 0 },
       },
     ],
   },
