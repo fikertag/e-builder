@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart, Package, BarChart2, Store } from "lucide-react";
+import { ShoppingCart, Package, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { useStoreData } from "@/store/useStoreData";
 import { useQuery } from "@tanstack/react-query";
