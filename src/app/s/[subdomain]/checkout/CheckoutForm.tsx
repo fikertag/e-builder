@@ -3,7 +3,7 @@
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useStoreData } from "@/store/useStoreData";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -15,15 +15,37 @@ export default function CheckoutForm() {
   const store = useStoreData((state) => state.store);
   const { user } = useUser();
   const router = useRouter();
-  // Shipping address state
-  const [shipping, setShipping] = useState({
-    city: "",
-    street: "",
-    phoneNumber: "",
-  });
+  // Shipping method and info state
+  const [shippingMethod, setShippingMethod] = useState<'pickup' | 'delivery'>('pickup');
+  // Delivery locations and price
+  const deliveryLocations = useMemo(() => {
+    // Store-level delivery locations (array of { location, price })
+    if (!store?.deliveryFees) return [];
+    return store.deliveryFees.map((fee: any) => ({
+      location: fee.location,
+      price: fee.price,
+    }));
+  }, [store]);
+
+  // Default to store minimum delivery fee/location
+  const defaultDelivery = useMemo(() => {
+    if (!deliveryLocations.length) return { location: "", price: 0 };
+    return deliveryLocations.reduce((min, curr) =>
+      curr.price < min.price ? curr : min
+    );
+  }, [deliveryLocations]);
+
+  const [deliveryLocation, setDeliveryLocation] = useState(defaultDelivery.location);
+  const [deliveryPrice, setDeliveryPrice] = useState(defaultDelivery.price);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  // Use store delivery price only
+  const effectiveDeliveryPrice = shippingMethod === "delivery"
+    ? (Number(deliveryPrice) || 0)
+    : 0;
 
   const total = cartItems.reduce((sum, item) => {
     let price = item.product.basePrice;
@@ -37,22 +59,7 @@ export default function CheckoutForm() {
   }, 0);
 
   const orderMutation = useMutation({
-    mutationFn: async (orderPayload: {
-      store: string;
-      customer: string;
-      items: Array<{
-        product: string;
-        variant?: string;
-        quantity: number;
-        price: number;
-      }>;
-      subtotal: number;
-      shipping: number;
-      tax: number;
-      total: number;
-      status: string;
-      shippingAddress: typeof shipping;
-    }) => {
+    mutationFn: async (orderPayload: any) => {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,18 +95,26 @@ export default function CheckoutForm() {
       setError("Store not found.");
       return;
     }
-    // Validate shipping address
-    for (const key of ["city", "street", "phoneNumber"]) {
-      if (!shipping[key as keyof typeof shipping]) {
-        setError("Please fill in all shipping address fields.");
+    // Validate required fields
+    if (!phoneNumber) {
+      setError("Please enter your phone number.");
+      return;
+    }
+    if (shippingMethod === "delivery") {
+      if (!deliveryLocation) {
+        setError("Please select a delivery location.");
+        return;
+      }
+      if (effectiveDeliveryPrice < 0) {
+        setError("Invalid delivery price.");
         return;
       }
     }
     setIsSubmitting(true);
     // Prepare order payload
-    const orderPayload = {
+    const orderPayload: any = {
       store: store.id,
-      customer: user?.id || "",
+      customer: user?.id || undefined,
       items: cartItems.map((item) => ({
         product: item.product._id,
         variant: item.selectedVariants?.map((v) => v.sku).join(", "),
@@ -114,12 +129,17 @@ export default function CheckoutForm() {
             : 0),
       })),
       subtotal: total,
-      shipping: 0,
+      shipping: effectiveDeliveryPrice,
       tax: 0,
-      total: total,
+      total: total + effectiveDeliveryPrice,
       status: "pending",
-      shippingAddress: shipping,
+      shippingMethod,
+      phoneNumber,
     };
+    if (shippingMethod === "delivery") {
+      orderPayload.deliveryLocation = deliveryLocation;
+      orderPayload.deliveryPrice = effectiveDeliveryPrice;
+    }
     orderMutation.mutate(orderPayload);
   };
 
@@ -189,39 +209,65 @@ export default function CheckoutForm() {
         </div>
         {/* Total, Address, Payment - Right */}
         <div className="w-full md:w-[420px] flex-shrink-0">
-          {/* Shipping Address */}
+          {/* Shipping Method & Info */}
           <div className="space-y-2 mb-4">
             <h2 className="text-lg font-semibold mb-2 text-card-foreground">
-              Shipping Address
+              Shipping Method
             </h2>
-            <input
-              type="text"
-              className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
-              placeholder="City"
-              value={shipping.city}
-              onChange={(e) =>
-                setShipping((s) => ({ ...s, city: e.target.value }))
-              }
-              required
-            />
-            <input
-              type="text"
-              className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
-              placeholder="Street"
-              value={shipping.street}
-              onChange={(e) =>
-                setShipping((s) => ({ ...s, street: e.target.value }))
-              }
-              required
-            />
+            <div className="flex gap-4 mb-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="shippingMethod"
+                  value="pickup"
+                  checked={shippingMethod === "pickup"}
+                  onChange={() => setShippingMethod("pickup")}
+                />
+                Pickup
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="shippingMethod"
+                  value="delivery"
+                  checked={shippingMethod === "delivery"}
+                  onChange={() => setShippingMethod("delivery")}
+                />
+                Delivery
+              </label>
+            </div>
+            {shippingMethod === "delivery" && (
+              <>
+                <select
+                  className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
+                  value={deliveryLocation}
+                  onChange={e => {
+                    setDeliveryLocation(e.target.value);
+                    const found = deliveryLocations.find(l => l.location === e.target.value);
+                    setDeliveryPrice(found ? found.price : 0);
+                  }}
+                  required
+                >
+                  <option value="" disabled>
+                    Select Delivery Location
+                  </option>
+                  {deliveryLocations.map((loc, idx) => (
+                    <option key={idx} value={loc.location}>
+                      {loc.location} (${loc.price})
+                    </option>
+                  ))}
+                </select>
+                <div className="text-sm font-medium mt-1">
+                  Delivery Fee: ${effectiveDeliveryPrice.toFixed(2)}
+                </div>
+              </>
+            )}
             <input
               type="text"
               className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
               placeholder="Phone Number"
-              value={shipping.phoneNumber || ""}
-              onChange={(e) =>
-                setShipping((s) => ({ ...s, phoneNumber: e.target.value }))
-              }
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               required
             />
           </div>
@@ -235,14 +281,16 @@ export default function CheckoutForm() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Delivery</span>
-              <span className="font-semibold text-card-foreground">$0.00</span>
+              <span className="font-semibold text-card-foreground">
+                ${shippingMethod === "delivery" ? effectiveDeliveryPrice.toFixed(2) : "0.00"}
+              </span>
             </div>
             <div className="flex justify-between items-center border-t border-border pt-2 mt-2">
               <span className="font-semibold text-lg text-card-foreground">
                 Total
               </span>
               <span className="text-xl font-bold text-primary">
-                ${total.toFixed(2)}
+                ${(total + (shippingMethod === "delivery" ? effectiveDeliveryPrice : 0)).toFixed(2)}
               </span>
             </div>
           </div>

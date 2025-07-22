@@ -73,10 +73,10 @@ export default function OrderPaymentPage() {
           <label className="block font-semibold mb-2 text-foreground">
             Payment Method
           </label>
-          <div className="flex gap-4 ">
+          <div className="flex gap-4  ">
             <button
               type="button"
-              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm
+              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm relative
             ${
               method === "telebirr"
                 ? "border-primary bg-primary/10"
@@ -95,7 +95,7 @@ export default function OrderPaymentPage() {
             </button>
             <button
               type="button"
-              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm
+              className={`w-1/2 max-w-[160px] flex flex-col items-center border-2 rounded-xl p-3 transition text-sm relative
             ${
               method === "cbe"
                 ? "border-primary bg-primary/10"
@@ -104,7 +104,7 @@ export default function OrderPaymentPage() {
             hover:border-primary`}
               onClick={() => setMethod("cbe")}
             >
-              <Image src="/cbe.png" alt="CBE" className="w-8 h-8 mb-1" fill />
+              <Image src="/cbe.png" alt="CBE" className="w-8 h-8 mb-1" height={100} width={100} />
               <span className="font-medium text-foreground">CBE</span>
             </button>
           </div>

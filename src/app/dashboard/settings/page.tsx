@@ -35,6 +35,7 @@ export default function SettingsPage() {
     },
     description: store?.description || "",
     isPublished: store?.isPublished ?? false,
+    deliveryFees: store?.deliveryFees || [{ location: "", price: 0 }],
   });
   const [isImageUploading, setIsImageUploading] = useState(false);
 
@@ -77,9 +78,30 @@ export default function SettingsPage() {
         },
         description: store.description || "",
         isPublished: store.isPublished ?? false,
+        deliveryFees: store.deliveryFees || [{ location: "", price: 0 }],
       });
     }
   }, [store]);
+  // Delivery Fee Handlers
+  const handleDeliveryFeeChange = (idx: number, field: "location" | "price", value: string | number) => {
+    setForm((prev) => {
+      const arr = [...(prev.deliveryFees || [])];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return { ...prev, deliveryFees: arr };
+    });
+  };
+
+  const addDeliveryFee = () => {
+    setForm((prev) => ({ ...prev, deliveryFees: [...(prev.deliveryFees || []), { location: "", price: 0 }] }));
+  };
+
+  const removeDeliveryFee = (idx: number) => {
+    setForm((prev) => {
+      const arr = [...(prev.deliveryFees || [])];
+      arr.splice(idx, 1);
+      return { ...prev, deliveryFees: arr };
+    });
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -137,11 +159,16 @@ export default function SettingsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate(form);
+    // Filter out delivery fees with empty location
+    const filteredForm = {
+      ...form,
+      deliveryFees: (form.deliveryFees || []).filter(fee => fee.location && fee.location.trim() !== ""),
+    };
+    mutation.mutate(filteredForm);
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto mb-8">
       <CardHeader className="flex items-center gap-2">
         <Settings className="text-gray-500" />
         <CardTitle>Store Settings</CardTitle>
@@ -440,6 +467,47 @@ export default function SettingsPage() {
               placeholder="Short description for SEO, etc."
               rows={2}
             />
+          </div>
+                   {/* Delivery Fees */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Default Delivery Fees (for products that have common delivery fees)
+            </label>
+            {(form.deliveryFees || []).map((fee, idx) => (
+              <div key={idx} className="flex items-center gap-2 mb-1">
+                <input
+                  type="text"
+                  value={fee.location}
+                  onChange={e => handleDeliveryFeeChange(idx, "location", e.target.value)}
+                  className="flex-1 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  placeholder="Location"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  value={fee.price}
+                  onChange={e => handleDeliveryFeeChange(idx, "price", Number(e.target.value))}
+                  className="w-28 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  placeholder="Fee"
+                />
+                {(form.deliveryFees?.length ?? 0) > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeDeliveryFee(idx)}
+                    className="text-red-500"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addDeliveryFee}
+              className="text-blue-600 text-sm mt-1"
+            >
+              + Add Delivery Fee
+            </button>
           </div>
           {/* Published */}
           <div className="flex items-center gap-2">

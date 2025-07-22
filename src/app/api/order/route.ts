@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
 import Order from "@/model/order";
+import CustomerUser from "@/model/cusomer_user";
 
-// GET /api/order?store=<storeId>&limit=<n>
 export async function GET(request: Request) {
   await dbConnect();
   const { searchParams } = new URL(request.url);
@@ -30,17 +30,10 @@ export async function POST(request: Request) {
   await dbConnect();
   try {
     const body = await request.json();
-    console.log(body);
     // Basic validation
     if (!body.store) {
       return NextResponse.json(
         { message: "Missing store id" },
-        { status: 400 }
-      );
-    }
-    if (!body.customer) {
-      return NextResponse.json(
-        { message: "Missing customer id" },
         { status: 400 }
       );
     }
@@ -50,8 +43,16 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
     // Create order
     const order = await Order.create(body);
+
+    // If customer exists, add order to user's orders field
+    if (body.customer) {
+      console.log("there is user userId", body.customer)
+      await CustomerUser.findByIdAndUpdate(body.customer,{ $push: { orderHistory: order._id }});
+    }
+
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);

@@ -38,7 +38,14 @@ export async function GET(
         )
         .filter((name): name is string => typeof name === "string");
     }
-    return NextResponse.json({ ...product, categories }, { status: 200 });
+    // Ensure delivery fee fields are present in the response
+    return NextResponse.json({
+      ...product,
+      categories,
+      deliveryFees: product.deliveryFees || [],
+      isFreeDelivery: product.isFreeDelivery || false,
+      useDefaultDeliveryFees: product.useDefaultDeliveryFees || false,
+    }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -99,7 +106,13 @@ export async function PATCH(
         { status: 404 }
       );
     }
-    return NextResponse.json(updated, { status: 200 });
+    // Ensure delivery fee fields are present in the response
+    return NextResponse.json({
+      ...updated,
+      deliveryFees: updated.deliveryFees || [],
+      isFreeDelivery: updated.isFreeDelivery || false,
+      useDefaultDeliveryFees: updated.useDefaultDeliveryFees || false,
+    }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(

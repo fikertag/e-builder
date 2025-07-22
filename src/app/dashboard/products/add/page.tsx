@@ -14,6 +14,28 @@ export default function AddProductPage() {
   const selectedStoreId = useStoreData((state) => state.selectedStoreId);
   const store = stores.find((s) => s.id === selectedStoreId);
 
+    // Delivery Fee State
+  const [deliveryFeeType, setDeliveryFeeType] = useState<'default' | 'custom' | 'free'>('default');
+  const [customDeliveryFees, setCustomDeliveryFees] = useState([{ location: '', price: 0 }]);
+  // Delivery Fee Handlers
+  const handleCustomDeliveryFeeChange = (idx: number, field: 'location' | 'price', value: string | number) => {
+    setCustomDeliveryFees((prev) => {
+      const arr = [...prev];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return arr;
+    });
+  };
+  const addCustomDeliveryFee = () => {
+    setCustomDeliveryFees((prev) => [...prev, { location: '', price: 0 }]);
+  };
+  const removeCustomDeliveryFee = (idx: number) => {
+    setCustomDeliveryFees((prev) => {
+      const arr = [...prev];
+      arr.splice(idx, 1);
+      return arr;
+    });
+  };
+
   // Form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -140,6 +162,14 @@ export default function AddProductPage() {
       return setError("All fields and at least one image are required.");
     if (description.length < 30)
       return setError("Description must be at least 30 characters.");
+    // Delivery fee logic
+    let deliveryFees = undefined;
+    let isFreeDelivery = false;
+    if (deliveryFeeType === 'custom') {
+      deliveryFees = customDeliveryFees.filter(fee => fee.location && fee.location.trim() !== '');
+    } else if (deliveryFeeType === 'free') {
+      isFreeDelivery = true;
+    }
     mutation.mutate({
       store: store.id,
       title,
@@ -152,6 +182,9 @@ export default function AddProductPage() {
       attributes: Object.fromEntries(attributes.map((a) => [a.key, a.value])),
       variants: variants.filter((v) => v.name && v.sku),
       customOptions: customOptions.filter((o) => o.name),
+      deliveryFees,
+      isFreeDelivery,
+      useDefaultDeliveryFees: deliveryFeeType === 'default',
     });
   }
 
@@ -311,25 +344,6 @@ export default function AddProductPage() {
               </label>
             </div>
           </div>
-          {/* isFeatured, isActive */}
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-              />{" "}
-              Featured
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={isActive}
-                onChange={(e) => setIsActive(e.target.checked)}
-              />{" "}
-              Active
-            </label>
-          </div>
           {/* Categories */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -350,6 +364,106 @@ export default function AddProductPage() {
               }
               className="w-full"
             />
+          </div>
+                  {/* Delivery Fee Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Fee</label>
+            <div className="flex gap-4 mb-2">
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="default"
+                  checked={deliveryFeeType === 'default'}
+                  onChange={() => setDeliveryFeeType('default')}
+                />
+                Use store default
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="custom"
+                  checked={deliveryFeeType === 'custom'}
+                  onChange={() => setDeliveryFeeType('custom')}
+                />
+                Custom
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="free"
+                  checked={deliveryFeeType === 'free'}
+                  onChange={() => setDeliveryFeeType('free')}
+                />
+                Free Delivery
+              </label>
+            </div>
+            {deliveryFeeType === 'custom' && (
+              <div className="space-y-1">
+                {(customDeliveryFees || []).map((fee, idx) => (
+                  <div key={idx} className="flex items-center gap-2 mb-1">
+                    <input
+                      type="text"
+                      value={fee.location}
+                      onChange={e => handleCustomDeliveryFeeChange(idx, 'location', e.target.value)}
+                      className="flex-1 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      placeholder="Location"
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      value={fee.price}
+                      onChange={e => handleCustomDeliveryFeeChange(idx, 'price', Number(e.target.value))}
+                      className="w-28 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      placeholder="Fee"
+                    />
+                    {(customDeliveryFees.length > 1) && (
+                      <button
+                        type="button"
+                        onClick={() => removeCustomDeliveryFee(idx)}
+                        className="text-red-500"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addCustomDeliveryFee}
+                  className="text-blue-600 text-sm mt-1"
+                >
+                  + Add Delivery Fee
+                </button>
+              </div>
+            )}
+            {deliveryFeeType === 'default' && (
+              <div className="text-xs text-gray-500 mt-1">Will use the store's default delivery fees.</div>
+            )}
+            {deliveryFeeType === 'free' && (
+              <div className="text-xs text-green-600 mt-1">This product will have free delivery.</div>
+            )}
+          </div>
+            {/* isFeatured, isActive */}
+          <div className="flex gap-4 mt-5">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.checked)}
+              />{" "}
+              Featured
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />{" "}
+              Active
+            </label>
           </div>
           {/* Advanced Options Toggle */}
           <div className="mt-4">

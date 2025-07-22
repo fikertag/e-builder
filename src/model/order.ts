@@ -8,12 +8,6 @@ interface IOrderItem {
   price: number;
 }
 
-interface IOrderAddress {
-  street: string;
-  city: string;
-  phoneNumber: string;
-}
-
 interface IOrder extends Document {
   store: Types.ObjectId;
   customer: Types.ObjectId;
@@ -23,8 +17,11 @@ interface IOrder extends Document {
   tax: number;
   total: number;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
-  shippingAddress: IOrderAddress;
   payment?: Types.ObjectId;
+  shippingMethod: 'pickup' | 'delivery';
+  deliveryLocation?: string;
+  deliveryPrice?: number;
+  phoneNumber: string;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>(
@@ -48,15 +45,6 @@ const OrderItemSchema = new Schema<IOrderItem>(
   { _id: false }
 );
 
-const OrderAddressSchema = new Schema<IOrderAddress>(
-  {
-    street: { type: String, required: true },
-    city: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-  },
-  { _id: false }
-);
-
 const OrderSchema = new Schema<IOrder>(
   {
     store: {
@@ -68,7 +56,7 @@ const OrderSchema = new Schema<IOrder>(
     customer: {
       type: Schema.Types.ObjectId,
       ref: "Customer",
-      required: true,
+      required: false, // Optional for guest checkout
     },
     items: [OrderItemSchema],
     subtotal: {
@@ -96,11 +84,27 @@ const OrderSchema = new Schema<IOrder>(
       enum: ["pending", "paid", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
-    shippingAddress: OrderAddressSchema,
     payment: {
       type: Schema.Types.ObjectId,
       ref: "Payment",
       required: false,
+    },
+    shippingMethod: {
+      type: String,
+      enum: ["pickup", "delivery"],
+      required: true,
+    },
+    deliveryLocation: {
+      type: String,
+      required: false,
+    },
+    deliveryPrice: {
+      type: Number,
+      required: false,
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

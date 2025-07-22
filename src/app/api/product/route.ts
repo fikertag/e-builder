@@ -21,6 +21,9 @@ export async function POST(request: NextRequest) {
       isActive,
       attributes,
       customOptions,
+      deliveryFees,
+      isFreeDelivery,
+      useDefaultDeliveryFees,
     } = await request.json();
 
     // Validate required fields
@@ -88,6 +91,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Delivery fee logic
+    let productDeliveryFees = undefined;
+    let productIsFreeDelivery = false;
+    let productUseDefaultDeliveryFees = false;
+    if (isFreeDelivery) {
+      productIsFreeDelivery = true;
+    } else if (Array.isArray(deliveryFees)) {
+      // Validate custom delivery fees
+      for (const fee of deliveryFees) {
+        if (
+          typeof fee !== "object" ||
+          typeof fee.location !== "string" ||
+          !fee.location.trim() ||
+          typeof fee.price !== "number" ||
+          fee.price < 0
+        ) {
+          return NextResponse.json(
+            { message: "Each delivery fee must have a non-empty location and a non-negative price." },
+            { status: 400 }
+          );
+        }
+      }
+      productDeliveryFees = deliveryFees;
+    } else if (useDefaultDeliveryFees) {
+      productUseDefaultDeliveryFees = true;
+    }
+
     // Create product
     const newProduct = new Product({
       store,
@@ -101,6 +131,9 @@ export async function POST(request: NextRequest) {
       isActive: isActive !== false,
       attributes,
       customOptions,
+      deliveryFees: productDeliveryFees,
+      isFreeDelivery: productIsFreeDelivery,
+      useDefaultDeliveryFees: productUseDefaultDeliveryFees,
     });
 
     const savedProduct = await newProduct.save();

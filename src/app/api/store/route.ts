@@ -34,8 +34,32 @@ export async function POST(request: NextRequest) {
       aboutUs,
       whyChooseUs,
       contact,
-      theme
+      theme,
+      deliveryFees
     } = await request.json();
+    // deliveryFees validation (optional, but if present must be valid)
+    if (deliveryFees !== undefined) {
+      if (!Array.isArray(deliveryFees)) {
+        return NextResponse.json(
+          { message: "deliveryFees must be an array." },
+          { status: 400 }
+        );
+      }
+      for (const fee of deliveryFees) {
+        if (
+          typeof fee !== "object" ||
+          typeof fee.location !== "string" ||
+          !fee.location.trim() ||
+          typeof fee.price !== "number" ||
+          fee.price < 0
+        ) {
+          return NextResponse.json(
+            { message: "Each delivery fee must have a non-empty location and a non-negative price." },
+            { status: 400 }
+          );
+        }
+      }
+    }
     const userId = owner;
 
     const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -264,6 +288,7 @@ export async function POST(request: NextRequest) {
       whyChooseUs,
       contact,
       theme,
+      deliveryFees,
       generatedAt: new Date(),
     });
 
@@ -484,6 +509,7 @@ export async function PATCH(request: NextRequest) {
       contact: saved.contact ? saved.contact : {},
       isPublished: saved.isPublished,
       integrations: saved.integrations ? saved.integrations : {},
+      deliveryFees: Array.isArray(saved.deliveryFees) ? saved.deliveryFees : [],
     };
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
@@ -520,6 +546,7 @@ export async function GET(request: NextRequest) {
       contact: store.contact ? store.contact : {},
       isPublished: store.isPublished,
       integrations: store.integrations ? store.integrations : {},
+      deliveryFees: Array.isArray(store.deliveryFees) ? store.deliveryFees : [],
     }));
     return NextResponse.json(response, { status: 200 });
   } catch (error) {

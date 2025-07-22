@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { PackagePlus, UploadCloud } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStoreData } from "@/store/useStoreData";
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import Image from "next/image";
@@ -14,8 +14,11 @@ import type { IProduct } from "@/types/index";
 
 export default function EditProductPage() {
   const { product: productId } = useParams();
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Fetch product details
   const {
@@ -71,6 +74,27 @@ export default function EditProductPage() {
   const [attrKey, setAttrKey] = useState("");
   const [attrValue, setAttrValue] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  // Delivery Fee State
+  const [deliveryFeeType, setDeliveryFeeType] = useState<'default' | 'custom' | 'free'>('default');
+  const [customDeliveryFees, setCustomDeliveryFees] = useState([{ location: '', price: 0 }]);
+  // Delivery Fee Handlers
+  const handleCustomDeliveryFeeChange = (idx: number, field: 'location' | 'price', value: string | number) => {
+    setCustomDeliveryFees((prev) => {
+      const arr = [...prev];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return arr;
+    });
+  };
+  const addCustomDeliveryFee = () => {
+    setCustomDeliveryFees((prev) => [...prev, { location: '', price: 0 }]);
+  };
+  const removeCustomDeliveryFee = (idx: number) => {
+    setCustomDeliveryFees((prev) => {
+      const arr = [...prev];
+      arr.splice(idx, 1);
+      return arr;
+    });
+  };
 
   // Fetch categories for the store
   useEffect(() => {
@@ -139,6 +163,20 @@ export default function EditProductPage() {
         },
       ]
     );
+    // Delivery Fee
+    if (product.isFreeDelivery) {
+      setDeliveryFeeType('free');
+      setCustomDeliveryFees([{ location: '', price: 0 }]);
+    } else if (product.useDefaultDeliveryFees) {
+      setDeliveryFeeType('default');
+      setCustomDeliveryFees([{ location: '', price: 0 }]);
+    } else if (product.deliveryFees && product.deliveryFees.length > 0) {
+      setDeliveryFeeType('custom');
+      setCustomDeliveryFees(product.deliveryFees.map(fee => ({ location: fee.location, price: fee.price })));
+    } else {
+      setDeliveryFeeType('default');
+      setCustomDeliveryFees([{ location: '', price: 0 }]);
+    }
   }, [product]);
 
   const mutation = useMutation({
@@ -163,6 +201,8 @@ export default function EditProductPage() {
     onSuccess: (data) => {
       setSuccess("Product updated!");
       toast("Product '" + (data?.title || title) + "' updated successfully!");
+      // Invalidate product detail query so it refetches
+      queryClient.invalidateQueries({ queryKey: ["product", productId, store?.id] });
       router.push(`/dashboard/products/${productId}`);
     },
     onError: (err: unknown) => {
@@ -180,6 +220,17 @@ export default function EditProductPage() {
       return setError("All fields and at least one image are required.");
     if (description.length < 30)
       return setError("Description must be at least 30 characters.");
+    // Delivery fee logic
+    let deliveryFees = undefined;
+    let isFreeDelivery = false;
+    let useDefaultDeliveryFees = false;
+    if (deliveryFeeType === 'custom') {
+      deliveryFees = customDeliveryFees.filter(fee => fee.location && fee.location.trim() !== '');
+    } else if (deliveryFeeType === 'free') {
+      isFreeDelivery = true;
+    } else if (deliveryFeeType === 'default') {
+      useDefaultDeliveryFees = true;
+    }
     mutation.mutate({
       store: store.id,
       title,
@@ -192,6 +243,9 @@ export default function EditProductPage() {
       attributes: Object.fromEntries(attributes.map((a) => [a.key, a.value])),
       variants: variants.filter((v) => v.name && v.sku),
       customOptions: customOptions.filter((o) => o.name),
+      deliveryFees,
+      isFreeDelivery,
+      useDefaultDeliveryFees,
     });
   }
 
@@ -361,25 +415,6 @@ export default function EditProductPage() {
               </label>
             </div>
           </div>
-          {/* isFeatured, isActive */}
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-              />{" "}
-              Featured
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={isActive}
-                onChange={(e) => setIsActive(e.target.checked)}
-              />{" "}
-              Active
-            </label>
-          </div>
           {/* Categories */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -400,6 +435,106 @@ export default function EditProductPage() {
               }
               className="w-full"
             />
+          </div>
+                    {/* Delivery Fee Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Fee</label>
+            <div className="flex gap-4 mb-2">
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="default"
+                  checked={deliveryFeeType === 'default'}
+                  onChange={() => setDeliveryFeeType('default')}
+                />
+                Use store default
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="custom"
+                  checked={deliveryFeeType === 'custom'}
+                  onChange={() => setDeliveryFeeType('custom')}
+                />
+                Custom
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="deliveryFeeType"
+                  value="free"
+                  checked={deliveryFeeType === 'free'}
+                  onChange={() => setDeliveryFeeType('free')}
+                />
+                Free Delivery
+              </label>
+            </div>
+            {deliveryFeeType === 'custom' && (
+              <div className="space-y-1">
+                {(customDeliveryFees || []).map((fee, idx) => (
+                  <div key={idx} className="flex items-center gap-2 mb-1">
+                    <input
+                      type="text"
+                      value={fee.location}
+                      onChange={e => handleCustomDeliveryFeeChange(idx, 'location', e.target.value)}
+                      className="flex-1 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      placeholder="Location"
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      value={fee.price}
+                      onChange={e => handleCustomDeliveryFeeChange(idx, 'price', Number(e.target.value))}
+                      className="w-28 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      placeholder="Fee"
+                    />
+                    {(customDeliveryFees.length > 1) && (
+                      <button
+                        type="button"
+                        onClick={() => removeCustomDeliveryFee(idx)}
+                        className="text-red-500"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addCustomDeliveryFee}
+                  className="text-blue-600 text-sm mt-1"
+                >
+                  + Add Delivery Fee
+                </button>
+              </div>
+            )}
+            {deliveryFeeType === 'default' && (
+              <div className="text-xs text-gray-500 mt-1">Will use the store's default delivery fees.</div>
+            )}
+            {deliveryFeeType === 'free' && (
+              <div className="text-xs text-green-600 mt-1">This product will have free delivery.</div>
+            )}
+          </div>
+                    {/* isFeatured, isActive */}
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.checked)}
+              />{" "}
+              Featured
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />{" "}
+              Active
+            </label>
           </div>
           {/* Advanced Options Toggle */}
           <div className="mt-4">

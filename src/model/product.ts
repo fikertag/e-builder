@@ -35,6 +35,8 @@ interface IProduct extends Document {
     location: string;
     price: number;
   }>;
+  isFreeDelivery?: boolean;
+  useDefaultDeliveryFees?: boolean;
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -130,6 +132,14 @@ const ProductSchema = new Schema<IProduct>(
         price: { type: Number, required: true, min: 0 },
       },
     ],
+    isFreeDelivery: {
+      type: Boolean,
+      default: false,
+    },
+    useDefaultDeliveryFees: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -10,7 +10,9 @@ import type { IProduct } from "@/types/index";
 
 export default function ProductDetailPage() {
   const { product: productId } = useParams();
-  const store = useStoreData((state) => state.store);
+  const stores = useStoreData((state) => state.stores);
+  const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const store = stores.find((s) => s.id === selectedStoreId);
 
   const {
     data: product,
@@ -27,6 +29,8 @@ export default function ProductDetailPage() {
     enabled: !!productId && !!store?.id,
   });
 
+  console.log(!!productId && !!store?.id, "productId:", productId, "storeId:", store?.id);
+
   if (isLoading) {
     return (
       <Card className="w-full max-w-xl mx-auto mt-8">
@@ -38,6 +42,7 @@ export default function ProductDetailPage() {
   }
 
   if (error || !product) {
+    console.error("Failed to load product:", error, "productId:", productId);
     return (
       <Card className="w-full max-w-xl mx-auto mt-8">
         <CardContent className="text-center py-8 text-red-500">
@@ -48,7 +53,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <Card className="w-full max-w-xl mx-auto mt-8">
+    <Card className="w-full max-w-xl mx-auto mb-8">
       <CardHeader className="flex items-center gap-2">
         <CardTitle>{product.title}</CardTitle>
         <span className="ml-auto text-xs text-gray-400">{product._id}</span>
@@ -75,7 +80,7 @@ export default function ProductDetailPage() {
           </div>
           <div className="flex-1 space-y-2">
             <div className="text-lg font-semibold">{product.title}</div>
-            <div className="text-gray-700">{product.description}</div>
+            <div className="text-gray-700 break-all">{product.description}</div>
             <div className="text-gray-900 font-bold text-xl mt-2">
               ${product.basePrice}
             </div>
@@ -176,6 +181,26 @@ export default function ProductDetailPage() {
                 </ul>
               ) : (
                 <span className="ml-2 text-gray-400">None</span>
+              )}
+            </div>
+
+            {/* Delivery Fee Info */}
+            <div className="text-sm text-gray-500 mt-4">
+              Delivery Fee:
+              {product.isFreeDelivery ? (
+                <span className="ml-2 text-green-600 font-semibold">Free Delivery</span>
+              ) : product.useDefaultDeliveryFees ? (
+                <span className="ml-2 text-blue-600 font-semibold">Uses Store Default</span>
+              ) : product.deliveryFees && product.deliveryFees.length > 0 ? (
+                <ul className="list-disc ml-5 mt-1">
+                  {product.deliveryFees.map((fee: any, idx: number) => (
+                    <li key={fee.location + idx}>
+                      <span className="font-semibold">{fee.location}</span>: ${fee.price}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="ml-2 text-gray-400">Not set</span>
               )}
             </div>
 

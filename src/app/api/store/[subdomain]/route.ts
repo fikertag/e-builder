@@ -51,6 +51,7 @@ export async function GET(
       contact: store.contact || {},
       isPublished: store.isPublished,
       integrations: store.integrations || {},
+      deliveryFees: store.deliveryFees || [],
     };
 
     return NextResponse.json(response);
