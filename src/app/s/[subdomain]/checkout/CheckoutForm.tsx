@@ -9,6 +9,26 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useUser } from "@/context/UserContext";
 
+type OrderPayload = {
+  store: string;
+  customer?: string;
+  items: Array<{
+    product: string;
+    variant?: string;
+    quantity: number;
+    price: number;
+  }>;
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  status: string;
+  shippingMethod: 'pickup' | 'delivery';
+  phoneNumber: string;
+  deliveryLocation?: string;
+  deliveryPrice?: number;
+};
+
 export default function CheckoutForm() {
   const cartItems = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -21,7 +41,7 @@ export default function CheckoutForm() {
   const deliveryLocations = useMemo(() => {
     // Store-level delivery locations (array of { location, price })
     if (!store?.deliveryFees) return [];
-    return store.deliveryFees.map((fee: any) => ({
+    return store.deliveryFees.map((fee: { location: string; price: number }) => ({
       location: fee.location,
       price: fee.price,
     }));
@@ -59,7 +79,7 @@ export default function CheckoutForm() {
   }, 0);
 
   const orderMutation = useMutation({
-    mutationFn: async (orderPayload: any) => {
+    mutationFn: async (orderPayload: OrderPayload) => {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,7 +132,7 @@ export default function CheckoutForm() {
     }
     setIsSubmitting(true);
     // Prepare order payload
-    const orderPayload: any = {
+    const orderPayload: OrderPayload = {
       store: store.id,
       customer: user?.id || undefined,
       items: cartItems.map((item) => ({

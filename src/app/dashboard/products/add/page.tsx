@@ -440,7 +440,7 @@ export default function AddProductPage() {
               </div>
             )}
             {deliveryFeeType === 'default' && (
-              <div className="text-xs text-gray-500 mt-1">Will use the store's default delivery fees.</div>
+              <div className="text-xs text-gray-500 mt-1">Will use the store&apos;s default delivery fees.</div>
             )}
             {deliveryFeeType === 'free' && (
               <div className="text-xs text-green-600 mt-1">This product will have free delivery.</div>

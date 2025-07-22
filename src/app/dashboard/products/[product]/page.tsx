@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
                 <span className="ml-2 text-blue-600 font-semibold">Uses Store Default</span>
               ) : product.deliveryFees && product.deliveryFees.length > 0 ? (
                 <ul className="list-disc ml-5 mt-1">
-                  {product.deliveryFees.map((fee: any, idx: number) => (
+                  {product.deliveryFees.map((fee: { location: string; price: number }, idx: number) => (
                     <li key={fee.location + idx}>
                       <span className="font-semibold">{fee.location}</span>: ${fee.price}
                     </li>
