@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "@/context/UserContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/customer-auth-client";
@@ -53,7 +52,6 @@ customer?: string;
 };
 
 export default function OrdersPage() {
-  const { setUser } = useUser();
   const { data } = authClient.useSession();
   const userId = data?.user?.id || "";
   const [selectedStatus, setSelectedStatus] = useState<string>("");
