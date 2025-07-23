@@ -4,7 +4,7 @@ import { StoreData } from "@/types";
 import DynamicThemeProvider from "./DynamicThemeProvider";
 import { StoreInitializer } from "@/app/StoreInitializer";
 import "@/styles/subdomain.css";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 async function getStoreBySubdomain(
   subdomain: string
@@ -24,7 +24,6 @@ type Props = {
 
 export async function generateMetadata(
   { params }: Props,
-  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { subdomain } = await params;
   const store = await getStoreBySubdomain(subdomain);

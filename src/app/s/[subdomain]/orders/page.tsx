@@ -54,7 +54,7 @@ customer?: string;
 
 export default function OrdersPage() {
   const { setUser } = useUser();
-  const { data, isPending } = authClient.useSession();
+  const { data } = authClient.useSession();
   const userId = data?.user?.id || "";
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const router = useRouter();
@@ -66,7 +66,6 @@ export default function OrdersPage() {
     data: orders,
     isLoading,
     isError,
-    error,
   } = useQuery({
     queryKey: ["user-orders", userId],
     queryFn: () => fetchUserOrders(userId),
@@ -134,8 +133,8 @@ export default function OrdersPage() {
       } else {
         alert(data.error || "Failed to cancel order.");
       }
-    } catch (err: any) {
-      alert("Error: " + err.message);
+    } catch (err) {
+      alert(err);
     }
   };
 
@@ -153,8 +152,8 @@ export default function OrdersPage() {
       } else {
         alert(data.error || "Failed to confirm received.");
       }
-    } catch (err: any) {
-      alert("Error: " + err.message);
+    } catch (err) {
+      alert("Error: " + err);
     }
   };
 
@@ -170,12 +169,10 @@ export default function OrdersPage() {
         </div>
         <Button variant={"destructive"} size={"sm"}
           onClick={() => {
-            if (window.confirm("Are you sure you want to log out?")) {
-              // @ts-ignore
-              if (window.authClient) window.authClient.signOut();
-              setUser(null);
-            }
-          }}
+                if (window.confirm("Are you sure you want to log out?")) {
+                authClient.signOut();
+                }
+              }}
         >
           Sign Out
         </Button>

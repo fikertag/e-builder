@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, status: order.status });
     }
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }
