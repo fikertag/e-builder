@@ -2,11 +2,13 @@
 
 import { authClient } from "@/lib/customer-auth-client";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 import Link from "next/link";
 
 const Home = () => {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();
+  const { setUser } = useUser();
 
   if (isPending) {
     return (
@@ -59,10 +61,11 @@ const Home = () => {
           </Link>
           <button
             onClick={() => {
-                              if (window.confirm("Are you sure you want to log out?")) {
-                              authClient.signOut();
-                              }
-                            }}
+              if (window.confirm("Are you sure you want to log out?")) {
+                authClient.signOut();
+                setUser(null);
+              }
+            }}
             className="flex-1 px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition text-center font-medium"
           >
             Sign Out

@@ -23,11 +23,32 @@ const fetchUserOrders = async (userId: string) => {
 };
 
 type UserOrder = {
-  _id: string;
-  status: string;
-  total: number;
-  createdAt: string;
-  // Add other fields as needed
+_id: string;
+status: string;
+total: number;
+createdAt: string;
+items: {
+  product: {
+    title?: string;
+    _id: string;
+    basePrice?: number;
+    variants?: { name: string; sku: string }[];
+    images?: string[];
+  } | string;
+  variant?: string;
+  quantity: number;
+  price: number;
+}[];
+subtotal: number;
+shipping: number;
+tax: number;
+payment?: string;
+shippingMethod: 'pickup' | 'delivery';
+deliveryLocation?: string;
+deliveryPrice?: number;
+phoneNumber: string;
+store?: string;
+customer?: string;
 };
 
 export default function OrdersPage() {
@@ -35,6 +56,9 @@ export default function OrdersPage() {
   const userId = user?.id || "";
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const router = useRouter();
+
+  const [showDetail, setShowDetail] = useState(false);
+  const [detailOrder, setDetailOrder] = useState<UserOrder | null>(null);
 
   const {
     data: orders,
@@ -84,13 +108,41 @@ export default function OrdersPage() {
   };
 
   const handleCancel = async (orderId: string) => {
-    // Implement cancel logic here (API call)
-    alert("Cancel order " + orderId);
+    try {
+      const res = await fetch("/api/order/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, action: "cancel" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Order cancelled.");
+        window.location.reload();
+      } else {
+        alert(data.error || "Failed to cancel order.");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    }
   };
 
   const handleConfirmReceived = async (orderId: string) => {
-    // Implement confirm received logic here (API call)
-    alert("Confirm received for order " + orderId);
+    try {
+      const res = await fetch("/api/order/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, action: "confirm" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Order marked as delivered.");
+        window.location.reload();
+      } else {
+        alert(data.error || "Failed to confirm received.");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    }
   };
 
   return (
@@ -172,6 +224,15 @@ export default function OrdersPage() {
                   >
                     Cancel
                   </button>
+                  <button
+                    className="px-3 py-1 bg-secondary text-secondary-foreground rounded hover:bg-secondary/90 text-xs font-semibold"
+                    onClick={() => {
+                      setDetailOrder(order);
+                      setShowDetail(true);
+                    }}
+                  >
+                    Detail
+                  </button>
                 </div>
               )}
               {order.status === "shipping" && (
@@ -182,10 +243,65 @@ export default function OrdersPage() {
                   Confirm Received
                 </button>
               )}
+              {order.status !== "pending" && order.status !== "shipping" && (
+                <button
+                  className="px-3 py-1 bg-secondary text-secondary-foreground rounded hover:bg-secondary/90 text-xs font-semibold"
+                  onClick={() => {
+                    setDetailOrder(order);
+                    setShowDetail(true);
+                  }}
+                >
+                  Detail
+                </button>
+              )}
             </div>
           </li>
         ))}
       </ul>
+      {/* Detail Modal */}
+      {showDetail && detailOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60">
+          <div className="bg-card rounded-xl shadow-lg p-6 min-w-[350px] max-w-[95vw] relative">
+            <button
+              className="absolute top-2 right-2 text-lg font-bold text-muted-foreground hover:text-destructive"
+              onClick={() => setShowDetail(false)}
+            >
+              ×
+            </button>
+            <h3 className="text-xl font-bold mb-4 text-card-foreground">Order Details</h3>
+            <div className="space-y-2">
+              <div><span className="font-semibold">Order ID:</span> {detailOrder._id}</div>
+              <div><span className="font-semibold">Status:</span> {detailOrder.status}</div>
+              <div><span className="font-semibold">Created:</span> {new Date(detailOrder.createdAt).toLocaleString()}</div>
+              <div><span className="font-semibold">Phone:</span> {detailOrder.phoneNumber}</div>
+              <div><span className="font-semibold">Shipping Method:</span> {detailOrder.shippingMethod}</div>
+              {detailOrder.shippingMethod === 'delivery' && (
+                <div><span className="font-semibold">Delivery Location:</span> {detailOrder.deliveryLocation || '-'}</div>
+              )}
+              {detailOrder.deliveryPrice !== undefined && (
+                <div><span className="font-semibold">Delivery Price:</span> {detailOrder.deliveryPrice}</div>
+              )}
+              <div><span className="font-semibold">Subtotal:</span> {detailOrder.subtotal}</div>
+              <div><span className="font-semibold">Shipping:</span> {detailOrder.shipping}</div>
+              <div><span className="font-semibold">Tax:</span> {detailOrder.tax}</div>
+              <div><span className="font-semibold">Total:</span> {detailOrder.total}</div>
+              <div className="mt-4">
+                <span className="font-semibold">Items:</span>
+                <ul className="mt-2 space-y-2">
+                  {detailOrder.items?.map((item, idx) => (
+                    <li key={idx} className="border rounded p-2 bg-muted/30">
+                      <div><span className="font-semibold">Product:</span> {typeof item.product === 'string' ? item.product : item.product.title || item.product._id}</div>
+                      {item.variant && <div><span className="font-semibold">Variant:</span> {item.variant}</div>}
+                      <div><span className="font-semibold">Quantity:</span> {item.quantity}</div>
+                      <div><span className="font-semibold">Price:</span> {item.price}</div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

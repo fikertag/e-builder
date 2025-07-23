@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/index";
+import { useUser } from "@/context/UserContext";
+
 
 type HeaderProps = {
   title: string;
@@ -38,6 +40,7 @@ export function Header({ title }: HeaderProps) {
   const totalItems: number = useCartStore(selectTotalItems);
   const items = useCartStore((state) => state.items);
   const subtotal: number = getCartSubtotal(items);
+  const { user } = useUser();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-lg px-4 py-3 shadow-xs border-border/20">
@@ -60,7 +63,7 @@ export function Header({ title }: HeaderProps) {
         <div className="flex items-center gap-1 sm:gap-6">
           <Link href={"/account"} prefetch>
             <Button className="rounded-full cursor-pointer transition-transform hover:scale-105 font-medium">
-              Account
+              {user?.name ? user.name.slice(0, 8) : "Sign up"}
               <User2Icon className="ml-2 size-4" />
             </Button>
           </Link>
