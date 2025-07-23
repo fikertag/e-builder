@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Better Auth Next.js Starter",
-  description: "Better Auth Next.js Starter with mongobd",
+  title: "Ethify",
+  description: "Ethify - Effortlessly build stunning, responsive websites with intuitive tools and seamless deployment.",
 };
 
 export const viewport: Viewport = {
