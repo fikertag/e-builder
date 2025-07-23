@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import { useStoreData } from "@/store/useStoreData";
 
 export function LoginForm({
@@ -23,6 +24,7 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const { setUser } = useUser();
   const { store } = useStoreData();
 
 
@@ -47,8 +49,20 @@ export function LoginForm({
           onRequest: () => {
             setIsLoading(true);
           },
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             setSuccess("Login successful! Redirecting...");
+            // Save user in context
+            if (ctx?.data?.user) {
+              setUser({
+                id: ctx.data.user.id,
+                name: ctx.data.user.name,
+                email: ctx.data.user.email,
+                emailVerified: ctx.data.user.emailVerified,
+                image: ctx.data.user.image ?? null,
+                role: ctx.data.user.role ?? null,
+                roles: ctx.data.user.roles ?? null,
+              });
+            }
             setIsLoading(false);
           },
           onError: (ctx) => {

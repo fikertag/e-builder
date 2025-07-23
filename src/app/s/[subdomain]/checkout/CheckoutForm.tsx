@@ -85,6 +85,7 @@ export default function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),
       });
+      console.log("user inside the function", user)
       if (!res.ok) {
         const err = await res.json();
         throw new Error(
@@ -132,6 +133,7 @@ export default function CheckoutForm() {
     }
     setIsSubmitting(true);
     // Prepare order payload
+    console.log("user",user)
     const orderPayload: OrderPayload = {
       store: store.id,
       customer: user?.id || undefined,

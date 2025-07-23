@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useStoreData } from "@/store/useStoreData";
 import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
 export function SignupForm({
@@ -25,6 +26,7 @@ export function SignupForm({
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const router = useRouter();
+  const { setUser } = useUser();
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,8 +51,20 @@ export function SignupForm({
           onRequest: () => {
             setIsLoading(true);
           },
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             setSuccess("Signup successful! Redirecting...");
+            // Save user in context
+            if (ctx?.data?.user) {
+              setUser({
+                id: ctx.data.user.id,
+                name: ctx.data.user.name,
+                email: ctx.data.user.email,
+                emailVerified: ctx.data.user.emailVerified,
+                image: ctx.data.user.image ?? null,
+                role: ctx.data.user.role ?? null,
+                roles: ctx.data.user.roles ?? null,
+              });
+            }
             router.push("/account");
             setIsLoading(false);
           },

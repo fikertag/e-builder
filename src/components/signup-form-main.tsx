@@ -14,12 +14,14 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -50,8 +52,20 @@ export function SignupForm({
           onRequest: () => {
             setIsLoading(true);
           },
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             setSuccess("Signup successful! Redirecting...");
+            // Save user in context
+            if (ctx?.data?.user) {
+              setUser({
+                id: ctx.data.user.id,
+                name: ctx.data.user.name,
+                email: ctx.data.user.email,
+                emailVerified: ctx.data.user.emailVerified,
+                image: ctx.data.user.image ?? null,
+                role: ctx.data.user.role ?? null,
+                roles: ctx.data.user.roles ?? null,
+              });
+            }
             router.push("/dashboard");
             setIsLoading(false);
           },
