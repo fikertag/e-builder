@@ -65,11 +65,10 @@ export function SignupForm({
                 roles: ctx.data.user.roles ?? null,
               });
             }
-            router.push("/orders");
+            router.replace("/orders");
             setIsLoading(false);
           },
           onError: (ctx) => {
-          
             setError(ctx.error.message || "Signup failed");
             setIsLoading(false);
           },
@@ -95,7 +94,7 @@ export function SignupForm({
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>
-            Enter your email below to create a new account customer
+            Enter your email below to create a new account
           </CardDescription>
         </CardHeader>
         <CardContent>

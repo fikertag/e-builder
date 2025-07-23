@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 
@@ -20,7 +20,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
+  const router = useRouter();
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -28,9 +28,9 @@ export function SignupForm({
 
   const signIn = async () => {
     await authClient.signIn.social({
-        provider: "google"
-    })
-}
+      provider: "google",
+    });
+  };
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -66,7 +66,7 @@ export function SignupForm({
                 roles: ctx.data.user.roles ?? null,
               });
             }
-            router.push("/dashboard");
+            router.replace("/dashboard");
             setIsLoading(false);
           },
           onError: (ctx) => {
@@ -95,7 +95,7 @@ export function SignupForm({
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>
-            Enter your email below to create a new account main
+            Enter your email below to create a new account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -160,7 +160,7 @@ export function SignupForm({
             >
               Sign Up with Google
             </Button>
-                        <div className="mt-4 text-center text-sm">
+            <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
                 Sign up
