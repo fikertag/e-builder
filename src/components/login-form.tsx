@@ -43,7 +43,7 @@ export function LoginForm({
         {
           email: falseEmail,
           password,
-          callbackURL: "/account",
+          callbackURL: "/orders",
         },
         {
           onRequest: () => {

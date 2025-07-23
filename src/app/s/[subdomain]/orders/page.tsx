@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/context/UserContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/customer-auth-client";
+import { Button } from "@/components/ui/button";
 
 const STATUSES = [
   { key: "pending", label: "Pending" },
@@ -15,7 +17,6 @@ const STATUSES = [
 const fetchUserOrders = async (userId: string) => {
   const res = await fetch(`/api/order/user/${userId}`);
   if (res.status === 404) {
-    // No orders found for this user
     return [];
   }
   const data = await res.json();
@@ -52,8 +53,9 @@ customer?: string;
 };
 
 export default function OrdersPage() {
-  const { user } = useUser();
-  const userId = user?.id || "";
+  const { setUser } = useUser();
+  const { data, isPending } = authClient.useSession();
+  const userId = data?.user?.id || "";
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const router = useRouter();
 
@@ -85,7 +87,7 @@ export default function OrdersPage() {
     );
   if (isError)
     return (
-      <div className="text-destructive">Error: {(error as Error).message}</div>
+      <div className="text-muted-foreground">No orders found.</div>
     );
   if (!orders || orders.length === 0)
     return <div className="text-muted-foreground">No orders found.</div>;
@@ -98,6 +100,17 @@ export default function OrdersPage() {
         ? "shipping"
         : order.status,
   }));
+
+  // Get unique statuses present in user's orders
+  const presentStatuses = Array.from(
+    new Set(normalizedOrders.map((order) => order.status))
+  );
+
+  // Count for each status
+  const statusCounts: Record<string, number> = {};
+  presentStatuses.forEach((status) => {
+    statusCounts[status] = normalizedOrders.filter((order) => order.status === status).length;
+  });
 
   const filteredOrders = selectedStatus
     ? normalizedOrders.filter((order) => order.status === selectedStatus)
@@ -147,7 +160,26 @@ export default function OrdersPage() {
 
   return (
     <div className="p-2 sm:p-5">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">Your Orders</h2>
+      {/* User Info Header */}
+      <div className="flex flex-row items-center justify-between mb-6 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-1">
+          <h2 className="text-2xl  text-foreground capitalize">{data?.user?.name ?? "User"}</h2>
+          <div className="text-muted-foreground text-sm">
+            <span className="font-semibold">Email:</span> {data?.user?.realEmail ?? "N/A"}
+          </div>
+        </div>
+        <Button variant={"destructive"} size={"sm"}
+          onClick={() => {
+            if (window.confirm("Are you sure you want to log out?")) {
+              // @ts-ignore
+              if (window.authClient) window.authClient.signOut();
+              setUser(null);
+            }
+          }}
+        >
+          Sign Out
+        </Button>
+      </div>
       {/* Status navbar */}
       <nav className="flex gap-4 sm:gap-8 border-b border-border mb-6">
         <div
@@ -158,21 +190,27 @@ export default function OrdersPage() {
           }`}
           onClick={() => setSelectedStatus("")}
         >
-          All
+          All <span className="ml-1 text-xs text-muted-foreground">{normalizedOrders.length}</span>
         </div>
-        {STATUSES.map((status) => (
-          <div
-            key={status.key}
-            className={`cursor-pointer pb-2 sm:text-base text-sm font-medium transition-all ${
-              selectedStatus === status.key
-                ? "border-b-2 border-primary text-primary font-bold"
-                : "text-muted-foreground hover:text-primary"
-            }`}
-            onClick={() => setSelectedStatus(status.key)}
-          >
-            {status.label}
-          </div>
-        ))}
+        {presentStatuses.map((statusKey) => {
+          // Find label from STATUSES
+          const statusObj = STATUSES.find((s) => s.key === statusKey);
+          if (!statusObj) return null;
+          return (
+            <div
+              key={statusObj.key}
+              className={`cursor-pointer pb-2 sm:text-base text-sm font-medium transition-all ${
+                selectedStatus === statusObj.key
+                  ? "border-b-2 border-primary text-primary font-bold"
+                  : "text-muted-foreground hover:text-primary"
+              }`}
+              onClick={() => setSelectedStatus(statusObj.key)}
+            >
+              {statusObj.label}
+              <span className="ml-1 text-xs text-muted-foreground">{statusCounts[statusObj.key]}</span>
+            </div>
+          );
+        })}
       </nav>
       <ul className="space-y-4">
         {filteredOrders.map((order) => (

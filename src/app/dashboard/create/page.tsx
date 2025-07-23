@@ -45,7 +45,8 @@ interface IAiFormData {
 
 export default function CreatePage() {
   const [shopDescription, setShopDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // For store creation
+  const [aiLoading, setAiLoading] = useState(false); // For AI generation
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<IAiFormData | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -81,7 +82,7 @@ export default function CreatePage() {
 
   // AI Generator handler
   const handleGenerate = async () => {
-    setLoading(true);
+    setAiLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/gemini", {
@@ -95,7 +96,7 @@ export default function CreatePage() {
       setError("Failed to generate shop. Please try again.");
       console.log("Error generating shop:", e);
     } finally {
-      setLoading(false);
+      setAiLoading(false);
     }
   };
 
@@ -195,9 +196,8 @@ export default function CreatePage() {
         setError(data.message || "Failed to create store");
       } else {
         setSuccess("Store created successfully!");
-        setTimeout(() => {
           router.push("/dashboard");
-        }, 1200);
+       
       }
     } catch (err) {
       console.log("Error creating store:", err);
@@ -282,11 +282,11 @@ export default function CreatePage() {
           <button
             type="button"
             onClick={handleGenerate}
-            disabled={loading || !shopDescription.trim()}
+            disabled={aiLoading || !shopDescription.trim()}
             className="absolute bottom-4 right-4 px-4 py-2 rounded-md bg-primary text-white font-semibold text-xs shadow hover:bg-primary/90 transition disabled:opacity-60"
             style={{ zIndex: 2 }}
           >
-            {loading ? "..." : "Generate"}
+            {aiLoading ? "..." : "Generate"}
           </button>
         </div>
         {error && (

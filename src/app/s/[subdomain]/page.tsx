@@ -4,7 +4,6 @@ import ProductsSection from "@/components/productSection";
 import Footer from "@/components/footer";
 import { useQuery } from "@tanstack/react-query";
 import { IProduct } from "@/types/index";
-import { PackageCheck, Star, Truck } from "lucide-react";
 import { useStoreData } from "@/store/useStoreData";
 
 export default function Page() {
@@ -50,7 +49,7 @@ export default function Page() {
               subtitle="Discover our most popular items"
             />
           )}
-          <section className="py-16 bg-background">
+          <section className="py-20 bg-background">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-14">
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -62,9 +61,7 @@ export default function Page() {
               </div>
 
               <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
-                {Array.isArray(store?.whyChooseUs) &&
-                store.whyChooseUs.length > 0 ? (
-                  store.whyChooseUs.map((reason, idx) => (
+                {store?.whyChooseUs.map((reason, idx) => (
                     <div
                       key={idx}
                       className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
@@ -78,48 +75,33 @@ export default function Page() {
                         {reason}
                       </h3>
                     </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                      <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <Star className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold text-xl text-card-foreground mb-3">
-                        Premium Quality
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Durable, high-quality products made with care and the
-                        best materials.
-                      </p>
-                    </div>
+                  ))}
+              </div>
+            </div>
+          </section>
 
-                    <div className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                      <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <PackageCheck className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold text-xl text-card-foreground mb-3">
-                        Unique Designs
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Custom artwork and creative options that express your
-                        style—no generic products here.
-                      </p>
-                    </div>
-
-                    <div className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                      <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <Truck className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold text-xl text-card-foreground mb-3">
-                        Fast Shipping
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Get your order delivered quickly with eco-friendly
-                        packaging and care.
-                      </p>
-                    </div>
-                  </>
+          {/* About Us Section */}
+          <section className="py-16 bg-card/10">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="max-w-3xl mx-auto text-center">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">About Us</h2>
+                <p className="text-muted-foreground text-lg mb-6">
+                  {store?.aboutUs || "Learn more about our story, mission, and values."}
+                </p>
+                {store?.contact?.address && (
+                  <div className="text-sm text-muted-foreground mb-2">
+                    <span className="font-semibold">Address:</span> {store.contact.address}
+                  </div>
+                )}
+                {store?.contact?.email && (
+                  <div className="text-sm text-muted-foreground mb-2">
+                    <span className="font-semibold">Email:</span> {store.contact.email}
+                  </div>
+                )}
+                {store?.contact?.phone && (
+                  <div className="text-sm text-muted-foreground mb-2">
+                    <span className="font-semibold">Phone:</span> {store.contact.phone}
+                  </div>
                 )}
               </div>
             </div>

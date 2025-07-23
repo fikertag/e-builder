@@ -61,7 +61,7 @@ export function Header({ title }: HeaderProps) {
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-6">
-          <Link href={"/account"} prefetch>
+          <Link href={"/orders"} prefetch>
             <Button className="rounded-full cursor-pointer transition-transform hover:scale-105 font-medium">
               {user?.name ? user.name.slice(0, 8) : "Sign up"}
               <User2Icon className="ml-2 size-4" />

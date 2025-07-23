@@ -65,7 +65,7 @@ export function SignupForm({
                 roles: ctx.data.user.roles ?? null,
               });
             }
-            router.push("/account");
+            router.push("/orders");
             setIsLoading(false);
           },
           onError: (ctx) => {
