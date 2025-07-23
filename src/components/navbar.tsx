@@ -22,22 +22,22 @@ type HeaderProps = {
 };
 
 function getCartSubtotal(items: CartItem[]): number {
-  return items.reduce(
-    (sum, item) => sum + item.product.basePrice * item.quantity,
-    0
-  );
-}
-
-function getCartTax(subtotal: number) {
-  return subtotal * 0.02;
+  return items.reduce((sum, item) => {
+    let price = item.product.basePrice;
+    if (item.selectedVariants) {
+      price += item.selectedVariants.reduce(
+        (vsum, v) => vsum + (v.priceAdjustment || 0),
+        0
+      );
+    }
+    return sum + price * item.quantity;
+  }, 0);
 }
 
 export function Header({ title }: HeaderProps) {
   const totalItems: number = useCartStore(selectTotalItems);
   const items = useCartStore((state) => state.items);
   const subtotal: number = getCartSubtotal(items);
-  const tax: number = getCartTax(subtotal);
-  const total: number = subtotal + tax;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-lg px-4 py-3 shadow-xs border-border/20">
@@ -113,16 +113,9 @@ export function Header({ title }: HeaderProps) {
 
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">
-                          Taxes (2%)
+                          Delivery fee
                         </span>
-                        <span className="font-medium">${tax.toFixed(2)}</span>
-                      </div>
-
-                      <div className="flex justify-between text-sm pt-2 border-t">
-                        <span className="font-semibold">Total</span>
-                        <span className="font-semibold text-lg">
-                          ${total.toFixed(2)}
-                        </span>
+                        <span className="font-medium">Calculated at checkout</span>
                       </div>
 
                       <div className="mt-4">

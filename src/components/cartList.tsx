@@ -105,7 +105,15 @@ const CartSheetContent = () => {
                   </div>
                   <div className="flex h-16 flex-col justify-between">
                     <div className="flex justify-end space-y-2 text-right text-sm text-foreground">
-                      ${item.product.basePrice.toFixed(2)}
+                      ${(
+                        item.product.basePrice +
+                        (item.selectedVariants
+                          ? item.selectedVariants.reduce(
+                              (sum, v) => sum + (v.priceAdjustment || 0),
+                              0
+                            )
+                          : 0)
+                      ).toFixed(2)}
                     </div>
                     <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-border">
                       <button
