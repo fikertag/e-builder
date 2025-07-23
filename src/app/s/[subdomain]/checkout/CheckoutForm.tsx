@@ -167,10 +167,10 @@ export default function CheckoutForm() {
     <div className="max-w-screen-xl mx-auto mt-5 bg-card rounded-xl shadow p-5 md:p-5">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col md:flex-row gap-12"
+        className="flex flex-col lg:flex-row gap-12"
       >
         {/* Cart Items - Left */}
-        <div className="flex-1 border-r border-border md:pr-12 mb-8 md:mb-0 min-w-[350px]">
+        <div className="flex-1 lg:border-r border-border px-2 lg:pr-12 mb-8 md:mb-0 lg:min-w-[350px]">
           <h2 className="text-lg font-semibold mb-2 text-card-foreground">
             Your Cart
           </h2>
@@ -256,7 +256,7 @@ export default function CheckoutForm() {
                 Delivery
               </label>
             </div>
-            {shippingMethod === "delivery" && (
+            {shippingMethod === "delivery" && deliveryLocations.length > 0 && (
               <>
                 <select
                   className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
@@ -273,7 +273,8 @@ export default function CheckoutForm() {
                   </option>
                   {deliveryLocations.map((loc, idx) => (
                     <option key={idx} value={loc.location}>
-                      {loc.location} (${loc.price})
+                      <span className="px-6">{loc.location}</span>
+                      <span>{loc.price > 0 ? `($${loc.price})` : "(Free)"}</span>
                     </option>
                   ))}
                 </select>

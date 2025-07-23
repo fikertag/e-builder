@@ -113,7 +113,7 @@ export function Header({ title }: HeaderProps) {
 
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">
-                          Delivery fee
+                          Total
                         </span>
                         <span className="font-medium">Calculated at checkout</span>
                       </div>
