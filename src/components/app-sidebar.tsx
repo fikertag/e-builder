@@ -9,7 +9,7 @@ import {
   GalleryVerticalEnd,
   Package,
   Plus,
-  Users2Icon
+  Users2Icon,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -86,15 +86,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Settings2,
         items: [
           { title: "General", url: "/dashboard/settings" },
-          { title: "Theme & Appearance", url: "/dashboard/settings/theme" },
           { title: "Integrations", url: "/dashboard/settings/integration" },
         ],
       },
       {
         title: "Create Store",
         url: "/dashboard/create",
-        icon: Plus
-      }
+        icon: Plus,
+      },
     ],
     navSecondary: [
       {
