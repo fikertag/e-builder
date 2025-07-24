@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const stores = useStoreData((state) => state.stores);
   const selectedStoreId = useStoreData((state) => state.selectedStoreId);
   const store = stores.find((s) => s.id === selectedStoreId);
-  const setStore = useStoreData((state) => state.setStore);
+  const updateStore = useStoreData((state) => state.updateStore);
   const [form, setForm] = useState({
     storeName: store?.storeName || "",
     subdomain: store?.subdomain || "",
@@ -50,7 +50,7 @@ export default function SettingsPage() {
       return res.json();
     },
     onSuccess: (updatedStore) => {
-      setStore(updatedStore);
+      updateStore(updatedStore);
     },
   });
 
@@ -83,7 +83,11 @@ export default function SettingsPage() {
     }
   }, [store]);
   // Delivery Fee Handlers
-  const handleDeliveryFeeChange = (idx: number, field: "location" | "price", value: string | number) => {
+  const handleDeliveryFeeChange = (
+    idx: number,
+    field: "location" | "price",
+    value: string | number
+  ) => {
     setForm((prev) => {
       const arr = [...(prev.deliveryFees || [])];
       arr[idx] = { ...arr[idx], [field]: value };
@@ -92,7 +96,10 @@ export default function SettingsPage() {
   };
 
   const addDeliveryFee = () => {
-    setForm((prev) => ({ ...prev, deliveryFees: [...(prev.deliveryFees || []), { location: "", price: 0 }] }));
+    setForm((prev) => ({
+      ...prev,
+      deliveryFees: [...(prev.deliveryFees || []), { location: "", price: 0 }],
+    }));
   };
 
   const removeDeliveryFee = (idx: number) => {
@@ -162,7 +169,9 @@ export default function SettingsPage() {
     // Filter out delivery fees with empty location
     const filteredForm = {
       ...form,
-      deliveryFees: (form.deliveryFees || []).filter(fee => fee.location && fee.location.trim() !== ""),
+      deliveryFees: (form.deliveryFees || []).filter(
+        (fee) => fee.location && fee.location.trim() !== ""
+      ),
     };
     mutation.mutate(filteredForm);
   };
@@ -468,17 +477,20 @@ export default function SettingsPage() {
               rows={2}
             />
           </div>
-                   {/* Delivery Fees */}
+          {/* Delivery Fees */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Default Delivery Fees (for products that have common delivery fees)
+              Default Delivery Fees (for products that have common delivery
+              fees)
             </label>
             {(form.deliveryFees || []).map((fee, idx) => (
               <div key={idx} className="flex items-center gap-2 mb-1">
                 <input
                   type="text"
                   value={fee.location}
-                  onChange={e => handleDeliveryFeeChange(idx, "location", e.target.value)}
+                  onChange={(e) =>
+                    handleDeliveryFeeChange(idx, "location", e.target.value)
+                  }
                   className="flex-1 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                   placeholder="Location"
                 />
@@ -486,7 +498,13 @@ export default function SettingsPage() {
                   type="number"
                   min={0}
                   value={fee.price}
-                  onChange={e => handleDeliveryFeeChange(idx, "price", Number(e.target.value))}
+                  onChange={(e) =>
+                    handleDeliveryFeeChange(
+                      idx,
+                      "price",
+                      Number(e.target.value)
+                    )
+                  }
                   className="w-28 border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                   placeholder="Fee"
                 />

@@ -9,19 +9,10 @@ export async function GET(
   await dbConnect();
   const { id } = await params;
   if (!id) {
-    return NextResponse.json(
-      { message: "Invalid store ID." },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "Invalid store ID." }, { status: 400 });
   }
   try {
-    const customer = await CustomerUser.findOne({ storeId: id }).lean();
-    if (!customer) {
-      return NextResponse.json(
-        { message: "Customer not found for this store ID." },
-        { status: 404 }
-      );
-    }
+    const customer = await CustomerUser.find({ storeId: id }).lean();
     return NextResponse.json(customer, { status: 200 });
   } catch (error) {
     console.log(error);

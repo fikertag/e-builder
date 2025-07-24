@@ -56,7 +56,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Overview",
         url: "/dashboard",
         icon: PieChart,
-        items: [{ title: "Analytics", url: "/dashboard" }],
         isActive: true,
       },
       {
@@ -72,13 +71,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Orders",
         url: "/dashboard/orders",
         icon: ShoppingCart,
-        items: [{ title: "All Orders", url: "/dashboard/orders" }],
       },
       {
         title: "Customers",
         url: "/dashboard/customers",
         icon: Users2Icon,
-        items: [{ title: "All Customers", url: "/dashboard/customers" }],
       },
       {
         title: "Store Settings",

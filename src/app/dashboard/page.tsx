@@ -4,11 +4,23 @@ import { ShoppingCart, Package, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { useStoreData } from "@/store/useStoreData";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const stores = useStoreData((state) => state.stores);
   const selectedStoreId = useStoreData((state) => state.selectedStoreId);
+  const storeStatus = useStoreData((state) => state.storeStatus);
   const store = stores.find((s) => s.id === selectedStoreId);
+  const router = useRouter();
+
+  // Redirect to /dashboard/create if not loading and no stores
+  useEffect(() => {
+    if (storeStatus === "empty") {
+      router.replace("/dashboard/create");
+    }
+  }, [storeStatus, router]);
 
   // Fetch product count
   const { data: productsData } = useQuery({
@@ -34,6 +46,28 @@ export default function DashboardPage() {
     enabled: !!store?.id,
   });
 
+  if (storeStatus === "loading" || storeStatus === "idle") {
+    return (
+      <div className="w-full px-6 pb-6 flex items-center justify-center h-96">
+        <div className="text-gray-500 text-lg animate-pulse">
+          Loading your stores...
+        </div>
+      </div>
+    );
+  }
+
+  if (storeStatus === "empty") {
+    return null;
+  }
+
+  if (storeStatus === "error") {
+    return (
+      <div className="w-full px-6 pb-6 flex items-center justify-center h-96">
+        <div className="text-red-500 text-lg">Error loading stores.</div>
+      </div>
+    );
+  }
+
   const stats = [
     {
       label: "Products",
@@ -50,11 +84,6 @@ export default function DashboardPage() {
       value: orderStats ? `$${orderStats.totalRevenue}` : "-",
       icon: <BarChart2 className="text-gray-500" />,
     },
-    // {
-    //   label: "Visitors",
-    //   value: 340, // TODO: Replace with real visitor data if available
-    //   icon: <Store className="text-gray-500" />,
-    // },
   ];
 
   const recentOrders = orderStats?.recentOrders || [];
@@ -66,7 +95,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="w-full  px-6 pb-6">
+    <div className="w-full  px-3 sm:px-6 pb-6">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
@@ -80,13 +109,21 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
             <span>Status:</span>
-            <span className="inline-flex items-center gap-1 font-semibold text-green-600">
-              <span className="h-2 w-2 rounded-full bg-green-500 inline-block"></span>
+            <span
+              className={`inline-flex items-center gap-1 font-semibold ${
+                store?.isPublished ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              <span
+                className={`h-2 w-2 rounded-full inline-block ${
+                  store?.isPublished ? "bg-green-500" : "bg-red-500"
+                }`}
+              ></span>
               {store?.isPublished ? "Published" : "Unpublished"}
             </span>
           </div>
           <Link
-            href={`https://${store?.subdomain}.fikiryilkal.me`}
+            href={`https://${store?.subdomain}.ethify.app`}
             target="_blank"
             className="inline-flex items-center gap-1 text-blue-600 hover:underline text-sm font-medium"
           >
@@ -123,7 +160,7 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat) => (
           <div
             key={stat.label}
