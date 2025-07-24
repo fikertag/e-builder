@@ -1,8 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import type { ReactNode } from "react";
 import { StoresInitializer } from "../StoreInitializer";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 import {
   SidebarInset,
@@ -10,29 +8,14 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-async function getUserStores(id: string) {
-  if (!id) return [];
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/store?owner=${id}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return [];
-  return await res.json();
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const stores = await getUserStores(session?.user?.id || "");
-
   return (
     <SidebarProvider>
-      <StoresInitializer stores={stores} />
+      <StoresInitializer />
       <AppSidebar />
       <SidebarInset className="px-4">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
