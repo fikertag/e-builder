@@ -4,10 +4,26 @@ import { useStoreData } from "@/store/useStoreData";
 import { authClient } from "@/lib/auth-client";
 
 // For a single store
-export function StoreInitializer({ subdomain }: { subdomain: string | null }) {
+export function StoreInitializer() {
   const setStore = useStoreData((state) => state.setStore);
 
   useEffect(() => {
+    function getSubdomainFromHost(hostname: string) {
+      // Local dev: subdomain.localhost
+      if (hostname.endsWith(".localhost")) {
+        return hostname.replace(".localhost", "");
+      }
+      // Production: subdomain.ethify.app
+      if (hostname.endsWith(".ethify.app")) {
+        return hostname.replace(".ethify.app", "");
+      }
+      return null;
+    }
+
+    const hostname = window.location.hostname;
+    const subdomain = getSubdomainFromHost(hostname);
+    if (!subdomain) return;
+
     async function fetchStore() {
       const res = await fetch(`/api/store/${subdomain}`);
       if (!res.ok) return;
@@ -15,7 +31,7 @@ export function StoreInitializer({ subdomain }: { subdomain: string | null }) {
       setStore(data);
     }
     fetchStore();
-  }, [subdomain, setStore]);
+  }, [setStore]);
 
   return null;
 }

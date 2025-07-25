@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Header } from "@/components/navbar";
 import DynamicThemeProvider from "./DynamicThemeProvider";
 import { StoreInitializer } from "@/app/StoreInitializer";
-import { headers } from "next/headers";
 import "@/styles/subdomain.css";
 // import type { Metadata } from "next";
 
@@ -11,25 +10,18 @@ import "@/styles/subdomain.css";
 //   params: { subdomain: string };
 // };
 
-// export async function generateMetadata(
-//   { params }: Props,
-// ): Promise<Metadata> {
-//   const { subdomain } = await params;
-//   const store = await getStoreBySubdomain(subdomain);
-//   return {
-//     title: store?.storeName || "Store",
-//     description: "Welcome to " + (store?.storeName || "our store"),
-//   };
-// }
+export function generateMetadata() {
+  return {
+    title: "About Us",
+    description: "Static description",
+  };
+}
 
 export default async function SubdomainLayout({
   children,
 }: {
   children: Readonly<ReactNode>;
 }) {
-  const headersList = await headers();
-  const subdomain = headersList.get("x-subdomain");
-
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,7 +37,7 @@ export default async function SubdomainLayout({
 
       <Header />
       <DynamicThemeProvider>
-        <StoreInitializer subdomain={subdomain} />
+        <StoreInitializer />
         {children}
       </DynamicThemeProvider>
     </>
