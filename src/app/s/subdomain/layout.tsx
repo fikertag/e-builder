@@ -1,44 +1,34 @@
 import type { ReactNode } from "react";
 import { Header } from "@/components/navbar";
-import { StoreData } from "@/types";
 import DynamicThemeProvider from "./DynamicThemeProvider";
 import { StoreInitializer } from "@/app/StoreInitializer";
+import { headers } from "next/headers";
 import "@/styles/subdomain.css";
-import type { Metadata } from "next";
+// import type { Metadata } from "next";
 
-async function getStoreBySubdomain(
-  subdomain: string
-): Promise<StoreData | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/store/${subdomain}`);
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data as StoreData;
-}
+// type Props = {
+//   children: ReactNode;
+//   params: { subdomain: string };
+// };
 
+// export async function generateMetadata(
+//   { params }: Props,
+// ): Promise<Metadata> {
+//   const { subdomain } = await params;
+//   const store = await getStoreBySubdomain(subdomain);
+//   return {
+//     title: store?.storeName || "Store",
+//     description: "Welcome to " + (store?.storeName || "our store"),
+//   };
+// }
 
-type Props = {
-  children: ReactNode;
-  params: { subdomain: string };
-};
-
-export async function generateMetadata(
-  { params }: Props,
-): Promise<Metadata> {
-  const { subdomain } = await params;
-  const store = await getStoreBySubdomain(subdomain);
-  return {
-    title: store?.storeName || "Store",
-    description: "Welcome to " + (store?.storeName || "our store"),
-  };
-}
-
-export default async function SubdomainLayout({ children, params }: Props) {
-  const { subdomain } = await params;
-  const store = await getStoreBySubdomain(subdomain);
-  if (!store) {
-    return <div>Store not found</div>;
-  }
+export default async function SubdomainLayout({
+  children,
+}: {
+  children: Readonly<ReactNode>;
+}) {
+  const headersList = await headers();
+  const subdomain = headersList.get("x-subdomain");
 
   return (
     <>
@@ -53,9 +43,9 @@ export default async function SubdomainLayout({ children, params }: Props) {
         rel="stylesheet"
       />
 
-      <Header title={store.subdomain} />
-      <DynamicThemeProvider themeStyle={store.theme.styles.light}>
-        <StoreInitializer store={store} />
+      <Header />
+      <DynamicThemeProvider>
+        <StoreInitializer subdomain={subdomain} />
         {children}
       </DynamicThemeProvider>
     </>

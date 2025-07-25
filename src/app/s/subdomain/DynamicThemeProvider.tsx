@@ -1,14 +1,15 @@
 "use client";
 import { useEffect } from "react";
+import { useStoreData } from "@/store/useStoreData";
 
 // Accepts a full theme style object (e.g., styles.light or styles.dark)
 export default function DynamicThemeProvider({
-  themeStyle,
   children,
 }: {
-  themeStyle: Record<string, string>;
   children: React.ReactNode;
 }) {
+  const themeStyle = useStoreData((state) => state.store?.theme?.styles?.light);
+
   useEffect(() => {
     if (!themeStyle) return;
     const root = document.documentElement;

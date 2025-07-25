@@ -13,10 +13,38 @@ export default function SettingsPage() {
   const selectedStoreId = useStoreData((state) => state.selectedStoreId);
   const store = stores.find((s) => s.id === selectedStoreId);
   const updateStore = useStoreData((state) => state.updateStore);
+
+  const themeList = [
+    { _id: "6871c55b34513073bdfadb67", name: "amber-minimal" },
+    { _id: "6871c66634513073bdfadb6a", name: "amethyst-haze" },
+    { _id: "6871c6cc34513073bdfadb6c", name: "bold-tech" },
+    { _id: "6871c75634513073bdfadb70", name: "bubblegum" },
+    { _id: "6871c79a34513073bdfadb72", name: "caffeine" },
+    { _id: "6871c7e734513073bdfadb76", name: "candyland" },
+    { _id: "6871c83e34513073bdfadb79", name: "catppuccin" },
+    { _id: "6871c87334513073bdfadb7b", name: "claude" },
+    { _id: "6871c8b934513073bdfadb7d", name: "claymorphism" },
+    { _id: "6871c92734513073bdfadb81", name: "clean-slate" },
+    { _id: "6871c99134513073bdfadb83", name: "cyberpunk" },
+    { _id: "6871ca2334513073bdfadb85", name: "elegant-luxury" },
+    { _id: "6871ca6f34513073bdfadb87", name: "graphite" },
+    { _id: "6871cb1134513073bdfadb89", name: "mocha-mousse" },
+    { _id: "6871cb7134513073bdfadb8b", name: "nature" },
+    { _id: "6871cbbc34513073bdfadb8d", name: "northern-lights" },
+    { _id: "6871cbfe34513073bdfadb8f", name: "notebook" },
+    { _id: "6871cc3a34513073bdfadb91", name: "ocean-breeze" },
+    { _id: "6871cca334513073bdfadb93", name: "pastel-dreams" },
+    { _id: "6871cd5a34513073bdfadb95", name: "starry-night" },
+  ];
+
   const [form, setForm] = useState({
     storeName: store?.storeName || "",
     subdomain: store?.subdomain || "",
     storeLandingImage: store?.storeLandingImage || "",
+    theme:
+      typeof store?.theme === "string"
+        ? store?.theme
+        : store?.theme?._id || themeList[0]?._id || "",
     heroHeading: store?.heroHeading || "",
     heroDescription: store?.heroDescription || "",
     aboutUs: store?.aboutUs || "",
@@ -60,6 +88,10 @@ export default function SettingsPage() {
         storeName: store.storeName || "",
         subdomain: store.subdomain || "",
         storeLandingImage: store.storeLandingImage || "",
+        theme:
+          typeof store.theme === "string"
+            ? store.theme
+            : store.theme?._id || themeList[0]?._id || "",
         heroHeading: store.heroHeading || "",
         heroDescription: store.heroDescription || "",
         aboutUs: store.aboutUs || "",
@@ -111,10 +143,14 @@ export default function SettingsPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
-    if (name.startsWith("contact.social.")) {
+    if (name === "theme") {
+      setForm((prev) => ({ ...prev, theme: value }));
+    } else if (name.startsWith("contact.social.")) {
       const socialKey = name.split(".")[2];
       setForm((prev) => ({
         ...prev,
@@ -197,6 +233,24 @@ export default function SettingsPage() {
               className="w-full border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
               placeholder="Enter store name"
             />
+          </div>
+          {/* Theme Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Theme
+            </label>
+            <select
+              name="theme"
+              value={form.theme}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            >
+              {themeList.map((theme) => (
+                <option key={theme._id} value={theme._id}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Subdomain */}
           <div>

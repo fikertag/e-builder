@@ -1,16 +1,21 @@
 "use client";
 import { useEffect } from "react";
 import { useStoreData } from "@/store/useStoreData";
-import { StoreData } from "@/types";
 import { authClient } from "@/lib/auth-client";
 
 // For a single store
-export function StoreInitializer({ store }: { store: StoreData }) {
+export function StoreInitializer({ subdomain }: { subdomain: string | null }) {
   const setStore = useStoreData((state) => state.setStore);
 
   useEffect(() => {
-    setStore(store);
-  }, [store, setStore]);
+    async function fetchStore() {
+      const res = await fetch(`/api/store/${subdomain}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      setStore(data);
+    }
+    fetchStore();
+  }, [subdomain, setStore]);
 
   return null;
 }

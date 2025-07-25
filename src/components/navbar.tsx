@@ -17,11 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/index";
 import { useUser } from "@/context/UserContext";
-
-
-type HeaderProps = {
-  title: string;
-};
+import { useStoreData } from "@/store/useStoreData";
 
 function getCartSubtotal(items: CartItem[]): number {
   return items.reduce((sum, item) => {
@@ -36,18 +32,19 @@ function getCartSubtotal(items: CartItem[]): number {
   }, 0);
 }
 
-export function Header({ title }: HeaderProps) {
+export function Header() {
   const totalItems: number = useCartStore(selectTotalItems);
   const items = useCartStore((state) => state.items);
   const subtotal: number = getCartSubtotal(items);
   const { user } = useUser();
+  const storeName = useStoreData((state) => state.store?.storeName);
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-lg px-4 py-3 shadow-xs border-border/20">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-10">
           <Link href="/" className="text-xl font-bold capitalize">
-            {title}
+            {storeName}
           </Link>
 
           <div className="hidden sm:block">
@@ -115,10 +112,10 @@ export function Header({ title }: HeaderProps) {
                       </div>
 
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Total
+                        <span className="text-muted-foreground">Total</span>
+                        <span className="font-medium">
+                          Calculated at checkout
                         </span>
-                        <span className="font-medium">Calculated at checkout</span>
                       </div>
 
                       <div className="mt-4">
