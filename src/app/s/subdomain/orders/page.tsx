@@ -23,40 +23,41 @@ const fetchUserOrders = async (userId: string) => {
 };
 
 type UserOrder = {
-_id: string;
-status: string;
-total: number;
-createdAt: string;
-items: {
-  product: {
-    title?: string;
-    _id: string;
-    basePrice?: number;
-    variants?: { name: string; sku: string }[];
-    images?: string[];
-  } | string;
-  variant?: string;
-  quantity: number;
-  price: number;
-}[];
-subtotal: number;
-shipping: number;
-tax: number;
-payment?: string;
-shippingMethod: 'pickup' | 'delivery';
-deliveryLocation?: string;
-deliveryPrice?: number;
-phoneNumber: string;
-store?: string;
-customer?: string;
+  _id: string;
+  status: string;
+  total: number;
+  createdAt: string;
+  items: {
+    product:
+      | {
+          title?: string;
+          _id: string;
+          basePrice?: number;
+          variants?: { name: string; sku: string }[];
+          images?: string[];
+        }
+      | string;
+    variant?: string;
+    quantity: number;
+    price: number;
+  }[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  payment?: string;
+  shippingMethod: "pickup" | "delivery";
+  deliveryLocation?: string;
+  deliveryPrice?: number;
+  phoneNumber: string;
+  store?: string;
+  customer?: string;
 };
 
 export default function OrdersPage() {
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   const userId = data?.user?.id || "";
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const router = useRouter();
-
   const [showDetail, setShowDetail] = useState(false);
   const [detailOrder, setDetailOrder] = useState<UserOrder | null>(null);
 
@@ -70,12 +71,9 @@ export default function OrdersPage() {
     enabled: !!userId,
   });
 
-  if (!userId)
-    return (
-      <div className="text-muted-foreground">
-        Please log in to view your orders.
-      </div>
-    );
+  if (!userId && !isPending) {
+    router.replace("/auth/signup");
+  }
   if (isLoading)
     return (
       <div className="w-full flex justify-center mt-10 text-muted-foreground">
@@ -83,9 +81,7 @@ export default function OrdersPage() {
       </div>
     );
   if (isError)
-    return (
-      <div className="text-muted-foreground">No orders found.</div>
-    );
+    return <div className="text-muted-foreground">No orders found.</div>;
   if (!orders || orders.length === 0)
     return <div className="text-muted-foreground">No orders found.</div>;
 
@@ -106,7 +102,9 @@ export default function OrdersPage() {
   // Count for each status
   const statusCounts: Record<string, number> = {};
   presentStatuses.forEach((status) => {
-    statusCounts[status] = normalizedOrders.filter((order) => order.status === status).length;
+    statusCounts[status] = normalizedOrders.filter(
+      (order) => order.status === status
+    ).length;
   });
 
   const filteredOrders = selectedStatus
@@ -160,17 +158,22 @@ export default function OrdersPage() {
       {/* User Info Header */}
       <div className="flex flex-row items-center justify-between mb-6 gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-1">
-          <h2 className="text-2xl  text-foreground capitalize">{data?.user?.name ?? "User"}</h2>
+          <h2 className="text-2xl  text-foreground capitalize">
+            {data?.user?.name ?? "User"}
+          </h2>
           <div className="text-muted-foreground text-sm">
-            <span className="font-semibold">Email:</span> {data?.user?.realEmail ?? "N/A"}
+            <span className="font-semibold">Email:</span>{" "}
+            {data?.user?.realEmail ?? "N/A"}
           </div>
         </div>
-        <Button variant={"destructive"} size={"sm"}
+        <Button
+          variant={"destructive"}
+          size={"sm"}
           onClick={() => {
-                if (window.confirm("Are you sure you want to log out?")) {
-                authClient.signOut();
-                }
-              }}
+            if (window.confirm("Are you sure you want to log out?")) {
+              authClient.signOut();
+            }
+          }}
         >
           Sign Out
         </Button>
@@ -185,7 +188,10 @@ export default function OrdersPage() {
           }`}
           onClick={() => setSelectedStatus("")}
         >
-          All <span className="ml-1 text-xs text-muted-foreground">{normalizedOrders.length}</span>
+          All{" "}
+          <span className="ml-1 text-xs text-muted-foreground">
+            {normalizedOrders.length}
+          </span>
         </div>
         {presentStatuses.map((statusKey) => {
           // Find label from STATUSES
@@ -202,7 +208,9 @@ export default function OrdersPage() {
               onClick={() => setSelectedStatus(statusObj.key)}
             >
               {statusObj.label}
-              <span className="ml-1 text-xs text-muted-foreground">{statusCounts[statusObj.key]}</span>
+              <span className="ml-1 text-xs text-muted-foreground">
+                {statusCounts[statusObj.key]}
+              </span>
             </div>
           );
         })}
@@ -301,32 +309,82 @@ export default function OrdersPage() {
             >
               ×
             </button>
-            <h3 className="text-xl font-bold mb-4 text-card-foreground">Order Details</h3>
+            <h3 className="text-xl font-bold mb-4 text-card-foreground">
+              Order Details
+            </h3>
             <div className="space-y-2">
-              <div><span className="font-semibold">Order ID:</span> {detailOrder._id}</div>
-              <div><span className="font-semibold">Status:</span> {detailOrder.status}</div>
-              <div><span className="font-semibold">Created:</span> {new Date(detailOrder.createdAt).toLocaleString()}</div>
-              <div><span className="font-semibold">Phone:</span> {detailOrder.phoneNumber}</div>
-              <div><span className="font-semibold">Shipping Method:</span> {detailOrder.shippingMethod}</div>
-              {detailOrder.shippingMethod === 'delivery' && (
-                <div><span className="font-semibold">Delivery Location:</span> {detailOrder.deliveryLocation || '-'}</div>
+              <div>
+                <span className="font-semibold">Order ID:</span>{" "}
+                {detailOrder._id}
+              </div>
+              <div>
+                <span className="font-semibold">Status:</span>{" "}
+                {detailOrder.status}
+              </div>
+              <div>
+                <span className="font-semibold">Created:</span>{" "}
+                {new Date(detailOrder.createdAt).toLocaleString()}
+              </div>
+              <div>
+                <span className="font-semibold">Phone:</span>{" "}
+                {detailOrder.phoneNumber}
+              </div>
+              <div>
+                <span className="font-semibold">Shipping Method:</span>{" "}
+                {detailOrder.shippingMethod}
+              </div>
+              {detailOrder.shippingMethod === "delivery" && (
+                <div>
+                  <span className="font-semibold">Delivery Location:</span>{" "}
+                  {detailOrder.deliveryLocation || "-"}
+                </div>
               )}
               {detailOrder.deliveryPrice !== undefined && (
-                <div><span className="font-semibold">Delivery Price:</span> {detailOrder.deliveryPrice}</div>
+                <div>
+                  <span className="font-semibold">Delivery Price:</span>{" "}
+                  {detailOrder.deliveryPrice}
+                </div>
               )}
-              <div><span className="font-semibold">Subtotal:</span> {detailOrder.subtotal}</div>
-              <div><span className="font-semibold">Shipping:</span> {detailOrder.shipping}</div>
-              <div><span className="font-semibold">Tax:</span> {detailOrder.tax}</div>
-              <div><span className="font-semibold">Total:</span> {detailOrder.total}</div>
+              <div>
+                <span className="font-semibold">Subtotal:</span>{" "}
+                {detailOrder.subtotal}
+              </div>
+              <div>
+                <span className="font-semibold">Shipping:</span>{" "}
+                {detailOrder.shipping}
+              </div>
+              <div>
+                <span className="font-semibold">Tax:</span> {detailOrder.tax}
+              </div>
+              <div>
+                <span className="font-semibold">Total:</span>{" "}
+                {detailOrder.total}
+              </div>
               <div className="mt-4">
                 <span className="font-semibold">Items:</span>
                 <ul className="mt-2 space-y-2">
                   {detailOrder.items?.map((item, idx) => (
                     <li key={idx} className="border rounded p-2 bg-muted/30">
-                      <div><span className="font-semibold">Product:</span> {typeof item.product === 'string' ? item.product : item.product.title || item.product._id}</div>
-                      {item.variant && <div><span className="font-semibold">Variant:</span> {item.variant}</div>}
-                      <div><span className="font-semibold">Quantity:</span> {item.quantity}</div>
-                      <div><span className="font-semibold">Price:</span> {item.price}</div>
+                      <div>
+                        <span className="font-semibold">Product:</span>{" "}
+                        {typeof item.product === "string"
+                          ? item.product
+                          : item.product.title || item.product._id}
+                      </div>
+                      {item.variant && (
+                        <div>
+                          <span className="font-semibold">Variant:</span>{" "}
+                          {item.variant}
+                        </div>
+                      )}
+                      <div>
+                        <span className="font-semibold">Quantity:</span>{" "}
+                        {item.quantity}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Price:</span>{" "}
+                        {item.price}
+                      </div>
                     </li>
                   ))}
                 </ul>

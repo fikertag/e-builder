@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  LogOut,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -63,7 +60,13 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -73,22 +76,23 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-                <div className="flex items-center gap-2 w-full"
+              <div
+                className="flex items-center gap-2 w-full"
                 onClick={() => {
                   if (window.confirm("Are you sure you want to log out?")) {
-                  authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: () => {
-                        router.push("auth/login"); 
+                    authClient.signOut({
+                      fetchOptions: {
+                        onSuccess: () => {
+                          router.push("auth/login");
+                        },
                       },
-                    },
-                  });
+                    });
                   }
                 }}
-                >
+              >
                 <LogOut />
                 Log out
-                </div>
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

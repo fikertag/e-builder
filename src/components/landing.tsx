@@ -20,12 +20,17 @@ export default function Landing() {
         </p>
         <div className="flex flex-col min-[450px]:flex-row gap-4 justify-center mx-10 ">
           <Button asChild className="py-6 text-lg" size={"lg"}>
-            <Link href={"/auth/sign-in"} className="text-white font-semibold ">
+            <Link href={"/auth/signup"} className="text-white font-semibold ">
               Start free trial
             </Link>
           </Button>
-          <Button asChild variant="outline" className="text-lg py-6" size={"lg"}>
-            <Link href={"/auth/sign-in"}>Log in</Link>
+          <Button
+            asChild
+            variant="outline"
+            className="text-lg py-6"
+            size={"lg"}
+          >
+            <Link href={"/auth/login"}>Log in</Link>
           </Button>
         </div>
       </div>

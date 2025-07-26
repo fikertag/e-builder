@@ -89,13 +89,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.updatedAt &&
               Date.now() - new Date(product.updatedAt as string).getTime() <
                 1000 * 60 * 60 * 24 * 7 && (
-                <span className="bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-md">
-                  New
-                </span>
+                <Badge variant={"secondary"}>New</Badge>
               )}
 
-            <Badge variant={"secondary"}>Hot</Badge>
-            <Badge variant={"secondary"}>Free delivery</Badge>
+            {/*
+              // TODO: Render product tags here when available
+              {product.tags?.map((tag) => (
+                <Badge key={tag} variant="secondary">{tag}</Badge>
+              ))}
+            */}
           </div>
           <button
             onClick={handleAddToCart}

@@ -17,6 +17,23 @@ export default function ProductsSection({
   const isDefaultFeatured =
     title === "Featured Products" &&
     subtitle === "Discover our most popular items";
+
+  let displayProducts: IProduct[] = [];
+  if (isDefaultFeatured) {
+    const featured = products.filter((p) => p.isFeatured);
+    if (featured.length >= 8) {
+      displayProducts = featured.slice(0, 8);
+    } else {
+      const nonFeatured = products.filter((p) => !p.isFeatured);
+      displayProducts = [
+        ...featured,
+        ...nonFeatured.slice(0, 8 - featured.length),
+      ];
+    }
+  } else {
+    displayProducts = products;
+  }
+
   return (
     <section className="py-10 bg-muted/30">
       <div className="container mx-auto px-6">
@@ -27,8 +44,8 @@ export default function ProductsSection({
           <p className="text-muted-foreground max-w-2xl mx-auto">{subtitle}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {products.length > 0 ? (
-            products.map((product) => (
+          {displayProducts.length > 0 ? (
+            displayProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))
           ) : isDefaultFeatured ? (

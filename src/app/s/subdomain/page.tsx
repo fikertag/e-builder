@@ -31,7 +31,7 @@ export default function Page() {
           <LandingHero
             title={store?.heroHeading || ""}
             description={store?.heroDescription || ""}
-            imageUrl={store?.storeLandingImage || "/default-hero-image.jpg"}
+            imageUrl={store?.storeLandingImage || ""}
           />
           {isLoading ? (
             <div className="text-center py-16">
@@ -82,7 +82,7 @@ export default function Page() {
           </section>
 
           {/* About Us Section */}
-          <section className="py-16 bg-card/10">
+          <section className="py-20 bg-card/10">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
