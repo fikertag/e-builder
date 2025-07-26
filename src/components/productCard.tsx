@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={
               product.images[0].startsWith("http")
                 ? product.images[0]
-                : "/placeholder.png"
+                : "/placeholder.webp"
             }
             alt={product.title}
             fill
@@ -71,7 +71,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Link>
           <div className="flex items-center gap-2 mb-1">
             <span className="font-bold text-primary text-xl">
-              ${product.basePrice.toFixed(2)}
+              ETB{" "}
+              {product.basePrice % 1 === 0
+                ? product.basePrice
+                : product.basePrice.toFixed(2).replace(/\.00$/, "")}
             </span>
             {product.variants && product.variants.length > 0 && (
               <span className="text-xs text-muted-foreground">

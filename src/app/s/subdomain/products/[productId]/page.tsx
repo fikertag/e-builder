@@ -66,9 +66,9 @@ export default function ProductDetailPage() {
     if (selectedVariant) {
       const v = product?.variants?.find((v) => v.sku === selectedVariant);
       if (v?.image) setMainImage(v.image);
-      else setMainImage(product?.images[0] || "/placeholder.png");
+      else setMainImage(product?.images[0] || "/placeholder.webp");
     } else {
-      setMainImage(product?.images[0] || "/placeholder.png");
+      setMainImage(product?.images[0] || "/placeholder.webp");
     }
   }, [selectedVariant, product]);
 
@@ -100,7 +100,7 @@ export default function ProductDetailPage() {
                 ? mainImage
                 : product.images[0]?.startsWith("http")
                   ? product.images[0]
-                  : "/placeholder.png"
+                  : "/placeholder.webp"
             }
             alt={product.title}
             fill
@@ -133,7 +133,10 @@ export default function ProductDetailPage() {
           <span>{product.title}</span>
         </h1>
         <div className="text-xl text-primary font-semibold mb-2">
-          ${product.basePrice.toFixed(2)}
+          ETB{" "}
+          {selectedVariant && variantObj && variantObj.priceAdjustment
+            ? `$${(product.basePrice + variantObj.priceAdjustment).toFixed(2)}`
+            : `$${product.basePrice.toFixed(2)}`}
         </div>
         <div
           style={{ wordBreak: "break-word" }}

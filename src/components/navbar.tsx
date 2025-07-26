@@ -107,7 +107,7 @@ export function Header() {
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Subtotal</span>
                         <span className="font-medium">
-                          ${subtotal.toFixed(2)}
+                          ETB {subtotal.toFixed(2)}
                         </span>
                       </div>
 

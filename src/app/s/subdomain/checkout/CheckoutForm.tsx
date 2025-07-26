@@ -23,7 +23,7 @@ type OrderPayload = {
   tax: number;
   total: number;
   status: string;
-  shippingMethod: 'pickup' | 'delivery';
+  shippingMethod: "pickup" | "delivery";
   phoneNumber: string;
   deliveryLocation?: string;
   deliveryPrice?: number;
@@ -36,15 +36,19 @@ export default function CheckoutForm() {
   const { user } = useUser();
   const router = useRouter();
   // Shipping method and info state
-  const [shippingMethod, setShippingMethod] = useState<'pickup' | 'delivery'>('pickup');
+  const [shippingMethod, setShippingMethod] = useState<"pickup" | "delivery">(
+    "pickup"
+  );
   // Delivery locations and price
   const deliveryLocations = useMemo(() => {
     // Store-level delivery locations (array of { location, price })
     if (!store?.deliveryFees) return [];
-    return store.deliveryFees.map((fee: { location: string; price: number }) => ({
-      location: fee.location,
-      price: fee.price,
-    }));
+    return store.deliveryFees.map(
+      (fee: { location: string; price: number }) => ({
+        location: fee.location,
+        price: fee.price,
+      })
+    );
   }, [store]);
 
   // Default to store minimum delivery fee/location
@@ -55,7 +59,9 @@ export default function CheckoutForm() {
     );
   }, [deliveryLocations]);
 
-  const [deliveryLocation, setDeliveryLocation] = useState(defaultDelivery.location);
+  const [deliveryLocation, setDeliveryLocation] = useState(
+    defaultDelivery.location
+  );
   const [deliveryPrice, setDeliveryPrice] = useState(defaultDelivery.price);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,9 +69,8 @@ export default function CheckoutForm() {
   const [error, setError] = useState("");
 
   // Use store delivery price only
-  const effectiveDeliveryPrice = shippingMethod === "delivery"
-    ? (Number(deliveryPrice) || 0)
-    : 0;
+  const effectiveDeliveryPrice =
+    shippingMethod === "delivery" ? Number(deliveryPrice) || 0 : 0;
 
   const total = cartItems.reduce((sum, item) => {
     let price = item.product.basePrice;
@@ -85,7 +90,7 @@ export default function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),
       });
-      console.log("user inside the function", user)
+      console.log("user inside the function", user);
       if (!res.ok) {
         const err = await res.json();
         throw new Error(
@@ -133,7 +138,7 @@ export default function CheckoutForm() {
     }
     setIsSubmitting(true);
     // Prepare order payload
-    console.log("user",user)
+    console.log("user", user);
     const orderPayload: OrderPayload = {
       store: store.id,
       customer: user?.id || undefined,
@@ -193,7 +198,7 @@ export default function CheckoutForm() {
                         ? item.selectedVariants[0].image
                         : item.product.images[0]?.startsWith("http")
                           ? item.product.images[0]
-                          : "/placeholder.png"
+                          : "/placeholder.webp"
                     }
                     alt={item.product.title}
                     width={48}
@@ -215,7 +220,6 @@ export default function CheckoutForm() {
                       )}
                   </div>
                   <div className="font-bold text-card-foreground">
-                    $
                     {item.product.basePrice +
                       (item.selectedVariants
                         ? item.selectedVariants.reduce(
@@ -263,9 +267,11 @@ export default function CheckoutForm() {
                 <select
                   className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
                   value={deliveryLocation}
-                  onChange={e => {
+                  onChange={(e) => {
                     setDeliveryLocation(e.target.value);
-                    const found = deliveryLocations.find(l => l.location === e.target.value);
+                    const found = deliveryLocations.find(
+                      (l) => l.location === e.target.value
+                    );
                     setDeliveryPrice(found ? found.price : 0);
                   }}
                   required
@@ -275,13 +281,15 @@ export default function CheckoutForm() {
                   </option>
                   {deliveryLocations.map((loc, idx) => (
                     <option key={idx} value={loc.location}>
-                      <span className="px-6">{loc.location}</span>
-                      <span>{loc.price > 0 ? `($${loc.price})` : "(Free)"}</span>
+                      <span className="px-6 mx-6">{loc.location}</span>
+                      <span>
+                        {loc.price > 0 ? ` ( ETB ${loc.price} )` : "(Free)"}
+                      </span>
                     </option>
                   ))}
                 </select>
                 <div className="text-sm font-medium mt-1">
-                  Delivery Fee: ${effectiveDeliveryPrice.toFixed(2)}
+                  Delivery Fee: {effectiveDeliveryPrice.toFixed(2)}
                 </div>
               </>
             )}
@@ -299,13 +307,15 @@ export default function CheckoutForm() {
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Subtotal</span>
               <span className="font-semibold text-card-foreground">
-                ${total.toFixed(2)}
+                {total.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Delivery</span>
               <span className="font-semibold text-card-foreground">
-                ${shippingMethod === "delivery" ? effectiveDeliveryPrice.toFixed(2) : "0.00"}
+                {shippingMethod === "delivery"
+                  ? effectiveDeliveryPrice.toFixed(2)
+                  : "0.00"}
               </span>
             </div>
             <div className="flex justify-between items-center border-t border-border pt-2 mt-2">
@@ -313,7 +323,11 @@ export default function CheckoutForm() {
                 Total
               </span>
               <span className="text-xl font-bold text-primary">
-                ${(total + (shippingMethod === "delivery" ? effectiveDeliveryPrice : 0)).toFixed(2)}
+                ETB{" "}
+                {(
+                  total +
+                  (shippingMethod === "delivery" ? effectiveDeliveryPrice : 0)
+                ).toFixed(2)}
               </span>
             </div>
           </div>

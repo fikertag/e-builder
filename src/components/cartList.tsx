@@ -69,8 +69,8 @@ const CartSheetContent = () => {
                           item.selectedVariants[0].image
                             ? item.selectedVariants[0].image
                             : item.product.images[0]?.startsWith("http")
-                            ? item.product.images[0]
-                            : "/placeholder.png"
+                              ? item.product.images[0]
+                              : "/placeholder.webp"
                         }
                       />
                     </div>
@@ -104,8 +104,9 @@ const CartSheetContent = () => {
                     </Link>
                   </div>
                   <div className="flex h-16 flex-col justify-between">
-                    <div className="flex justify-end space-y-2 text-right text-sm text-foreground">
-                      ${(
+                    <div className="flex justify-end items-center space-y-2 text-right text-sm text-foreground">
+                      <span className="text-xs px-1">ETB </span>
+                      {(
                         item.product.basePrice +
                         (item.selectedVariants
                           ? item.selectedVariants.reduce(
@@ -132,7 +133,9 @@ const CartSheetContent = () => {
                         -
                       </button>
                       <p className="w-6 text-center">
-                        <span className="w-full text-sm text-foreground">{item.quantity}</span>
+                        <span className="w-full text-sm text-foreground">
+                          {item.quantity}
+                        </span>
                       </p>
                       <button
                         className="px-3 text-muted-foreground hover:text-foreground"
