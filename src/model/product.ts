@@ -56,7 +56,7 @@ const ProductSchema = new Schema<IProduct>(
     description: {
       type: String,
       required: true,
-      minlength: 30,
+      minlength: 10,
     },
     basePrice: {
       type: Number,

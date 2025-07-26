@@ -168,8 +168,8 @@ export default function AddProductPage() {
     if (!store?.id) return setError("Store not found.");
     if (!title || !description || !basePrice || images.length === 0)
       return setError("All fields and at least one image are required.");
-    if (description.length < 30)
-      return setError("Description must be at least 30 characters.");
+    if (description.length < 10)
+      return setError("Description must be at least 10 characters.");
     // Delivery fee logic
     let deliveryFees = undefined;
     let isFreeDelivery = false;

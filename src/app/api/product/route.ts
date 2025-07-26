@@ -42,12 +42,12 @@ export async function POST(request: NextRequest) {
     if (
       !description ||
       typeof description !== "string" ||
-      description.length < 30
+      description.length < 10
     ) {
       return NextResponse.json(
         {
           message:
-            "Description is required and must be at least 30 characters.",
+            "Description is required and must be at least 10 characters.",
         },
         { status: 400 }
       );
@@ -108,7 +108,10 @@ export async function POST(request: NextRequest) {
           fee.price < 0
         ) {
           return NextResponse.json(
-            { message: "Each delivery fee must have a non-empty location and a non-negative price." },
+            {
+              message:
+                "Each delivery fee must have a non-empty location and a non-negative price.",
+            },
             { status: 400 }
           );
         }
