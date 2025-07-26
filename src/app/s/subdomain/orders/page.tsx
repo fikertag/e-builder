@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/customer-auth-client";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 const STATUSES = [
   { key: "pending", label: "Pending" },
@@ -61,6 +62,18 @@ export default function OrdersPage() {
   const [showDetail, setShowDetail] = useState(false);
   const [detailOrder, setDetailOrder] = useState<UserOrder | null>(null);
 
+  // Track redirect state
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (!userId && !isPending) {
+      router.replace("/auth/signup");
+      setShouldRender(false);
+    } else if (userId && !isPending) {
+      setShouldRender(true);
+    }
+  }, [userId, isPending, router]);
+
   const {
     data: orders,
     isLoading,
@@ -71,8 +84,8 @@ export default function OrdersPage() {
     enabled: !!userId,
   });
 
-  if (!userId && !isPending) {
-    router.replace("/auth/signup");
+  if (!shouldRender || !userId || isPending) {
+    return null;
   }
   if (isLoading)
     return (
@@ -81,9 +94,9 @@ export default function OrdersPage() {
       </div>
     );
   if (isError)
-    return <div className="text-muted-foreground">No orders found.</div>;
+    return <div className="text-muted-foreground">No orders founddd.</div>;
   if (!orders || orders.length === 0)
-    return <div className="text-muted-foreground">No orders found.</div>;
+    return <div className="text-muted-foreground">No orders founds.</div>;
 
   // Merge paid and shipping as "shipping"
   const normalizedOrders = (orders as UserOrder[]).map((order) => ({

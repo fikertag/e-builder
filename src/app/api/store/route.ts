@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       whyChooseUs,
       contact,
       theme,
-      deliveryFees
+      deliveryFees,
     } = await request.json();
     // deliveryFees validation (optional, but if present must be valid)
     if (deliveryFees !== undefined) {
@@ -54,7 +54,10 @@ export async function POST(request: NextRequest) {
           fee.price < 0
         ) {
           return NextResponse.json(
-            { message: "Each delivery fee must have a non-empty location and a non-negative price." },
+            {
+              message:
+                "Each delivery fee must have a non-empty location and a non-negative price.",
+            },
             { status: 400 }
           );
         }
@@ -500,6 +503,7 @@ export async function PATCH(request: NextRequest) {
       id: saved._id,
       storeName: saved.storeName,
       subdomain: saved.subdomain,
+      theme: saved.theme,
       description: saved.description,
       heroHeading: saved.heroHeading,
       storeLandingImage: saved.storeLandingImage,
@@ -537,6 +541,7 @@ export async function GET(request: NextRequest) {
       id: store._id,
       storeName: store.storeName,
       subdomain: store.subdomain,
+      theme: store.theme,
       description: store.description,
       heroHeading: store.heroHeading,
       storeLandingImage: store.storeLandingImage,

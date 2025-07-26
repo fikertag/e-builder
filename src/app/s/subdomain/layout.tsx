@@ -3,17 +3,11 @@ import { Header } from "@/components/navbar";
 import DynamicThemeProvider from "./DynamicThemeProvider";
 import { StoreInitializer } from "@/app/StoreInitializer";
 import "@/styles/subdomain.css";
-// import type { Metadata } from "next";
-
-// type Props = {
-//   children: ReactNode;
-//   params: { subdomain: string };
-// };
 
 export function generateMetadata() {
   return {
-    title: "About Us",
-    description: "Static description",
+    title: "Shop Now",
+    description: "Welcome to our store",
   };
 }
 

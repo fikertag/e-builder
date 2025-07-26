@@ -251,46 +251,52 @@ export default function CheckoutForm() {
                 />
                 Pickup
               </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="shippingMethod"
-                  value="delivery"
-                  checked={shippingMethod === "delivery"}
-                  onChange={() => setShippingMethod("delivery")}
-                />
-                Delivery
-              </label>
+              {deliveryLocations.length > 0 && (
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="shippingMethod"
+                    value="delivery"
+                    checked={shippingMethod === "delivery"}
+                    onChange={() => setShippingMethod("delivery")}
+                  />
+                  Delivery
+                </label>
+              )}
             </div>
             {shippingMethod === "delivery" && deliveryLocations.length > 0 && (
               <>
-                <select
-                  className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
-                  value={deliveryLocation}
-                  onChange={(e) => {
-                    setDeliveryLocation(e.target.value);
-                    const found = deliveryLocations.find(
-                      (l) => l.location === e.target.value
-                    );
-                    setDeliveryPrice(found ? found.price : 0);
-                  }}
-                  required
-                >
-                  <option value="" disabled>
-                    Select Delivery Location
-                  </option>
-                  {deliveryLocations.map((loc, idx) => (
-                    <option key={idx} value={loc.location}>
-                      <span className="px-6 mx-6">{loc.location}</span>
-                      <span>
-                        {loc.price > 0 ? ` ( ETB ${loc.price} )` : "(Free)"}
-                      </span>
-                    </option>
-                  ))}
-                </select>
-                <div className="text-sm font-medium mt-1">
-                  Delivery Fee: {effectiveDeliveryPrice.toFixed(2)}
-                </div>
+                {deliveryLocations.length > 0 && (
+                  <>
+                    <select
+                      className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
+                      value={deliveryLocation}
+                      onChange={(e) => {
+                        setDeliveryLocation(e.target.value);
+                        const found = deliveryLocations.find(
+                          (l) => l.location === e.target.value
+                        );
+                        setDeliveryPrice(found ? found.price : 0);
+                      }}
+                      required
+                    >
+                      <option value="" disabled>
+                        Select Delivery Location
+                      </option>
+                      {deliveryLocations.map((loc, idx) => (
+                        <option key={idx} value={loc.location}>
+                          <span className="px-6 mx-6">{loc.location}</span>
+                          <span>
+                            {loc.price > 0 ? ` ( ETB ${loc.price} )` : "(Free)"}
+                          </span>
+                        </option>
+                      ))}
+                    </select>
+                    <div className="text-sm font-medium mt-1">
+                      Delivery Fee: {effectiveDeliveryPrice.toFixed(2)}
+                    </div>
+                  </>
+                )}
               </>
             )}
             <input
